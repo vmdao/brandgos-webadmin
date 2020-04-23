@@ -1,0 +1,27 @@
+.header-task-default__nav-item {
+  display: block;
+  min-width: 50px;
+  padding: 8px 2px;
+  line-height: 100%;
+  text-align: center;
+  border-radius: 2px;
+  outline: 0;
+  cursor: pointer;
+  -webkit-transition: background-color .3s;
+  transition: background-color .3s;
+}
+
+.header-task__nav-item-icon,
+.header-task__nav-item>i {
+  font-size: 18px !important;
+  -webkit-transform: none !important;
+  transform: none !important;
+}
+
+.point {
+  width: 250px;
+}
+
+.big {
+  font-size: 20px;
+}

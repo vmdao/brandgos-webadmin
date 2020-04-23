@@ -1,0 +1,35 @@
+<div class="brand">
+  <a [routerLink]="['/']" class="alain-pro__header-logo">
+    <img src="./assets/images/logo.png" width="32" />
+  </a>
+</div>
+<ul
+  nz-menu
+  [nzTheme]="'dark'"
+  [nzMode]="'inline'"
+  [nzInlineCollapsed]="isCollapsed"
+>
+  <ng-container *ngFor="let menu of menus">
+    <li nz-menu-item *ngIf="!menu.childs" [routerLink]="menu.path">
+      <span title
+        ><i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+        <span class="nav-text" [translate]="'menu.' + menu.title"></span>
+      </span>
+    </li>
+
+    <li nz-submenu *ngIf="menu.childs">
+      <span title>
+        <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+        <span [translate]="'menu.' + menu.title"></span>
+      </span>
+      <ul *ngFor="let item of menu.childs">
+        <li nz-menu-item [routerLink]="item.path">
+          <span title>
+            <i nz-icon [nzType]="item.icon" *ngIf="item.icon"></i>
+            <span class="nav-text" [translate]="'menu.' + item.title"> </span>
+          </span>
+        </li>
+      </ul>
+    </li>
+  </ng-container>
+</ul>

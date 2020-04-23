@@ -1,0 +1,32 @@
+:host {
+  height: 100%;
+  margin-top: -.1px;
+  padding-top: .1px;
+  padding: 0 50px;
+  line-height: 64px;
+  display: flex;
+}
+
+.layout-default {
+  &__nav-wrap {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+ul {
+  list-style: none;
+
+  li {
+    margin-left: 16px;
+    cursor: pointer;
+  }
+}

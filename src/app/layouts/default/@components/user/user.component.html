@@ -1,0 +1,32 @@
+<div
+  nz-dropdown
+  nzTrigger="click"
+  [nzDropdownMenu]="userMenu"
+  nzPlacement="bottomRight"
+  class="alain-pro__header-item"
+>
+  <nz-avatar
+    [nzSrc]="settings.user.avatarUrl"
+    nzSize="small"
+    class="mr-sm"
+    style="margin-right: 8px;"
+  ></nz-avatar>
+  {{ settings.user.fullName }}
+</div>
+<nz-dropdown-menu #userMenu="nzDropdownMenu">
+  <div nz-menu class="width-sm">
+    <div nz-menu-item routerLink="/page/profile/genaral">
+      <i nz-icon nzType="user" class="mr-sm"></i>
+      {{ 'menu.account.profile' | translate }}
+    </div>
+    <div nz-menu-item routerLink="/page/profile/change-password">
+      <i nz-icon nzType="user" class="mr-sm"></i>
+      {{ 'menu.account.change-password' | translate }}
+    </div>
+    <li nz-menu-divider></li>
+    <div nz-menu-item (click)="logout()">
+      <i nz-icon nzType="logout" class="mr-sm"></i>
+      {{ 'menu.account.logout' | translate }}
+    </div>
+  </div>
+</nz-dropdown-menu>

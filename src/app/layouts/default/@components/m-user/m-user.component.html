@@ -1,0 +1,23 @@
+<div
+  nz-dropdown
+  [nzDropdownMenu]="userMenu"
+  nzPlacement="bottomRight"
+  class="alain-pro__header-item"
+>
+  <nz-avatar [nzSrc]="user.avatarUrl" nzSize="small" class="mr-sm"></nz-avatar>
+  {{ user.fullName }}
+</div>
+<nz-dropdown-menu #userMenu="nzDropdownMenu">
+  <div nz-menu class="width-sm">
+    <div nz-menu-item routerLink="/page/settings/profile">
+      <i nz-icon nzType="user" class="mr-sm"></i>
+      {{ 'Profile' | translate }}
+    </div>
+
+    <li nz-menu-divider></li>
+    <div nz-menu-item routerLink="/auth/login">
+      <i nz-icon nzType="logout" class="mr-sm"></i>
+      {{ 'Logout' | translate }}
+    </div>
+  </div>
+</nz-dropdown-menu>

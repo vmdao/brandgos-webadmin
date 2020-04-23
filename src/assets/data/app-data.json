@@ -1,0 +1,235 @@
+{
+  "app": {
+    "name": "A Dong",
+    "description": "Á Đông for admin"
+  },
+  "menu": [{
+      "text": "Dashboard",
+      "i18n": "menu.Dashboard",
+      "group": true,
+      "children": [{
+        "text": "Dashboard",
+        "link": "/page/overview",
+        "i18n": "menu.Dashboard",
+        "icon": "anticon anticon-dashboard",
+        "hideInBreadcrumb": true,
+        "roles": [
+          "Authority-r",
+          "User-r"
+        ],
+        "children": [{
+          "text": "Overview",
+          "link": "/page/overview",
+          "i18n": "menu.DashboardOverview",
+          "hideInBreadcrumb": true,
+          "roles": [
+            "Authority-r",
+            "User-r"
+          ]
+        }]
+      }]
+    },
+    {
+      "text": "Products",
+      "i18n": "menu.Product",
+      "group": true,
+      "children": [{
+        "text": "Products",
+        "link": "/page/products",
+        "i18n": "menu.Product",
+        "icon": "anticon anticon-gold",
+        "hideInBreadcrumb": true,
+        "roles": [
+          "Product-r"
+        ],
+        "children": [{
+          "text": "Products List",
+          "link": "/page/products",
+          "i18n": "menu.Products List",
+          "hideInBreadcrumb": true,
+          "roles": [
+            "Product-r",
+            "Product-c",
+            "Product-u"
+          ]
+        }]
+      }]
+    },
+    {
+      "text": "Worker",
+      "i18n": "menu.Worker",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [{
+        "text": "Worker",
+        "link": "/page/workers",
+        "i18n": "menu.Worker",
+        "icon": "anticon anticon-user",
+        "hideInBreadcrumb": true,
+        "roles": [
+          "Worker-r",
+          "Worker-c",
+          "Worker-u"
+        ],
+        "children": [{
+          "text": "Worker",
+          "link": "/page/workers",
+          "i18n": "menu.Workers List",
+          "roles": [
+            "Worker-r",
+            "Worker-c",
+            "Worker-u"
+          ]
+        }]
+      }]
+    },
+    {
+      "text": "Team",
+      "i18n": "menu.Team",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [{
+        "text": "Team",
+        "link": "/page/teams",
+        "i18n": "menu.Team",
+        "icon": "anticon anticon-team",
+        "hideInBreadcrumb": true,
+        "roles": [
+          "Team-r",
+          "Team-c",
+          "Team-u"
+
+        ],
+        "children": [{
+          "text": "Team",
+          "link": "/page/teams",
+          "i18n": "menu.Teams List",
+          "roles": [
+            "Team-r",
+            "Team-c",
+            "Team-u"
+          ]
+        }, {
+          "text": "Contractor",
+          "link": "/page/contractors",
+          "i18n": "menu.Contractors List",
+          "roles": [
+            "Contractor-r",
+            "Contractor-c",
+            "Contractor-u"
+          ]
+        }]
+      }]
+    },
+    {
+      "text": "Transport",
+      "children": [{
+        "text": "Transport",
+        "i18n": "menu.Transport",
+        "icon": "anticon anticon-car",
+        "roles": [
+          "Driver-r",
+          "Driver-c",
+          "Driver-u"
+        ],
+        "children": [{
+          "text": "Drivers List",
+          "link": "/page/drivers",
+          "i18n": "menu.Drivers List",
+          "roles": [
+            "Driver-r",
+            "Driver-c",
+            "Driver-u"
+          ]
+        }, {
+          "text": "Lorries List",
+          "link": "/page/lorries",
+          "i18n": "menu.Lorries List",
+          "roles": [
+            "Lorry-r",
+            "Lorry-c",
+            "Lorry-u"
+          ]
+        }]
+      }]
+    },
+    {
+      "text": "Setting",
+      "i18n": "menu.Setting",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [{
+        "text": "Setting",
+        "i18n": "menu.Setting",
+        "icon": "anticon anticon-setting",
+        "hideInBreadcrumb": true,
+        "roles": [],
+        "children": [{
+            "text": "Genaral",
+            "link": "/page/profile/genaral",
+            "i18n": "menu.Profile",
+            "roles": []
+          },
+          {
+            "text": "Account",
+            "link": "/page/users",
+            "i18n": "menu.Accounts List",
+            "icon": "anticon anticon-user",
+            "roles": [
+              "User-r",
+              "User-c",
+              "User-u",
+              "User-d"
+            ]
+          },
+          {
+            "text": "Group Users",
+            "link": "/page/authorities",
+            "i18n": "menu.Group Users List",
+            "icon": "anticon anticon-group",
+            "roles": [
+              "Authority-r",
+              "Authority-c",
+              "Authority-u",
+              "Authority-d"
+            ]
+          },
+          {
+            "text": "Project",
+            "link": "/page/project-setting/genaral",
+            "i18n": "menu.Project Setting",
+            "icon": "anticon anticon-group",
+            "roles": [
+              "User-r",
+              "User-c",
+              "User-u",
+              "User-d"
+            ]
+          }
+        ]
+      }]
+    }
+  ],
+  "paths": [
+    "pages./page/dashboard",
+    "pages./page/products",
+    "pages./page/lorries",
+    "pages./page/workers",
+    "pages./page/teams",
+    "pages./page/contractors",
+    "pages./page/drivers",
+    "pages./page/settings",
+    "pages./page/settings/genaral",
+    "pages./page/settings/seo",
+    "pages./page/settings/profiles",
+    "pages./page/settings/change-password",
+    "pages./page/users",
+    "pages./page/authorities",
+    "pages./page/profile",
+    "pages./page/profile/genaral",
+    "pages./page/profile/change-password",
+    "pages./page/project-setting",
+    "pages./page/project-setting/genaral",
+    "pages./page/project-setting/criteria-bundle"
+  ]
+}

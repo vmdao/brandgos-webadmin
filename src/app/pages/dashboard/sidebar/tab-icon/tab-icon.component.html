@@ -1,0 +1,43 @@
+<div class="tab-inner">
+  <div class="search">
+    <div class="search-inner">
+      <input />
+      <button (click)="onClickSearch($event)">
+        Search
+      </button>
+    </div>
+    <div class="tag-search">
+      <a class="tag" href="#/">
+        Fashion
+      </a>
+      <a class="tag" href="#/">
+        Cafe
+      </a>
+      <a class="tag" href="#/">
+        Computer
+      </a>
+      <a class="tag" href="#/">
+        Creative
+      </a>
+      <a class="tag" href="#/">
+        Tech
+      </a>
+      <a class="tag" href="#/">
+        Hotel
+      </a>
+      <a class="tag" href="#/">
+        Oranic
+      </a>
+      <a class="tag" href="#/">
+        Education
+      </a>
+    </div>
+  </div>
+  <div class="store">
+    <div class="item" *ngFor="let item of icons" (click)="onClickItem(item)">
+      <div class="item-box">
+        <img [src]="item.url" [alt]="item.name" />
+      </div>
+    </div>
+  </div>
+</div>

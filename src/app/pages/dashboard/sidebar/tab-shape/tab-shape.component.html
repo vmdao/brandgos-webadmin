@@ -1,0 +1,10 @@
+<div class="tab-inner">
+ 
+  <div class="store">
+    <div class="item" *ngFor="let item of shapes" (click)="onClickItem(item)">
+      <div class="item-box">
+        <img [src]="item.url" [alt]="item.name" />
+      </div>
+    </div>
+  </div>
+</div>

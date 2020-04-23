@@ -1,0 +1,230 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+@import 'pro.scss';
+
+.ant-tabs {
+  height: 100%;
+
+  .ant-tabs-bar {
+    background-color: #363e48;
+  }
+  .ant-tabs-left-bar {
+    border: none;
+  }
+  .ant-tabs-left-content {
+    padding-left: 0 !important;
+    height: 100%;
+    background-color: #ededed;
+  }
+  .ant-tabs-content {
+    padding: 24px 20px !important;
+  }
+  .ant-tabs-tab {
+    padding: 24px 10px !important;
+    margin: 0 !important;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    text-align: center !important;
+  }
+  .ant-tabs-tab-active {
+    background-color: #60717a;
+  }
+  .ant-tabs-ink-bar {
+    background-color: white;
+    border-right-width: 2px;
+  }
+}
+
+.ant-layout-header {
+  background-color: #000;
+  height: 60px;
+  line-height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 8px 0px;
+  justify-content: space-between;
+  .group-first {
+    padding-left: 24px;
+    display: flex;
+    justify-content: space-between;
+    width: 400px;
+  }
+
+  .logo {
+    width: 46px;
+    height: auto;
+  }
+  .group-last {
+    padding-right: 24px;
+    width: 400px;
+    justify-content: space-between;
+    display: flex;
+    .btn:last-child {
+      margin-left: 16px;
+    }
+  }
+  .group-center {
+    .btn:last-child {
+      margin-left: 16px;
+    }
+  }
+  .btn {
+    line-height: 1.3;
+    padding: 4px 16px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    &-ghost {
+      background-color: transparent;
+      border: 1px solid white;
+      color: white;
+    }
+
+    &-gray {
+      padding: 6px 16px;
+      background-color: transparent;
+      border: 1px solid #c6c6c6;
+      color: #c6c6c6;
+      &-ghost {
+        background-color: transparent;
+        border: 1px solid #c6c6c6;
+        color: #c6c6c6;
+        border: none;
+        &:hover {
+          background-color: #262222;
+          color: white;
+        }
+      }
+      &:hover {
+        border-color: white;
+        color: white;
+      }
+    }
+
+    &-primary {
+      background-color: #0149ff;
+      color: white;
+      border: none;
+      &:hover {
+        background-color: #2965ff;
+      }
+    }
+
+    &-icon {
+      display: flex;
+      align-items: center;
+      svg {
+        margin-right: 8px;
+        width: 16px;
+      }
+    }
+  }
+  .ant-avatar {
+    cursor: pointer;
+  }
+}
+
+nz-content {
+  height: calc(100vh - 60px);
+}
+.store {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+.item {
+  height: 96px;
+  width: 96px;
+  padding: 4px;
+  .item-box {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    transition: 0.5s ease;
+    border: 0 solid transparent;
+    position: relative;
+    background: #f6f6f6;
+    cursor: pointer;
+
+    padding: 0 10px;
+    font-size: 5em;
+    width: 100%;
+    justify-content: center;
+    user-select: none;
+    &:hover {
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+    }
+    img {
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      max-height: 100%;
+    }
+  }
+}
+
+.search {
+  width: 100%;
+  &-inner {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 6px;
+    display: flex;
+  }
+  input {
+    border: none;
+    width: 100%;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    padding: 0 8px;
+  }
+  button {
+    background-color: #0348fc;
+    color: #fff;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding: 6px 16px;
+    font-size: 12px;
+    outline: none;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    &:hover {
+      background-color: #1e5af0;
+    }
+  }
+}
+
+.tag-search {
+  padding: 16px 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+
+  .tag {
+    background-color: #fff;
+    font-size: 12px;
+    color: #0348fc;
+    padding: 0px 8px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    margin-right: 4px;
+    min-width: 44px;
+    text-align: center;
+  }
+}

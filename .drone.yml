@@ -1,0 +1,111 @@
+---
+kind: pipeline
+name: automation build angular
+
+platform:
+  os: linux
+  arch: amd64
+
+concurrency:
+  limit: 1
+
+steps:
+  - name: clean cache module
+    image: node:12.13.1
+    commands:
+      - rm -rf /drone/src/node_modules/*
+      - npm install
+    volumes:
+      - name: cache_npm
+        path: /drone/src/node_modules
+    when:
+      branch:
+        - uat
+
+  - name: install
+    image: node:12.13.1
+    commands:
+      - npm install
+    volumes:
+      - name: cache_npm
+        path: /drone/src/node_modules
+    when:
+      branch:
+        - uat
+        - test
+        - staging
+
+  - name: lint
+    image: node:12.13.1
+    commands:
+      - npm run lint
+    volumes:
+      - name: cache_npm
+        path: /drone/src/node_modules
+    when:
+      branch:
+        - uat
+        - test
+        - staging
+
+  - name: build-uat
+    image: node:12.13.1
+    commands:
+      - npm run build:uat
+      - rm -rf /drone/src/dist/src-done
+      - mv /drone/src/dist/src /drone/src/dist/src-done
+    volumes:
+      - name: workspace_uat_adong
+        path: /drone/src/dist
+      - name: cache_npm
+        path: /drone/src/node_modules
+    when:
+      branch:
+        - uat
+
+  - name: build-test
+    image: node:12.13.1
+    commands:
+      - npm run build:test
+      - rm -rf /drone/src/dist/src-done
+      - mv /drone/src/dist/src /drone/src/dist/src-done
+    volumes:
+      - name: workspace_test_adong
+        path: /drone/src/dist
+      - name: cache_npm
+        path: /drone/src/node_modules
+    when:
+      branch:
+        - test
+
+  - name: build-staging
+    image: node:12.13.1
+    commands:
+      - npm run build:staging
+      - rm -rf /drone/src/dist/src-done
+      - mv /drone/src/dist/src /drone/src/dist/src-done
+    volumes:
+      - name: workspace_staging_adong
+        path: /drone/src/dist
+      - name: cache_npm
+        path: /drone/src/node_modules
+    when:
+      branch:
+        - staging
+
+volumes:
+  - name: cache_npm
+    host:
+      path: /tmp/cache_drone2
+
+  - name: workspace_uat_adong
+    host:
+      path: /projects/adong-webadmin
+
+  - name: workspace_test_adong
+    host:
+      path: /projects/adong-webadmin-test
+
+  - name: workspace_staging_adong
+    host:
+      path: /projects/adong-webadmin-staging
