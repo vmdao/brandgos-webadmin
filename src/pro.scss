@@ -579,15 +579,16 @@ menu.menu.toolbar {
   right: 0;
   justify-content: center;
   align-items: center;
+  background-color: rgb(54, 62, 72);
 }
 
 #workspace-expand {
   display: block;
-  width: 780px;
-  height: 340px;
+  width: 800px;
+  height: 400px;
   position: absolute;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 #angleWorkspace {
@@ -617,7 +618,7 @@ menu.menu.toolbar {
   position: absolute;
   z-index: 1000;
   border: 1px solid rgba(255, 255, 255, 0.67);
-  box-sizing: border-box;
+  box-sizing: content-box;
   cursor: move;
   -webkit-animation: fadeIn 0.3s ease;
   animation: fadeIn 0.3s ease;
@@ -1024,6 +1025,7 @@ menu.menu.toolbar {
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10+ and Edge */
   user-select: none; /* Standard syntax */
+  line-height: 0;
 }
 
 .element.image img {

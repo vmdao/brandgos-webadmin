@@ -1,6 +1,7 @@
 import ElementImage from '../element/ElementImage';
 import ElementText from '../element/ElementText';
 import ElementSvg from '../element/ElementSvg';
+import ElementSvgText from '../element/ElementSvgText';
 class Workspace {
   constructor(data) {
     this.width = this.height = 0;
@@ -92,6 +93,8 @@ function switchElement(data) {
       return new ElementImage(data);
     case 'text':
       return new ElementText(data);
+    case 'svgtext':
+      return new ElementSvgText(data);
     case 'svg':
       return new ElementSvg(data);
     default:
