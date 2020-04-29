@@ -752,6 +752,12 @@ export default {
           ((menuElement = createMenu('svg', dataElement)),
           element.data('menuElement', menuElement));
         menuElement.render();
+      } else if (element.hasClass('textsvg')) {
+        $('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
+        menuElement ||
+          ((menuElement = createMenu('textsvg', dataElement)),
+          element.data('menuElement', menuElement));
+        menuElement.render();
       }
 
       ghostElement.css({
@@ -767,7 +773,6 @@ export default {
 
     function createMenu(type, dataElement) {
       let menu = null;
-
       if (type === 'text') {
         menu = new Menu(
           '#designtool',
@@ -811,6 +816,27 @@ export default {
             listenerColor1: setEventChangeColor1,
             listenerColor2: setEventChangeColor2,
             listenerColor3: setEventChangeColor3,
+            listenerCopy: setEventChangeCopy,
+            listenerDelete: setEventChangeDelete,
+          },
+          dataElement
+        );
+      } else if (type === 'textsvg') {
+        menu = new Menu(
+          '#designtool',
+          'textsvg',
+          {
+            listenerFontFamily: setEventChangeFontFamily,
+            listenerFontSize: setEventChangeFontSize,
+            listenerTextAlign: setEventChangeTextAlign,
+            listenerLayer: setEventChangeLayer,
+            listenerTextSpacing: {
+              listenerLineHeight: setEventChangeLineHeight,
+              listenerLetterSpacing: setEventChangeLetterSpacing,
+            },
+            listenerTranparency: setEventChangeTransparency,
+            listenerColor1: setEventChangeColor1,
+            listenerUppercase: setEventChangeUppercase,
             listenerCopy: setEventChangeCopy,
             listenerDelete: setEventChangeDelete,
           },

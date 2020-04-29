@@ -134,8 +134,10 @@ ghost.setTransparency = function (opacity) {
 };
 
 ghost.updateTransparency = function (tranparency) {
-  this.setTransparency(tranparency);
-  this.$dom.css('opacity', tranparency);
+  const value = Math.round(tranparency);
+
+  this.setTransparency(value);
+  this.$dom.css('opacity', value);
 };
 
 ghost.updateCopy = function () {

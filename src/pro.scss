@@ -591,8 +591,8 @@ menu.menu.toolbar {
   border-radius: 6px;
 }
 
-#angleWorkspace {
-}
+// #angleWorkspace {
+// }
 
 #workspace {
   // background-color: #e4e0e0;
@@ -895,6 +895,7 @@ menu.menu.toolbar {
   position: absolute;
   transform: translate(0, -46px);
   z-index: 100;
+  box-shadow: -2px 0px 1px #000;
 }
 
 #designtool.menu--active {

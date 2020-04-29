@@ -12,7 +12,7 @@ class ElementSvgText extends ElementBase {
     this.top = data.top;
     this.left = data.left;
     this.hasCode = !0;
-    dom.addClass('svg');
+    dom.addClass('textsvg');
     this.height = data.height;
     this.width = data.width;
     this.contents = data.contents;
@@ -52,15 +52,81 @@ ghost.setColor1 = function (color) {
 
 ghost.updateColor1 = function (color) {
   this.setColor1(color);
-  this.$dom.find('fill').val(color);
+  this.$dom.find('[fill]').attr('fill', color);
+};
+
+ghost.setFontSize = function (fontSize) {
+  this.style.fontSize = fontSize;
+};
+
+ghost.setFontFamily = function (fontFamily) {
+  this.style.fontFamily = fontFamily;
+};
+
+ghost.setFontColor = function (fontColor) {
+  this.style.color = fontColor;
+};
+
+ghost.updateColor = function (color) {
+  this.setFontColor(color);
+  this.$dom.css('color', color);
+};
+
+ghost.setFontAlign = function (align) {
+  this.style.align = align;
+};
+
+ghost.updateTextAlign = function (textAlign) {
+  this.setFontAlign(textAlign);
+  this.$dom.css('text-align', this.style.align);
+};
+
+ghost.updateFontsize = function (fontSize) {
+  this.setFontSize(fontSize);
+  this.$dom.css('font-size', this.style.fontSize);
+};
+
+ghost.updateFontFamily = function (fontFamily) {
+  this.setFontFamily(fontFamily);
+  this.$dom.css('font-family', this.style.fontFamily);
+};
+
+ghost.setLineHeight = function (lineHeight) {
+  this.style.lineHeight = lineHeight;
+};
+
+ghost.updateLineHeight = function (lineHeight) {
+  this.setLineHeight(lineHeight);
+  this.$dom.css('line-height', this.style.lineHeight);
+};
+
+ghost.setLetterSpacing = function (letterSpacing) {
+  this.style.letterSpacing = letterSpacing;
+};
+
+ghost.updateLetterSpacing = function (letterSpacing) {
+  const value = Math.round(letterSpacing / 1000);
+  this.setLetterSpacing(value);
+  this.$dom.css('letter-spacing', value + 'em');
+};
+
+ghost.setUppercase = function (uppercase) {
+  this.style.uppercase = uppercase;
+};
+
+ghost.updateUppercase = function (uppercase) {
+  this.setUppercase(uppercase);
+  this.$dom.css('text-transform', uppercase ? 'uppercase' : 'none');
 };
 
 function getStringSvg(element, text) {
   const options = {
-    fontSize: 70,
+    fontSize: element.style.fontSize,
+    color: element.style.color,
+    fontFamily: element.style.fontFamily,
   };
   const style = element.style;
-  console.log(element);
+
   const fonts = [
     '/assets/UV-Akashi.ttf',
     '/assets/cantata-one-regular.otf',
@@ -68,12 +134,13 @@ function getStringSvg(element, text) {
     '/assets/UV-Agin.ttf',
   ];
   Text2svg.load(style.url, (text2svg) => {
-    const path = text2svg.toPathData(element.html, options);
+    const path = text2svg.toPath(element.html, options);
     const width = path.width;
     const height = path.height;
-    var draw = SVG().size(width, height).viewbox(0, 0, width, height);
+    var draw = SVG().size('100%', '100%').viewbox(0, 0, width, height);
 
     draw.path(path.pathData);
+    draw.fill(options.color);
     element.width = width;
     element.height = height;
     element.createDomSvg(draw.svg());
@@ -184,7 +251,6 @@ Text2svg.prototype.toPathData = function (text, options) {
     paths.forEach(function (path) {
       full.extend(path);
     });
-    console.log(full);
     result.pathData = full.toPathData();
   }
 
@@ -203,9 +269,7 @@ Text2svg.prototype.toPath = function (text, options) {
       if (!data) {
         return '';
       }
-
       var attrX = options['path' + index];
-
       return buildElement('path', mergeAttr(attr, attrX, { d: data }));
     });
   } else {
@@ -317,7 +381,6 @@ function parseAttr(attr) {
 function mergeAttr() {
   var sources = [].slice.call(arguments);
   var result = {};
-
   sources.forEach(function (attr) {
     if (attr) {
       for (var name in attr) {
@@ -327,7 +390,6 @@ function mergeAttr() {
       }
     }
   });
-
   return result;
 }
 
