@@ -18,7 +18,7 @@ class ElementSvgText extends ElementBase {
     this.contents = data.contents;
     this.style = data.style;
     this.html = data.html;
-    getStringSvg(this, 'text');
+    getStringSvg(this);
 
     this.$dom.css({
       width: this.width + 'px',
@@ -83,6 +83,7 @@ ghost.updateTextAlign = function (textAlign) {
 
 ghost.updateFontsize = function (fontSize) {
   this.setFontSize(fontSize);
+  // getStringSvg(element);
   this.$dom.css('font-size', this.style.fontSize);
 };
 
@@ -119,7 +120,7 @@ ghost.updateUppercase = function (uppercase) {
   this.$dom.css('text-transform', uppercase ? 'uppercase' : 'none');
 };
 
-function getStringSvg(element, text) {
+function getStringSvg(element) {
   const options = {
     fontSize: element.style.fontSize,
     color: element.style.color,

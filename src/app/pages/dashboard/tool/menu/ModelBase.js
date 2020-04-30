@@ -1,61 +1,49 @@
 import $ from 'jquery';
 
 export default class ModelBase {
-    constructor(where, observers = {}) {
-        this.observers = observers;
-        this.where = where;
-    }
+  constructor(where, observers = {}) {
+    this.observers = observers;
+    this.where = where;
+  }
 
-    render() {
-        $(this.where).append(this.getDom());
-    }
+  render() {
+    $(this.where).append(this.getDom());
+  }
 
-    getHTML() {
-        return this.html;
-    }
+  getHTML() {
+    return this.html;
+  }
 
-    setHTML(html) {
-        this.html = html;
-    }
+  setHTML(html) {
+    this.html = html;
+  }
 
-    getDom() {
-        return this.$dom;
-    }
+  getDom() {
+    return this.$dom;
+  }
 
-    setDom($dom) {
-        this.$dom = $dom;
-    }
+  setDom($dom) {
+    this.$dom = $dom;
+  }
 
-    setDisable() {
+  setDisable() {}
 
-    }
+  setEnable() {}
 
-    setEnable() {
+  setShow() {}
 
-    }
+  setHide() {}
 
-    setShow() {
+  setDestroy() {}
 
-    }
+  setDetach() {}
 
-    setHide() {
+  addItem(item) {
+    this.items.push(item);
+    this.insertItem(item);
+  }
 
-    }
-
-    setDestroy() {
-
-    }
-
-    setDetach() {
-
-    }
-
-    addItem(item) {
-        this.items.push(item);
-        this.insertItem(item);
-    }
-
-    insertItem(item) {
-        this.$dom.find('.toolbar__list,.menuList__inner').append(item.$dom);
-    }
+  insertItem(item) {
+    this.$dom.find('.toolbar__list,.menuList__inner').append(item.$dom);
+  }
 }
