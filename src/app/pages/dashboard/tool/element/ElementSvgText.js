@@ -41,7 +41,8 @@ class ElementSvgText extends ElementBase {
 const ghost = ElementSvgText.prototype;
 
 ghost.createDomSvg = function (data) {
-  $(data).appendTo(this.getDom());
+  this.$dom.empty();
+  $(data).appendTo(this.$dom);
   this.$dom.css({ width: this.width });
   this.$dom.css({ height: this.height });
 };
@@ -83,8 +84,8 @@ ghost.updateTextAlign = function (textAlign) {
 
 ghost.updateFontsize = function (fontSize) {
   this.setFontSize(fontSize);
-  // getStringSvg(element);
   this.$dom.css('font-size', this.style.fontSize);
+  getStringSvg(this);
 };
 
 ghost.updateFontFamily = function (fontFamily) {

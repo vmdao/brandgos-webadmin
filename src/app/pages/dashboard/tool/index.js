@@ -828,7 +828,6 @@ export default {
           {
             listenerFontFamily: setEventChangeFontFamily,
             listenerFontSize: setEventChangeFontSize,
-            listenerTextAlign: setEventChangeTextAlign,
             listenerLayer: setEventChangeLayer,
             listenerTextSpacing: {
               listenerLineHeight: setEventChangeLineHeight,

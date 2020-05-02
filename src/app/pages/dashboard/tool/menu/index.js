@@ -644,70 +644,6 @@ export default class Menu {
       this.addMenuItem(toolbarFontSize);
     }
 
-    if (typeof this.observers.listenerTextAlign === 'function') {
-      const toolbarTextAlign = new ModelButtonPad(
-        ulElem,
-        {
-          listener: (data) => {
-            this.observers.listenerTextAlign(this.dataElement, data);
-          },
-          click: this.hideSubmenu.bind(this),
-        },
-        {
-          type: 'radio',
-          code: 'textLeft',
-          name: 'Left',
-          label: 'Text Left',
-          isIcon: true,
-        }
-      );
-
-      toolbarTextAlign.addItem(
-        new ModelButton(
-          toolbarTextAlign.$dom,
-          { click: toolbarTextAlign.callObserver() },
-          {
-            type: 'radio',
-            code: 'textLeft',
-            name: 'Left',
-            isActive: !0,
-            label: 'Text Left',
-            isIcon: true,
-          }
-        )
-      );
-
-      toolbarTextAlign.addItem(
-        new ModelButton(
-          toolbarTextAlign.$dom,
-          { click: toolbarTextAlign.callObserver() },
-          {
-            type: 'radio',
-            code: 'textRight',
-            name: 'Right',
-            label: 'Text Right',
-            isIcon: true,
-          }
-        )
-      );
-
-      toolbarTextAlign.addItem(
-        new ModelButton(
-          toolbarTextAlign.$dom,
-          { click: toolbarTextAlign.callObserver() },
-          {
-            type: 'radio',
-            code: 'textCenter',
-            name: 'Center',
-            label: 'Text Center',
-            isIcon: true,
-          }
-        )
-      );
-
-      this.addMenuItem(toolbarTextAlign);
-    }
-
     if (typeof this.observers.listenerTextSpacing === 'object') {
       const toolbarTextSpacing = new ModelButtonPad(
         ulElem,
@@ -759,7 +695,7 @@ export default class Menu {
           toolbarTextSpacing.$dom,
           { slider: toolbarTextSpacing.callObserver() },
           {
-            name: 'Line height',
+            name: 'Curver',
             min: 0.5,
             max: 2.5,
             step: 0.01,
@@ -815,40 +751,6 @@ export default class Menu {
       this.addMenuItem(toolbarColor);
     }
 
-    if (typeof this.observers.listenerLayer === 'function') {
-      const toolbarLayer = new ModelButtonPad(
-        ulElem,
-        {
-          listener: (data) => {
-            this.observers.listenerLayer(this.dataElement, data);
-          },
-          click: this.hideSubmenu.bind(this),
-        },
-        {
-          type: 'radio',
-          code: 'layer',
-          name: 'Layer',
-          label: 'Layer',
-          isIcon: false,
-        }
-      );
-      toolbarLayer.addItem(
-        new ModelButton(
-          toolbarLayer.$dom,
-          { click: toolbarLayer.callObserver() },
-          { code: 'forward', name: 'Forward', label: 'Forward', isIcon: true }
-        )
-      );
-      toolbarLayer.addItem(
-        new ModelButton(
-          toolbarLayer.$dom,
-          { click: toolbarLayer.callObserver() },
-          { code: 'back', name: 'Back', label: 'Back', isIcon: true }
-        )
-      );
-      this.addMenuItem(toolbarLayer);
-    }
-
     if (typeof this.observers.listenerTranparency === 'function') {
       const toolbarTranparency = new ModelButtonPad(
         ulElem,
@@ -881,6 +783,40 @@ export default class Menu {
       );
 
       this.addMenuItem(toolbarTranparency);
+    }
+
+    if (typeof this.observers.listenerLayer === 'function') {
+      const toolbarLayer = new ModelButtonPad(
+        ulElem,
+        {
+          listener: (data) => {
+            this.observers.listenerLayer(this.dataElement, data);
+          },
+          click: this.hideSubmenu.bind(this),
+        },
+        {
+          type: 'radio',
+          code: 'layer',
+          name: 'Layer',
+          label: 'Layer',
+          isIcon: false,
+        }
+      );
+      toolbarLayer.addItem(
+        new ModelButton(
+          toolbarLayer.$dom,
+          { click: toolbarLayer.callObserver() },
+          { code: 'forward', name: 'Forward', label: 'Forward', isIcon: true }
+        )
+      );
+      toolbarLayer.addItem(
+        new ModelButton(
+          toolbarLayer.$dom,
+          { click: toolbarLayer.callObserver() },
+          { code: 'back', name: 'Back', label: 'Back', isIcon: true }
+        )
+      );
+      this.addMenuItem(toolbarLayer);
     }
 
     if (typeof this.observers.listenerCopy === 'function') {
