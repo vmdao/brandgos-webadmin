@@ -695,7 +695,7 @@ export default class Menu {
           toolbarTextSpacing.$dom,
           { slider: toolbarTextSpacing.callObserver() },
           {
-            name: 'Curver',
+            name: 'Curve',
             min: 0.5,
             max: 2.5,
             step: 0.01,

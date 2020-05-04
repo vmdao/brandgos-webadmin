@@ -1,5 +1,5 @@
-import { Command } from './base.command';
-import { BaseElement } from '../../elements/base.element';
+import { Command } from './base.interface';
+import { BaseElement } from '../../elements/base.abstract';
 
 export class FontsizeCommand implements Command {
   element: BaseElement;
@@ -8,6 +8,6 @@ export class FontsizeCommand implements Command {
   }
 
   execute(value: any) {
-    this.element.performChangeFontsize(value);
+    this.element.text.performFontsize(value);
   }
 }

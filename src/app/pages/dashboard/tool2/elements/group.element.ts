@@ -1,24 +1,34 @@
 import * as jQuery from 'jquery';
-import { FontsizeBehavior } from './interfaces/fontsize.interface';
-import { FontsizeNothingBehavior } from './behaviors/fontsize-nothing.behavior';
+
 import { MoveBehavior } from './interfaces/move.interface';
 import { RotateBehavior } from './interfaces/rotate.interface';
+import { TextChild } from './text.child';
+import { SvgChild } from './svg.child';
+
 export abstract class BaseElement {
   $dom: any;
   elementId: number;
   elementCode: string;
+  elementType: string;
+
   top: number;
   left: number;
+
   widht: number;
   height: number;
-  rotate: number;
+
+  angle: number;
+
   opactiy: number;
-  selected = false;
   order: number;
   scale = 1;
-  fontsize: number;
+  background = false;
 
-  fontsizeBehavior: FontsizeBehavior;
+  selected = false;
+
+  text: TextChild;
+  svg: SvgChild;
+
   moveBehavior: MoveBehavior;
   rotateBehavior: RotateBehavior;
 
@@ -29,13 +39,11 @@ export abstract class BaseElement {
     this.left = options.left;
     this.widht = options.widht;
     this.height = options.height;
-    this.rotate = options.rotate;
+    this.angle = options.rotate;
     this.opactiy = options.opactiy;
 
     this.$dom = jQuery(`<div></div>`);
     this.$dom.addClass('element');
-
-    this.setFontsizeBehavior(new FontsizeNothingBehavior(this));
   }
 
   elementAppendTo(parent) {
@@ -50,15 +58,15 @@ export abstract class BaseElement {
     this.$dom.empty();
   }
 
-  setRotate(rotate) {
-    this.rotate = rotate;
+  setRotate(value: number) {
+    this.angle = value;
   }
 
   getRotate() {
-    return this.rotate;
+    return this.angle;
   }
 
-  setLeft(left) {
+  setLeft(left: number) {
     this.left = left;
   }
 
@@ -66,7 +74,7 @@ export abstract class BaseElement {
     return this.left;
   }
 
-  setTop(top) {
+  setTop(top: number) {
     this.top = top;
   }
 
@@ -81,7 +89,7 @@ export abstract class BaseElement {
     };
   }
 
-  setWidht(widht) {
+  setWidht(widht: number) {
     this.widht = widht;
   }
 
@@ -89,7 +97,7 @@ export abstract class BaseElement {
     return this.widht;
   }
 
-  setHeight(height) {
+  setHeight(height: number) {
     this.height = height;
   }
 
@@ -113,12 +121,12 @@ export abstract class BaseElement {
     };
   }
 
-  setFontsizeBehavior(fontsizeBehavior: FontsizeBehavior) {
-    this.fontsizeBehavior = fontsizeBehavior;
+  setText(text: TextChild) {
+    this.text = text;
   }
 
-  performChangeFontsize(fontsize: number) {
-    this.fontsizeBehavior.changeFontsize(fontsize);
+  setSvg(svg: SvgChild) {
+    this.svg = svg;
   }
 
   performRotate(angle: number) {
@@ -127,5 +135,13 @@ export abstract class BaseElement {
 
   performMove(position: { top: number; left: number }) {
     this.moveBehavior.changePosition(position);
+  }
+
+  setMoveBehavior(moveBehavior: MoveBehavior) {
+    this.moveBehavior = moveBehavior;
+  }
+
+  setRotateBehavior(rotateBehavior: RotateBehavior) {
+    this.rotateBehavior = rotateBehavior;
   }
 }

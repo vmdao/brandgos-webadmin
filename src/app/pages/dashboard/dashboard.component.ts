@@ -1,5 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import tool from './tool/index.js';
+import { Workspace } from './tool2';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,6 +11,8 @@ export class DashboardComponent implements OnInit {
   constructor(private zone: NgZone) {}
 
   ngOnInit() {
+    const w = new Workspace({ width: 600, height: 360 });
+    w.render('#areaWorkspace');
     this.zone.runOutsideAngular(() => {
       tool.init();
     });
