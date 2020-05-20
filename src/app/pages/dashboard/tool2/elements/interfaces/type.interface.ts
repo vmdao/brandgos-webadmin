@@ -4,7 +4,7 @@ export interface TypeBehavior {
   changeTextAlign(value: string);
   changeColor(value: string);
   changeLetterSpacing(value: number);
-  changeFontfamily(value: number);
   changeCurve(value: number);
   changeContent(value: string);
+  changeFontfamily(value: string);
 }

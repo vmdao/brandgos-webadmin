@@ -11,4 +11,6 @@ export class TypeTextBehavior implements TypeBehavior {
   changeColor(value: string) {}
   changeLetterSpacing(value: number) {}
   changeContent(value: string) {}
+  changeFontfamily(value: string) {}
+  changeCurve(value: number) {}
 }

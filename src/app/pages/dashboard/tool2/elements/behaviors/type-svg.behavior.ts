@@ -11,7 +11,7 @@ export class TypeSvgBehavior implements TypeBehavior {
   changeTextAlign(value: string) {}
   changeColor(value: string) {}
   changeLetterSpacing(value: number) {}
-  changeFontfamily(value: number) {}
+  changeFontfamily(value: string) {}
   changeCurve(value: number) {}
   changeContent(value: string) {}
 }

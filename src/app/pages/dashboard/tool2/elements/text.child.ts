@@ -70,7 +70,7 @@ export class TextChild {
     this.typeBehavior.changeLetterSpacing(value);
   }
 
-  performFontFamily(value: number) {
+  performFontFamily(value: string) {
     this.typeBehavior.changeFontfamily(value);
   }
 
