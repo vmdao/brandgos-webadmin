@@ -11,9 +11,9 @@ export class DashboardComponent implements OnInit {
   constructor(private zone: NgZone) {}
 
   ngOnInit() {
-    const w = new Workspace({ width: 600, height: 360 });
-    w.render('#areaWorkspace');
     this.zone.runOutsideAngular(() => {
+      const w = new Workspace({ width: 600, height: 360 });
+      w.render('#areaWorkspace');
       tool.init();
     });
   }

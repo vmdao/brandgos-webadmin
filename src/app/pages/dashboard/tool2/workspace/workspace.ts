@@ -33,6 +33,7 @@ export class Workspace {
     this.$dom = jQuery(`<div class="elements"></div>`);
     this.$dom.appendTo(this.$domWrapper);
     this.$domWrapper.appendTo(selector);
+    // this.event();
   }
 
   renderSize() {
@@ -51,8 +52,11 @@ export class Workspace {
     this.$dom.append(element.$dom);
   }
 
+  buildMenu(){
+    const items = [{type:'button', options: {}}]
+  }
   event() {
-    new EventElement('#workspace')
+    new EventElement('#zone-left')
       .on('mousedown', '.element:not(.focused)', elementMouseDown)
       .on('touchstart', '.element:not(.focused)', elementMouseDown);
   }
@@ -99,10 +103,11 @@ function elementMouseDown(eventMousedown) {
     eventDocument
       .off('mousemove|touchmove', setEventMouseMove)
       .off('mouseup|touchend', setEventMouseUp);
+
     if (currentLeft === mouseX && mouseY === currentTop) {
       if (!dataElement.getSelected()) {
         createSelectedElement(elementSelect);
-        dataElement.setSelected(!0);
+        dataElement.setSelected(true);
       }
     } else {
       dataElement.setPosition(currentLeft, currentTop);
@@ -157,9 +162,9 @@ function elementMouseDown(eventMousedown) {
     checkElementSelected(eventMousedown);
   }
 
-  // eventDocument
-  //   .on('mousemove|touchmove', setEventMouseMove)
-  //   .on('mouseup|touchend', setEventMouseUp);
+  eventDocument
+    .on('mousemove|touchmove', setEventMouseMove)
+    .on('mouseup|touchend', setEventMouseUp);
   return !1;
 }
 
@@ -210,7 +215,6 @@ function createSelectedElement(element) {
   if (dataElement.selected) {
     return;
   }
-
   element.addClass('selected');
 
   if (!ghostElement) {
@@ -218,13 +222,12 @@ function createSelectedElement(element) {
       // tslint:disable-next-line: max-line-length
       `<div class="selectedBound handleCircle"><div class="ghostElement"></div><a class="cube tl"></a><a class="cube t"></a><a class="cube tr"></a><a class="cube r"></a><a class="cube br"></a><a class="cube b"></a><a class="cube bl"></a><a class="cube l"></a><a class="rotate" title="Rotate"></a></div>`
     );
+    element.data('ghostElement', ghostElement);
   }
 
-  element.data('ghostElement', ghostElement);
   if (element.hasClass('text')) {
     ghostElement.addClass('text');
   }
-
   ghostElement.data('element', element).appendTo(angleWorkspace);
 
   if (element.hasClass('text')) {

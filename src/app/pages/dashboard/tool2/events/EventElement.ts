@@ -21,7 +21,7 @@ export class EventElement {
     };
   }
 
-  on(events, selector, callback) {
+  on(events, selector?: any, callback?: any) {
     let seftSelector;
     'function' === typeof callback
       ? ((seftSelector = selector), (selector = callback))
