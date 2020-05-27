@@ -52,8 +52,8 @@ export class Workspace {
     this.$dom.append(element.$dom);
   }
 
-  buildMenu(){
-    const items = [{type:'button', options: {}}]
+  buildMenu() {
+    const items = [{ type: 'button', options: {} }];
   }
   event() {
     new EventElement('#zone-left')
