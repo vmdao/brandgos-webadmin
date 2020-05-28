@@ -1,7 +1,21 @@
 import { BaseMenu } from '../basebar/menu.abstract';
 import { BaseElement } from '../../elements/base.abstract';
-import { BaseMenuItemUI } from '../basebar/ui.asbtract';
 import { ButtonUI } from './ui/button.ui';
+
+export interface DataMenuItem {
+  type: string;
+  options: {
+    icon: string;
+    children: Array<DataMenuItemChild>;
+  };
+}
+
+export interface DataMenuItemChild {
+  type: string;
+  options: {
+    icon: string;
+  };
+}
 
 export class ToolbarMenu extends BaseMenu {
   htmlWraper = `<menu class="menu toolbar"><ul class="toolbar__list"></ul></menu>`;
@@ -13,36 +27,31 @@ export class ToolbarMenu extends BaseMenu {
     super(options);
   }
 
-  builderMenu(
-    items: Array<{
-      type: string;
-      options: {
-        icon: string;
-        children: [{ type: string; options: { icon: string } }];
-      };
-    }>
-  ) {
+  builderMenu(items: Array<DataMenuItem>) {
     items.forEach((item) => {
       const menuItemUI = this.factoryMenuItem(item);
       this.renderItem(menuItemUI);
     });
   }
 
-  factoryMenuItem(item: {
-    type: string;
-    options: {
-      icon: string;
-      children: [{ type: string; options: { icon: string } }];
-    };
-  }) {
+  factoryMenuItem(item: DataMenuItem) {
     switch (item.type) {
       case 'button': {
         const options = { ...item.options, children: [] };
         if (item.options && Array.isArray(item.options.children)) {
           options.children = item.options.children.map((c) => {
-            return this.factoryMenuItem(c);
+            return this.factoryMenuItemChild(c);
           });
         }
+        return new ButtonUI(options);
+      }
+    }
+  }
+
+  factoryMenuItemChild(item: DataMenuItemChild) {
+    switch (item.type) {
+      case 'button': {
+        const options = { ...item.options, children: [] };
         return new ButtonUI(options);
       }
     }

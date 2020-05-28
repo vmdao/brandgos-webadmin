@@ -25,6 +25,6 @@ export class SvgChild {
     this.originThumb = options.originThumb;
 
     this.$dom = jQuery(`<div></div>`);
-    this.$dom.addClass('element');
+    this.$dom.addClass('element-inner');
   }
 }

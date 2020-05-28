@@ -2,6 +2,9 @@ import { Component, NgZone, OnInit } from '@angular/core';
 import tool from './tool/index.js';
 import { Workspace } from './tool2';
 
+import * as mock from './tool/mock/index.js';
+const { localStorages } = mock.default;
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -12,9 +15,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
-      const w = new Workspace({ width: 600, height: 360 });
+      const w = new Workspace(localStorages);
       w.render('#areaWorkspace');
-      tool.init();
+      w.createElements(localStorages.elements);
+      // tool.init();
     });
   }
 }

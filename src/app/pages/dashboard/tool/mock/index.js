@@ -133,6 +133,7 @@ export default {
   localStorages: {
     first: 1,
     code: 'u34Nj60EHOS',
+    documentId: 'u34Nj60EHOS',
     name: 'Chrismast',
     active: 1,
     versionIndex: 1,
@@ -140,7 +141,6 @@ export default {
     height: 360,
     elements: [
       {
-        type: 'UplevoImage',
         typeElement: 'svgtext',
         userEdited: true,
         elementIndex: 5,
@@ -153,6 +153,7 @@ export default {
         html: 'Uplevo',
         style: {
           fontSize: 40,
+          curve: 0,
           lineHeight: 1.4,
           fontFamily: 'Helvetica',
           textAlign: 'left',
@@ -162,7 +163,6 @@ export default {
         },
       },
       {
-        type: 'UplevoImage',
         typeElement: 'svgtext',
         userEdited: true,
         elementIndex: 5,
@@ -175,6 +175,7 @@ export default {
         html: 'AstonVilla',
         style: {
           fontSize: 40,
+          curve: 0,
           lineHeight: 1.4,
           fontFamily: 'Helvetica',
           textAlign: 'left',
@@ -196,6 +197,7 @@ export default {
         left: 250,
         html: 'Mandiga',
         style: {
+          curve: 0,
           fontSize: 40,
           lineHeight: 1.4,
           fontFamily: 'Helvetica',
@@ -206,7 +208,6 @@ export default {
         },
       },
       {
-        type: 'UplevoImage',
         typeElement: 'svgtext',
         userEdited: true,
         elementIndex: 5,
@@ -218,6 +219,7 @@ export default {
         left: 250,
         html: 'MAM',
         style: {
+          curve: 0,
           fontSize: 40,
           lineHeight: 1.4,
           fontFamily: 'Helvetica',

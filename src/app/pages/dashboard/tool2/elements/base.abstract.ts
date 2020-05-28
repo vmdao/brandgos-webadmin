@@ -14,7 +14,7 @@ export abstract class BaseElement {
   top: number;
   left: number;
 
-  widht: number;
+  width: number;
   height: number;
 
   angle: number;
@@ -38,7 +38,7 @@ export abstract class BaseElement {
 
     this.top = options.top;
     this.left = options.left;
-    this.widht = options.widht;
+    this.width = options.width;
     this.height = options.height;
     this.angle = options.angle;
     this.scale = options.scale;
@@ -47,6 +47,15 @@ export abstract class BaseElement {
 
     this.$dom = jQuery(`<div></div>`);
     this.$dom.addClass('element');
+    this.updateStyle({
+      top: this.top,
+      left: this.left,
+      width: this.width,
+      height: this.height,
+      angle: this.angle,
+      scale: this.scale,
+      translate: this.transparent,
+    });
   }
 
   elementAppendTo(parent) {
@@ -92,12 +101,12 @@ export abstract class BaseElement {
     };
   }
 
-  setWidht(widht: number) {
-    this.widht = widht;
+  setWidth(width: number) {
+    this.width = width;
   }
 
   getWidth() {
-    return this.widht;
+    return this.width;
   }
 
   setHeight(height: number) {
@@ -111,14 +120,14 @@ export abstract class BaseElement {
   getSize() {
     return {
       height: this.getHeight(),
-      widht: this.getWidth(),
+      width: this.getWidth(),
     };
   }
 
   getBox() {
     return {
       height: this.getHeight(),
-      widht: this.getWidth(),
+      width: this.getWidth(),
       left: this.getLeft(),
       top: this.getTop(),
     };
@@ -203,7 +212,7 @@ export abstract class BaseElement {
   updateStyle(values) {
     const styles = {
       ...{
-        widht: this.widht,
+        width: this.width,
         height: this.height,
         top: this.top,
         lef: this.left,

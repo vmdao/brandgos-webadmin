@@ -146,7 +146,6 @@ export default {
       }
 
       function setEventMouseUp(event) {
-        console.log(1234);
         eventDocument
           .off('mousemove|touchmove', setEventMouseMove)
           .off('mouseup|touchend', setEventMouseUp);

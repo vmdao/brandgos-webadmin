@@ -2,6 +2,9 @@ import { BaseElement } from '../elements/base.abstract';
 import * as jQuery from 'jquery';
 import { EventElement } from '../events/EventElement';
 import * as _ from 'lodash';
+import { ToolbarMenu } from '../toolkit/toolbar/menu';
+import { TextSvgElement, SvgElement, TextElement } from '../elements';
+
 export class Workspace {
   $dom: any;
   $domWrapper: any;
@@ -33,249 +36,368 @@ export class Workspace {
     this.$dom = jQuery(`<div class="elements"></div>`);
     this.$dom.appendTo(this.$domWrapper);
     this.$domWrapper.appendTo(selector);
-    // this.event();
+    this.event();
   }
 
   renderSize() {
     this.$dom.css({ width: this.width, height: this.height });
   }
 
-  renderElements() {
-    this.$dom.css({ width: this.width, height: this.height });
+  createElements(dataElements) {
+    dataElements.forEach((dataElement) => {
+      this.createElement(dataElement);
+    });
+  }
+
+  createElement = function (dataElement) {
+    const element = this.factoryCreateElement(dataElement);
+    this.addElement(element);
+  };
+
+  factoryCreateElement(dataElement) {
+    switch (dataElement.typeElement) {
+      case 'image':
+        return new TextSvgElement(dataElement);
+      case 'text':
+        return new TextElement(dataElement);
+      case 'svgtext':
+        return new TextSvgElement(dataElement);
+      case 'svg':
+        return new SvgElement(dataElement);
+    }
   }
 
   addElement(element: BaseElement) {
     this.elements = this.elements.concat([element]);
+    this.renderElement(element);
   }
 
   renderElement(element: BaseElement) {
     this.$dom.append(element.$dom);
   }
 
-  buildMenu() {
-    const items = [{ type: 'button', options: {} }];
+  buildMenu(element: BaseElement) {
+    const items = [
+      {
+        type: 'button',
+        options: {
+          icon: '',
+          children: [{ type: 'button', options: { icon: '' } }],
+        },
+      },
+    ];
+
+    const options = { where: '', type: 'toobar', dataElement: element };
+    const menu = new ToolbarMenu(options);
+    menu.builderMenu(items);
+
+    return menu;
   }
+
   event() {
     new EventElement('#zone-left')
-      .on('mousedown', '.element:not(.focused)', elementMouseDown)
-      .on('touchstart', '.element:not(.focused)', elementMouseDown);
+      .on(
+        'mousedown',
+        '.element:not(.focused)',
+        this.elementMouseDown.bind(this)
+      )
+      .on(
+        'touchstart',
+        '.element:not(.focused)',
+        this.elementMouseDown.bind(this)
+      );
   }
-}
 
-function elementMouseDown(eventMousedown) {
-  const eventDocument = new EventElement(jQuery(document));
+  elementMouseDown(eventMousedown) {
+    const eventDocument = new EventElement(jQuery(document));
+    if (3 === eventMousedown.which || eventMousedown.ctrlKey) {
+      return true;
+    }
 
-  function setEventMouseMove(event) {
-    let deltaX = 0;
-    let deltaY = 0;
+    const eventTarget = jQuery(eventMousedown.currentTarget);
+    // isParentGroup = eventTarget.parents(".group"),
+    // isElement = eventTarget.is(".element"),
+    // isGroup = eventTarget.is(".group"),
+    const isText = eventTarget.is('.text');
 
-    mouseX =
-      void 0 !== event.clientX
-        ? event.clientX
-        : event.originalEvent.touches[0].clientX;
-    mouseY =
-      void 0 !== event.clientY
-        ? event.clientY
-        : event.originalEvent.touches[0].clientY;
+    const elementSelect = isText
+      ? eventTarget.closest('.element')
+      : jQuery(this);
 
-    deltaX = mouseX - mouseStartX;
-    deltaY = mouseY - mouseStartY;
+    const ghostElement = jQuery(eventMousedown.currentTarget).hasClass(
+      'selectedBound'
+    )
+      ? jQuery(eventMousedown.currentTarget)
+      : !1;
 
-    currentLeft = startX + deltaX;
-    currentTop = startY + deltaY;
+    const dataElement = elementSelect.data('dataElement');
 
-    if (dataElement.getSelected() && ghostElement) {
-      ghostElement.css(
+    const menuElement = dataElement.getDom().data('menuElement');
+    // bounding = elementSelect.get(0).getBoundingClientRect(),
+    const startX = dataElement.getLeft();
+    const startY = dataElement.getTop();
+    const mouseStartX =
+      void 0 !== eventMousedown.clientX
+        ? eventMousedown.clientX
+        : eventMousedown.originalEvent.touches[0].clientX;
+    const mouseStartY =
+      void 0 !== eventMousedown.clientY
+        ? eventMousedown.clientY
+        : eventMousedown.originalEvent.touches[0].clientY;
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let currentTop = 0;
+    let currentLeft = 0;
+    const rotateStart = dataElement.getRotate();
+
+    elementSelect.data('startX', startX);
+    elementSelect.data('startY', startY);
+
+    if (menuElement) {
+      menuElement.hideSubmenu();
+    }
+
+    if (!dataElement.getSelected()) {
+      this.checkElementSelected(eventMousedown);
+    }
+
+    eventDocument
+      .on('mousemove|touchmove', setEventMouseMove)
+      .on('mouseup|touchend', setEventMouseUp);
+
+    function setEventMouseMove(event) {
+      let deltaX = 0;
+      let deltaY = 0;
+
+      mouseX =
+        void 0 !== event.clientX
+          ? event.clientX
+          : event.originalEvent.touches[0].clientX;
+      mouseY =
+        void 0 !== event.clientY
+          ? event.clientY
+          : event.originalEvent.touches[0].clientY;
+
+      deltaX = mouseX - mouseStartX;
+      deltaY = mouseY - mouseStartY;
+
+      currentLeft = startX + deltaX;
+      currentTop = startY + deltaY;
+
+      if (dataElement.getSelected() && ghostElement) {
+        ghostElement.css(
+          'transform',
+          getStringTranform(currentLeft, currentTop, rotateStart)
+        );
+      }
+
+      elementSelect.css(
         'transform',
         getStringTranform(currentLeft, currentTop, rotateStart)
       );
+
+      return !1;
     }
 
-    elementSelect.css(
-      'transform',
-      getStringTranform(currentLeft, currentTop, rotateStart)
-    );
+    function setEventMouseUp(event) {
+      eventDocument
+        .off('mousemove|touchmove', setEventMouseMove.bind(this))
+        .off('mouseup|touchend', setEventMouseUp.bind(this));
 
+      if (currentLeft === mouseX && mouseY === currentTop) {
+        if (!dataElement.getSelected()) {
+          this.createSelectedElement(elementSelect);
+          dataElement.setSelected(true);
+        }
+      } else {
+        dataElement.setPosition(currentLeft, currentTop);
+      }
+    }
     return !1;
   }
 
-  function setEventMouseUp(event) {
-    eventDocument
-      .off('mousemove|touchmove', setEventMouseMove)
-      .off('mouseup|touchend', setEventMouseUp);
+  checkElementSelected(event) {
+    // if (unSelected(event) && workspaceModel) {
+    //   workspaceModel.getElements().forEach(removeElementSelected);
+    // }
+  }
 
-    if (currentLeft === mouseX && mouseY === currentTop) {
-      if (!dataElement.getSelected()) {
-        createSelectedElement(elementSelect);
-        dataElement.setSelected(true);
+  createSelectedElement(element) {
+    let ghostElement = element.data('ghostElement');
+    let menuElement = element.data('menuElement');
+    const dataElement = element.data('dataElement');
+    const angleWorkspace = jQuery('#angleWorkspace');
+    if (dataElement.selected) {
+      return;
+    }
+    element.addClass('selected');
+
+    if (!ghostElement) {
+      ghostElement = jQuery(
+        // tslint:disable-next-line: max-line-length
+        `<div class="selectedBound handleCircle"><div class="ghostElement"></div><a class="cube tl"></a><a class="cube t"></a><a class="cube tr"></a><a class="cube r"></a><a class="cube br"></a><a class="cube b"></a><a class="cube bl"></a><a class="cube l"></a><a class="rotate" title="Rotate"></a></div>`
+      );
+      element.data('ghostElement', ghostElement);
+    }
+
+    if (element.hasClass('text')) {
+      ghostElement.addClass('text');
+    }
+
+    ghostElement.data('element', element).appendTo(angleWorkspace);
+
+    if (element.hasClass('text')) {
+      jQuery('.cube.tl, .cube.t, .cube.tr, .cube.bl, .cube.b, .cube.br').css(
+        'display',
+        'none'
+      );
+
+      element.addClass('selected focused');
+      element.children('.inner').attr('contenteditable', 'true');
+      element.on('paste', onPaste);
+      element.appendTo(angleWorkspace);
+
+      if (!menuElement) {
+        menuElement = this.createMenu('text', dataElement);
       }
-    } else {
-      dataElement.setPosition(currentLeft, currentTop);
-    }
-  }
 
-  if (3 === eventMousedown.which || eventMousedown.ctrlKey) {
-    return !0;
-  }
-
-  const eventTarget = jQuery(eventMousedown.target);
-  // isParentGroup = eventTarget.parents(".group"),
-  // isElement = eventTarget.is(".element"),
-  // isGroup = eventTarget.is(".group"),
-  const isText = eventTarget.is('.text');
-
-  const elementSelect = isText ? eventTarget.closest('.element') : jQuery(this);
-  const ghostElement = jQuery(eventMousedown.currentTarget).hasClass(
-    'selectedBound'
-  )
-    ? jQuery(eventMousedown.currentTarget)
-    : !1;
-
-  const dataElement = elementSelect.data('dataElement');
-
-  const menuElement = dataElement.getDom().data('menuElement');
-  // bounding = elementSelect.get(0).getBoundingClientRect(),
-  const startX = dataElement.getLeft();
-  const startY = dataElement.getTop();
-  const mouseStartX =
-    void 0 !== eventMousedown.clientX
-      ? eventMousedown.clientX
-      : eventMousedown.originalEvent.touches[0].clientX;
-  const mouseStartY =
-    void 0 !== eventMousedown.clientY
-      ? eventMousedown.clientY
-      : eventMousedown.originalEvent.touches[0].clientY;
-
-  let mouseX = 0;
-  let mouseY = 0;
-  let currentTop = 0;
-  let currentLeft = 0;
-  const rotateStart = dataElement.getRotate();
-
-  elementSelect.data('startX', startX);
-  elementSelect.data('startY', startY);
-  if (menuElement) {
-    menuElement.hideSubmenu();
-  }
-
-  if (!dataElement.getSelected()) {
-    checkElementSelected(eventMousedown);
-  }
-
-  eventDocument
-    .on('mousemove|touchmove', setEventMouseMove)
-    .on('mouseup|touchend', setEventMouseUp);
-  return !1;
-}
-
-function checkElementSelected(event) {
-  // if (unSelected(event) && workspaceModel) {
-  //   workspaceModel.getElements().forEach(removeElementSelected);
-  // }
-}
-
-function unSelected(event) {
-  return (
-    event.currentTarget.id !== 'zone-left' ||
-    (event.currentTarget.id === 'zone-left' &&
-      (event.target.id === 'areaWorkspace' ||
-        event.target.id === 'elements' ||
-        event.target.id === 'zone-left'))
-  );
-}
-
-function removeElementSelected(element) {
-  if (element.getDom().hasClass('selected')) {
-    const menuElement = element.getDom().data('menuElement');
-    element.setSelected(!1);
-    element.getDom().removeClass('selected');
-    if (element.getDom().hasClass('text')) {
-      element.getDom().removeClass('focused');
-      element.getDom().insertAfter(jQuery('.element:eq(3)'));
-      element.getDom().children('.inner').attr('contenteditable', false);
-    }
-    element.remove();
-    if (menuElement.$dom) {
-      menuElement.detach();
-    }
-  }
-}
-
-const getStringTranform = (left, top, rotate) => {
-  return (
-    'translate3d(' + left + 'px,' + top + 'px, 0)rotateZ(' + rotate + 'deg)'
-  );
-};
-
-function createSelectedElement(element) {
-  let ghostElement = element.data('ghostElement');
-  let menuElement = element.data('menuElement');
-  const dataElement = element.data('dataElement');
-  const angleWorkspace = jQuery('#angleWorkspace');
-  if (dataElement.selected) {
-    return;
-  }
-  element.addClass('selected');
-
-  if (!ghostElement) {
-    ghostElement = jQuery(
-      // tslint:disable-next-line: max-line-length
-      `<div class="selectedBound handleCircle"><div class="ghostElement"></div><a class="cube tl"></a><a class="cube t"></a><a class="cube tr"></a><a class="cube r"></a><a class="cube br"></a><a class="cube b"></a><a class="cube bl"></a><a class="cube l"></a><a class="rotate" title="Rotate"></a></div>`
-    );
-    element.data('ghostElement', ghostElement);
-  }
-
-  if (element.hasClass('text')) {
-    ghostElement.addClass('text');
-  }
-  ghostElement.data('element', element).appendTo(angleWorkspace);
-
-  if (element.hasClass('text')) {
-    jQuery('.cube.tl, .cube.t, .cube.tr, .cube.bl, .cube.b, .cube.br').css(
-      'display',
-      'none'
-    );
-
-    element.addClass('selected focused');
-    element.children('.inner').attr('contenteditable', 'true');
-    element.on('paste', onPaste);
-    element.appendTo(angleWorkspace);
-    if (!menuElement) {
-      menuElement = createMenu('text', dataElement);
+      element.data('menuElement', menuElement);
+    } else if (element.hasClass('image')) {
+      jQuery('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
+      if (!menuElement) {
+        menuElement = this.createMenu('image', dataElement);
+      }
+    } else if (element.hasClass('svg')) {
+      jQuery('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
+      if (!menuElement) {
+        menuElement = this.createMenu('svg', dataElement);
+      }
+    } else if (element.hasClass('textsvg')) {
+      jQuery('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
+      if (!menuElement) {
+        menuElement = this.createMenu('textsvg', dataElement);
+      }
     }
 
     element.data('menuElement', menuElement);
-  } else if (element.hasClass('image')) {
-    jQuery('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
-    if (!menuElement) {
-      menuElement = createMenu('image', dataElement);
-    }
-  } else if (element.hasClass('svg')) {
-    jQuery('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
-    if (!menuElement) {
-      menuElement = createMenu('svg', dataElement);
-    }
-  } else if (element.hasClass('textsvg')) {
-    jQuery('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
-    if (!menuElement) {
-      menuElement = createMenu('textsvg', dataElement);
-    }
+    menuElement.render();
+
+    ghostElement.css({
+      width: dataElement.getWidth(),
+      height: dataElement.getHeight(),
+      transform: getStringTranform(
+        dataElement.getLeft(),
+        dataElement.getTop(),
+        dataElement.getRotate()
+      ),
+    });
   }
 
-  element.data('menuElement', menuElement);
-  menuElement.render();
+  createMenu(type, dataElement) {
+    return this.buildMenu(dataElement);
+    // let menu = null;
+    // if (type === 'text') {
+    //   menu = new Menu(
+    //     '#designtool',
+    //     'text',
+    //     {
+    //       listenerFontFamily: setEventChangeFontFamily,
+    //       listenerFontSize: setEventChangeFontSize,
+    //       listenerTextAlign: setEventChangeTextAlign,
+    //       listenerLayer: setEventChangeLayer,
+    //       listenerTextSpacing: {
+    //         listenerLineHeight: setEventChangeLineHeight,
+    //         listenerLetterSpacing: setEventChangeLetterSpacing,
+    //       },
+    //       listenerTranparency: setEventChangeTransparency,
+    //       listenerColor1: setEventChangeFontColor,
+    //       listenerUppercase: setEventChangeUppercase,
+    //       listenerCopy: setEventChangeCopy,
+    //       listenerDelete: setEventChangeDelete,
+    //     },
+    //     dataElement
+    //   );
+    // } else if (type === 'image') {
+    //   menu = new Menu(
+    //     '#designtool',
+    //     'image',
+    //     {
+    //       listenerLayer: setEventChangeLayer,
+    //       listenerTranparency: setEventChangeTransparency,
+    //       listenerCopy: setEventChangeCopy,
+    //       listenerDelete: setEventChangeDelete,
+    //     },
+    //     dataElement
+    //   );
+    // } else if (type === 'svg') {
+    //   menu = new Menu(
+    //     '#designtool',
+    //     'svg',
+    //     {
+    //       listenerLayer: setEventChangeLayer,
+    //       listenerTranparency: setEventChangeTransparency,
+    //       listenerColor1: setEventChangeColor1,
+    //       listenerColor2: setEventChangeColor2,
+    //       listenerColor3: setEventChangeColor3,
+    //       listenerCopy: setEventChangeCopy,
+    //       listenerDelete: setEventChangeDelete,
+    //     },
+    //     dataElement
+    //   );
+    // } else if (type === 'textsvg') {
+    //   menu = new Menu(
+    //     '#designtool',
+    //     'textsvg',
+    //     {
+    //       listenerFontFamily: setEventChangeFontFamily,
+    //       listenerFontSize: setEventChangeFontSize,
+    //       listenerLayer: setEventChangeLayer,
+    //       listenerTextSpacing: {
+    //         listenerLineHeight: setEventChangeLineHeight,
+    //         listenerLetterSpacing: setEventChangeLetterSpacing,
+    //       },
+    //       listenerTranparency: setEventChangeTransparency,
+    //       listenerColor1: setEventChangeColor1,
+    //       listenerUppercase: setEventChangeUppercase,
+    //       listenerCopy: setEventChangeCopy,
+    //       listenerDelete: setEventChangeDelete,
+    //     },
+    //     dataElement
+    //   );
+    // }
+    // return menu;
+  }
 
-  ghostElement.css({
-    width: dataElement.getWidth(),
-    height: dataElement.getHeight(),
-    transform: getStringTranform(
-      dataElement.getLeft(),
-      dataElement.getTop(),
-      dataElement.getRotate()
-    ),
-  });
+  unSelected(event) {
+    return (
+      event.currentTarget.id !== 'zone-left' ||
+      (event.currentTarget.id === 'zone-left' &&
+        (event.target.id === 'areaWorkspace' ||
+          event.target.id === 'elements' ||
+          event.target.id === 'zone-left'))
+    );
+  }
+
+  removeElementSelected(element) {
+    if (element.getDom().hasClass('selected')) {
+      const menuElement = element.getDom().data('menuElement');
+      element.setSelected(!1);
+      element.getDom().removeClass('selected');
+      if (element.getDom().hasClass('text')) {
+        element.getDom().removeClass('focused');
+        element.getDom().insertAfter(jQuery('.element:eq(3)'));
+        element.getDom().children('.inner').attr('contenteditable', false);
+      }
+      element.remove();
+      if (menuElement.$dom) {
+        menuElement.detach();
+      }
+    }
+  }
 }
 
+/*  */
 function onPaste(a) {
   if (document.queryCommandSupported('ms-pasteContentOnly')) {
     document.execCommand('ms-pasteContentOnly');
@@ -294,76 +416,8 @@ function onPaste(a) {
   a.preventDefault();
 }
 
-function createMenu(type, dataElement) {
-  // let menu = null;
-  // if (type === 'text') {
-  //   menu = new Menu(
-  //     '#designtool',
-  //     'text',
-  //     {
-  //       listenerFontFamily: setEventChangeFontFamily,
-  //       listenerFontSize: setEventChangeFontSize,
-  //       listenerTextAlign: setEventChangeTextAlign,
-  //       listenerLayer: setEventChangeLayer,
-  //       listenerTextSpacing: {
-  //         listenerLineHeight: setEventChangeLineHeight,
-  //         listenerLetterSpacing: setEventChangeLetterSpacing,
-  //       },
-  //       listenerTranparency: setEventChangeTransparency,
-  //       listenerColor1: setEventChangeFontColor,
-  //       listenerUppercase: setEventChangeUppercase,
-  //       listenerCopy: setEventChangeCopy,
-  //       listenerDelete: setEventChangeDelete,
-  //     },
-  //     dataElement
-  //   );
-  // } else if (type === 'image') {
-  //   menu = new Menu(
-  //     '#designtool',
-  //     'image',
-  //     {
-  //       listenerLayer: setEventChangeLayer,
-  //       listenerTranparency: setEventChangeTransparency,
-  //       listenerCopy: setEventChangeCopy,
-  //       listenerDelete: setEventChangeDelete,
-  //     },
-  //     dataElement
-  //   );
-  // } else if (type === 'svg') {
-  //   menu = new Menu(
-  //     '#designtool',
-  //     'svg',
-  //     {
-  //       listenerLayer: setEventChangeLayer,
-  //       listenerTranparency: setEventChangeTransparency,
-  //       listenerColor1: setEventChangeColor1,
-  //       listenerColor2: setEventChangeColor2,
-  //       listenerColor3: setEventChangeColor3,
-  //       listenerCopy: setEventChangeCopy,
-  //       listenerDelete: setEventChangeDelete,
-  //     },
-  //     dataElement
-  //   );
-  // } else if (type === 'textsvg') {
-  //   menu = new Menu(
-  //     '#designtool',
-  //     'textsvg',
-  //     {
-  //       listenerFontFamily: setEventChangeFontFamily,
-  //       listenerFontSize: setEventChangeFontSize,
-  //       listenerLayer: setEventChangeLayer,
-  //       listenerTextSpacing: {
-  //         listenerLineHeight: setEventChangeLineHeight,
-  //         listenerLetterSpacing: setEventChangeLetterSpacing,
-  //       },
-  //       listenerTranparency: setEventChangeTransparency,
-  //       listenerColor1: setEventChangeColor1,
-  //       listenerUppercase: setEventChangeUppercase,
-  //       listenerCopy: setEventChangeCopy,
-  //       listenerDelete: setEventChangeDelete,
-  //     },
-  //     dataElement
-  //   );
-  // }
-  // return menu;
+function getStringTranform(left, top, rotate) {
+  return (
+    'translate3d(' + left + 'px,' + top + 'px, 0)rotateZ(' + rotate + 'deg)'
+  );
 }

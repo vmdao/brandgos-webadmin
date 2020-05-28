@@ -14,7 +14,7 @@ export abstract class BaseElement {
   top: number;
   left: number;
 
-  widht: number;
+  width: number;
   height: number;
 
   angle: number;
@@ -37,7 +37,7 @@ export abstract class BaseElement {
     this.elementCode = options.elementId;
     this.top = options.top;
     this.left = options.left;
-    this.widht = options.widht;
+    this.width = options.width;
     this.height = options.height;
     this.angle = options.rotate;
     this.opactiy = options.opactiy;
@@ -89,12 +89,12 @@ export abstract class BaseElement {
     };
   }
 
-  setWidht(widht: number) {
-    this.widht = widht;
+  setWidth(width: number) {
+    this.width = width;
   }
 
   getWidth() {
-    return this.widht;
+    return this.width;
   }
 
   setHeight(height: number) {
@@ -108,14 +108,14 @@ export abstract class BaseElement {
   getSize() {
     return {
       height: this.getHeight(),
-      widht: this.getWidth(),
+      width: this.getWidth(),
     };
   }
 
   getBox() {
     return {
       height: this.getHeight(),
-      widht: this.getWidth(),
+      width: this.getWidth(),
       left: this.getLeft(),
       top: this.getTop(),
     };
