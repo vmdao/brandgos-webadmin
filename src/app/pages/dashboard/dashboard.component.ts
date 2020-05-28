@@ -1,6 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import tool from './tool/index.js';
-import { Workspace } from './tool2';
+import { Workspace, Drager } from './tool2';
 
 import * as mock from './tool/mock/index.js';
 const { localStorages } = mock.default;
@@ -15,9 +15,13 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
-      const w = new Workspace(localStorages);
-      w.render('#areaWorkspace');
-      w.createElements(localStorages.elements);
+      const drager = new Drager(localStorages);
+      const workspace = new Workspace({ ...localStorages, drager: drager });
+
+      workspace.render('#areaWorkspace');
+      drager.render('#areaWorkspace');
+
+      workspace.createElements(localStorages.elements);
       // tool.init();
     });
   }

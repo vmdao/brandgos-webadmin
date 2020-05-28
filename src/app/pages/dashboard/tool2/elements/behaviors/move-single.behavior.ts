@@ -7,7 +7,6 @@ export class MoveSingleBehavior implements MoveBehavior {
     this.element = element;
   }
   changePosition(value: { top: number; left: number }) {
-    console.log('changePosition');
     this.element.setLeft(value.left);
     this.element.setTop(value.top);
     this.element.$dom.css(value);

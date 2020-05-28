@@ -46,7 +46,10 @@ export abstract class BaseElement {
     this.transparent = options.transparent;
 
     this.$dom = jQuery(`<div></div>`);
+
     this.$dom.addClass('element');
+    this.$dom.data('dataElement', this);
+
     this.updateStyle({
       top: this.top,
       left: this.left,
@@ -139,6 +142,10 @@ export abstract class BaseElement {
 
   setSvg(svg: SvgChild) {
     this.svg = svg;
+  }
+
+  getSelected() {
+    return this.selected;
   }
 
   performRotate(angle: number) {

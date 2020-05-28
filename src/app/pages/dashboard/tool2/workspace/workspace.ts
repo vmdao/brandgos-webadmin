@@ -4,6 +4,7 @@ import { EventElement } from '../events/EventElement';
 import * as _ from 'lodash';
 import { ToolbarMenu } from '../toolkit/toolbar/menu';
 import { TextSvgElement, SvgElement, TextElement } from '../elements';
+import { Drager } from './drager';
 
 export class Workspace {
   $dom: any;
@@ -16,6 +17,7 @@ export class Workspace {
   name: string;
   version: string;
   order: number;
+  drager: Drager;
   elements: Array<BaseElement> = [];
 
   //   trigger = new EventEmitter();
@@ -26,6 +28,7 @@ export class Workspace {
     this.code = option.code;
     this.version = option.version;
     this.order = option.order;
+    this.drager = option.drager;
     this.$domWrapper = jQuery(`<div class="workspace" id="workspace"></div>`);
     this.$dom = jQuery(`<div class="elements"></div>`);
   }
@@ -35,6 +38,7 @@ export class Workspace {
     this.renderSize();
     this.$dom = jQuery(`<div class="elements"></div>`);
     this.$dom.appendTo(this.$domWrapper);
+    this.updateStyle({});
     this.$domWrapper.appendTo(selector);
     this.event();
   }
@@ -115,14 +119,7 @@ export class Workspace {
     }
 
     const eventTarget = jQuery(eventMousedown.currentTarget);
-    // isParentGroup = eventTarget.parents(".group"),
-    // isElement = eventTarget.is(".element"),
-    // isGroup = eventTarget.is(".group"),
-    const isText = eventTarget.is('.text');
-
-    const elementSelect = isText
-      ? eventTarget.closest('.element')
-      : jQuery(this);
+    const elementSelect = eventTarget;
 
     const ghostElement = jQuery(eventMousedown.currentTarget).hasClass(
       'selectedBound'
@@ -131,15 +128,15 @@ export class Workspace {
       : !1;
 
     const dataElement = elementSelect.data('dataElement');
+    let menuElement = dataElement.$dom.data('menuElement');
 
-    const menuElement = dataElement.getDom().data('menuElement');
-    // bounding = elementSelect.get(0).getBoundingClientRect(),
     const startX = dataElement.getLeft();
     const startY = dataElement.getTop();
     const mouseStartX =
       void 0 !== eventMousedown.clientX
         ? eventMousedown.clientX
         : eventMousedown.originalEvent.touches[0].clientX;
+
     const mouseStartY =
       void 0 !== eventMousedown.clientY
         ? eventMousedown.clientY
@@ -191,12 +188,10 @@ export class Workspace {
           getStringTranform(currentLeft, currentTop, rotateStart)
         );
       }
-
       elementSelect.css(
         'transform',
         getStringTranform(currentLeft, currentTop, rotateStart)
       );
-
       return !1;
     }
 
@@ -211,7 +206,7 @@ export class Workspace {
           dataElement.setSelected(true);
         }
       } else {
-        dataElement.setPosition(currentLeft, currentTop);
+        dataElement.performMove({ left: currentLeft, top: currentTop });
       }
     }
     return !1;
@@ -394,6 +389,17 @@ export class Workspace {
         menuElement.detach();
       }
     }
+  }
+
+  updateStyle(values) {
+    const styles = {
+      ...{
+        width: this.width,
+        height: this.height,
+      },
+      ...values,
+    };
+    this.$dom.css(styles);
   }
 }
 

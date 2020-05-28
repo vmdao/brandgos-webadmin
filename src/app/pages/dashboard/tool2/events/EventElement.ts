@@ -49,21 +49,27 @@ export class EventElement {
   }
 
   off(events, selector, callback?) {
-    let seftSelector;
-    'function' === typeof callback
-      ? ((seftSelector = selector), (selector = callback))
-      : (seftSelector = '');
+    let seftSelector = '';
+
+    if ('function' === typeof callback) {
+      seftSelector = selector;
+      selector = callback;
+    }
+    
     const selectedElement = this.selector[events + '_' + seftSelector];
+
     if (selectedElement) {
-      if (selectedElement !== (selector.selected || selector)) {
-        throw Error('errors');
-      }
+      // if (selectedElement !== (selector.selected || selector)) {
+      //   throw Error('errors');
+      // }
+
       selector.selected = null;
       solutionString(events).forEach((event) => {
         seftSelector
           ? this.el.off(event, seftSelector, selectedElement)
           : this.el.off(event.selectElement);
       });
+
       delete this.selected[events + '_' + selector];
     }
     return this;
@@ -72,7 +78,6 @@ export class EventElement {
 
 function setEventSelected(objectEvent, events, selector, selectorSelected) {
   if (objectEvent.selector[events + '_' + selector]) {
-    // throw 'errors';
     return Error('errors');
   }
   objectEvent.selector[events + '_' + selector] = selectorSelected;
