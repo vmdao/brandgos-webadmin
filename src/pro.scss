@@ -598,6 +598,7 @@ menu.menu.toolbar {
   // background-color: #e4e0e0;
   position: absolute;
   border: 1px dashed #e4e0e0;
+  overflow: hidden;
 }
 
 #elements {
@@ -1057,4 +1058,8 @@ menu.menu.toolbar {
 
 .cloneDragDrop.comeback {
   transition: all 0.3s linear;
+}
+
+.border {
+  position: relative;
 }

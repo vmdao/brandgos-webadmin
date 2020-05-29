@@ -4,7 +4,7 @@ import { EventElement } from '../events/EventElement';
 import * as _ from 'lodash';
 import { ToolbarMenu } from '../toolkit/toolbar/menu';
 import { TextSvgElement, SvgElement, TextElement } from '../elements';
-import { Drager } from './drager';
+import { Border } from './border';
 
 export class Workspace {
   $dom: any;
@@ -17,7 +17,7 @@ export class Workspace {
   name: string;
   version: string;
   order: number;
-  drager: Drager;
+  border: Border;
   elements: Array<BaseElement> = [];
 
   //   trigger = new EventEmitter();
@@ -28,7 +28,7 @@ export class Workspace {
     this.code = option.code;
     this.version = option.version;
     this.order = option.order;
-    this.drager = option.drager;
+    this.border = option.border;
     this.$domWrapper = jQuery(`<div class="workspace" id="workspace"></div>`);
     this.$dom = jQuery(`<div class="elements"></div>`);
   }
@@ -40,6 +40,7 @@ export class Workspace {
     this.$dom.appendTo(this.$domWrapper);
     this.updateStyle({});
     this.$domWrapper.appendTo(selector);
+    this.border.render(selector);
     this.event();
   }
 
@@ -121,14 +122,8 @@ export class Workspace {
     const eventTarget = jQuery(eventMousedown.currentTarget);
     const elementSelect = eventTarget;
 
-    const ghostElement = jQuery(eventMousedown.currentTarget).hasClass(
-      'selectedBound'
-    )
-      ? jQuery(eventMousedown.currentTarget)
-      : !1;
-
     const dataElement = elementSelect.data('dataElement');
-    let menuElement = dataElement.$dom.data('menuElement');
+    const ghostElement = elementSelect.data('dataBoxer');
 
     const startX = dataElement.getLeft();
     const startY = dataElement.getTop();
@@ -151,6 +146,7 @@ export class Workspace {
     elementSelect.data('startX', startX);
     elementSelect.data('startY', startY);
 
+    const menuElement = dataElement.$dom.data('menuElement');
     if (menuElement) {
       menuElement.hideSubmenu();
     }
@@ -160,8 +156,8 @@ export class Workspace {
     }
 
     eventDocument
-      .on('mousemove|touchmove', setEventMouseMove)
-      .on('mouseup|touchend', setEventMouseUp);
+      .on('mousemove|touchmove', setEventMouseMove.bind(this))
+      .on('mouseup|touchend', setEventMouseUp.bind(this));
 
     function setEventMouseMove(event) {
       let deltaX = 0;
@@ -171,6 +167,7 @@ export class Workspace {
         void 0 !== event.clientX
           ? event.clientX
           : event.originalEvent.touches[0].clientX;
+
       mouseY =
         void 0 !== event.clientY
           ? event.clientY
@@ -188,10 +185,11 @@ export class Workspace {
           getStringTranform(currentLeft, currentTop, rotateStart)
         );
       }
-      elementSelect.css(
-        'transform',
-        getStringTranform(currentLeft, currentTop, rotateStart)
-      );
+      elementSelect.css({
+        left: currentLeft,
+        top: currentTop,
+        rotate: rotateStart,
+      });
       return !1;
     }
 
@@ -222,10 +220,11 @@ export class Workspace {
     let ghostElement = element.data('ghostElement');
     let menuElement = element.data('menuElement');
     const dataElement = element.data('dataElement');
-    const angleWorkspace = jQuery('#angleWorkspace');
+
     if (dataElement.selected) {
       return;
     }
+
     element.addClass('selected');
 
     if (!ghostElement) {
@@ -233,14 +232,14 @@ export class Workspace {
         // tslint:disable-next-line: max-line-length
         `<div class="selectedBound handleCircle"><div class="ghostElement"></div><a class="cube tl"></a><a class="cube t"></a><a class="cube tr"></a><a class="cube r"></a><a class="cube br"></a><a class="cube b"></a><a class="cube bl"></a><a class="cube l"></a><a class="rotate" title="Rotate"></a></div>`
       );
-      element.data('ghostElement', ghostElement);
+      element.data('dataBoxer', ghostElement);
     }
 
     if (element.hasClass('text')) {
       ghostElement.addClass('text');
     }
 
-    ghostElement.data('element', element).appendTo(angleWorkspace);
+    ghostElement.data('element', element).appendTo(this.border.$dom);
 
     if (element.hasClass('text')) {
       jQuery('.cube.tl, .cube.t, .cube.tr, .cube.bl, .cube.b, .cube.br').css(
@@ -251,7 +250,6 @@ export class Workspace {
       element.addClass('selected focused');
       element.children('.inner').attr('contenteditable', 'true');
       element.on('paste', onPaste);
-      element.appendTo(angleWorkspace);
 
       if (!menuElement) {
         menuElement = this.createMenu('text', dataElement);
@@ -275,17 +273,17 @@ export class Workspace {
       }
     }
 
-    element.data('menuElement', menuElement);
-    menuElement.render();
+    if (menuElement) {
+      element.data('menuElement', menuElement);
+      menuElement.render();
+    }
 
     ghostElement.css({
       width: dataElement.getWidth(),
       height: dataElement.getHeight(),
-      transform: getStringTranform(
-        dataElement.getLeft(),
-        dataElement.getTop(),
-        dataElement.getRotate()
-      ),
+      top: dataElement.getTop(),
+      left: dataElement.getLeft(),
+      transform: getStringTranform(0, 0, dataElement.getRotate()),
     });
   }
 

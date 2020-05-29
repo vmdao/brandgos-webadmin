@@ -1,12 +1,12 @@
 import * as jQuery from 'jquery';
 
-export class Drager {
+export class Border {
   $dom: any;
   $domWrapper: any;
   width: number;
   height: number;
   html =
-    '<div class="drager"><div class="ghost"></div><div class="vertical align"></div><div class="vertical align"></div><div class="vertical align"></div><div class="horizontal align"></div><div class="horizontal align"></div><div class="horizontal align"></div></div>';
+    '<div class="border"><div class="vertical align"></div><div class="vertical align"></div><div class="vertical align"></div><div class="horizontal align"></div><div class="horizontal align"></div><div class="horizontal align"></div></div>';
 
   constructor(option) {
     this.width = option.width;
