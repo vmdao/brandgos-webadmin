@@ -36,14 +36,14 @@ export abstract class BaseElement {
     this.elementId = options.elementId;
     this.elementCode = options.elementId;
 
-    this.top = options.top;
-    this.left = options.left;
-    this.width = options.width;
-    this.height = options.height;
-    this.angle = options.angle;
-    this.scale = options.scale;
+    this.top = options.top || 0;
+    this.left = options.left || 0;
+    this.width = options.width || 0;
+    this.height = options.height || 0;
+    this.angle = options.angle || 0;
+    this.scale = options.scale || 1;
     this.order = options.order;
-    this.transparent = options.transparent;
+    this.transparent = options.transparent || 1;
 
     this.$dom = jQuery(`<div></div>`);
 
@@ -144,8 +144,17 @@ export abstract class BaseElement {
     this.svg = svg;
   }
 
+  setSelected(value: boolean) {
+    this.selected = value;
+  }
+
   getSelected() {
     return this.selected;
+  }
+
+  updateSelected(value: boolean) {
+    this.setSelected(value);
+    value ? this.$dom.addClass('selected') : this.$dom.removeClass('selected');
   }
 
   performRotate(angle: number) {
@@ -224,6 +233,7 @@ export abstract class BaseElement {
         top: this.top,
         lef: this.left,
         transparent: this.transparent,
+        translate: `rotate(${this.angle})`,
         scale: this.scale,
       },
       ...values,

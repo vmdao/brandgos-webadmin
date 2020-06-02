@@ -591,8 +591,9 @@ menu.menu.toolbar {
   border-radius: 6px;
 }
 
-// #angleWorkspace {
-// }
+#angleWorkspace {
+  pointer-events: none;
+}
 
 #workspace {
   // background-color: #e4e0e0;
@@ -617,7 +618,6 @@ menu.menu.toolbar {
 
 .selectedBound {
   position: absolute;
-  z-index: 1000;
   border: 1px solid rgba(255, 255, 255, 0.67);
   box-sizing: content-box;
   cursor: move;
@@ -1062,4 +1062,5 @@ menu.menu.toolbar {
 
 .border {
   position: relative;
+  pointer-events: none;
 }

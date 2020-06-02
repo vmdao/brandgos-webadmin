@@ -38,8 +38,8 @@ export class Workspace {
     this.renderSize();
     this.$dom = jQuery(`<div class="elements"></div>`);
     this.$dom.appendTo(this.$domWrapper);
-    this.updateStyle({});
     this.$domWrapper.appendTo(selector);
+    this.updateStyle({});
     this.border.render(selector);
     this.event();
   }
@@ -111,8 +111,120 @@ export class Workspace {
         '.element:not(.focused)',
         this.elementMouseDown.bind(this)
       );
+    new EventElement('#zone-left')
+      .on(
+        'mousedown',
+        '.selectedBound .rotate',
+        this.rotateMouseDown.bind(this)
+      )
+      .on(
+        'touchstart',
+        '.selectedBound .rotate ',
+        this.rotateMouseDown.bind(this)
+      );
   }
 
+  rotateMouseDown(event) {
+    if (3 === event.which || event.ctrlKey) return !0;
+    const cube = jQuery(event.currentTarget);
+    cube.addClass('on');
+
+    let ghostElement = cube.parents('.selectedBound');
+    let dataElement = ghostElement.data('dataElement');
+    const elementSelect = dataElement.$dom;
+    let elementOffset = elementSelect.offset();
+    let matrixX = elementOffset.left + dataElement.getWidth() / 2;
+    let matrixY = elementOffset.top + dataElement.getHeight() / 2;
+
+    let mouseX =
+      void 0 !== event.clientX
+        ? event.clientX
+        : event.originalEvent.touches[0].client;
+    let mouseY =
+      void 0 !== event.clientY
+        ? event.clientY
+        : event.originalEvent.touches[0].clientY;
+    let rotateMouseStart = getAngle(matrixX, matrixY, mouseX, mouseY);
+    let angleNew = 0;
+
+    let rotateStart = dataElement.getRotate();
+    elementSelect.data('rotateStart', rotateStart);
+
+    const eventDocument = new EventElement(jQuery(document));
+    eventDocument
+      .on('mousemove|touchmove', setEventMouseMove.bind(this))
+      .on('mouseup|touchend', setEventMouseUp.bind(this));
+    console.log('setEventMouseMove');
+    function setEventMouseMove(event) {
+      console.log('setEventMouseMove');
+      mouseX =
+        void 0 !== event.clientX
+          ? event.clientX
+          : event.originalEvent.touches[0].clientX;
+      mouseY =
+        void 0 !== event.clientY
+          ? event.clientY
+          : event.originalEvent.touches[0].clientY;
+
+      angleNew =
+        rotateStart +
+        getAngle(matrixX, matrixY, mouseX, mouseY) -
+        rotateMouseStart;
+
+      var angleModulo = angleNew % 45;
+      0 > angleModulo && (angleModulo += 45);
+
+      var angleTrend = angleNew > rotateStart,
+        angleQuaterX = angleTrend && 42 < angleModulo;
+      // angleQuaterY = 3 > angleModulo || 42 < angleModulo;
+      angleTrend = !angleTrend && 3 > angleModulo;
+      angleQuaterX
+        ? (angleNew = angleNew + 45 - angleModulo)
+        : angleTrend && (angleNew -= angleModulo);
+      if (dataElement.getSelected() && ghostElement) {
+        var value = getStringTranform(0, 0, angleNew);
+        ghostElement.css('transform', value);
+        elementSelect.css('transform', value);
+      }
+      dataElement.setRotate(angleNew);
+      return !1;
+    }
+
+    function setEventMouseUp(event) {
+      setCusorType();
+      eventDocument
+        .off('mousemove|touchmove', setEventMouseMove)
+        .off('mouseup|touchend', setEventMouseUp);
+    }
+
+    function setCusorType() {
+      var cusorType =
+        (angleNew >= -23 && angleNew < 25) ||
+        (angleNew >= 337 && angleNew <= 359)
+          ? 'otega0'
+          : angleNew >= 25 && angleNew < 67
+          ? 'otega1'
+          : angleNew >= 67 && angleNew < 113
+          ? 'otega2'
+          : angleNew >= 113 && angleNew < 158
+          ? 'otega3'
+          : angleNew >= 158 && angleNew < 203
+          ? 'otega4'
+          : (angleNew >= 203 && angleNew < 247) ||
+            (angleNew <= -113 && angleNew > -157)
+          ? 'otega5'
+          : (angleNew >= 247 && angleNew < 292) ||
+            (angleNew <= -68 && angleNew > -113)
+          ? 'otega6'
+          : 'otega7';
+
+      [0, 1, 2, 3, 4, 5, 6, 7].forEach((number) => {
+        ghostElement.removeClass('otega' + number);
+      });
+      ghostElement.addClass(cusorType);
+    }
+    return !1;
+  }
   elementMouseDown(eventMousedown) {
     const eventDocument = new EventElement(jQuery(document));
     if (3 === eventMousedown.which || eventMousedown.ctrlKey) {
@@ -141,7 +253,6 @@ export class Workspace {
     let mouseY = 0;
     let currentTop = 0;
     let currentLeft = 0;
-    const rotateStart = dataElement.getRotate();
 
     elementSelect.data('startX', startX);
     elementSelect.data('startY', startY);
@@ -178,18 +289,14 @@ export class Workspace {
 
       currentLeft = startX + deltaX;
       currentTop = startY + deltaY;
-
+      const rotateStart = dataElement.getAngle();
+      const style = {
+        transform: getStringTranform(currentLeft, currentTop, rotateStart),
+      };
       if (dataElement.getSelected() && ghostElement) {
-        ghostElement.css(
-          'transform',
-          getStringTranform(currentLeft, currentTop, rotateStart)
-        );
+        ghostElement.css(style);
       }
-      elementSelect.css({
-        left: currentLeft,
-        top: currentTop,
-        rotate: rotateStart,
-      });
+      elementSelect.css(style);
       return !1;
     }
 
@@ -201,7 +308,7 @@ export class Workspace {
       if (currentLeft === mouseX && mouseY === currentTop) {
         if (!dataElement.getSelected()) {
           this.createSelectedElement(elementSelect);
-          dataElement.setSelected(true);
+          dataElement.updateSelected(true);
         }
       } else {
         dataElement.performMove({ left: currentLeft, top: currentTop });
@@ -221,11 +328,11 @@ export class Workspace {
     let menuElement = element.data('menuElement');
     const dataElement = element.data('dataElement');
 
-    if (dataElement.selected) {
+    if (dataElement.getSelected()) {
       return;
     }
 
-    element.addClass('selected');
+    dataElement.updateSelected(true);
 
     if (!ghostElement) {
       ghostElement = jQuery(
@@ -239,7 +346,7 @@ export class Workspace {
       ghostElement.addClass('text');
     }
 
-    ghostElement.data('element', element).appendTo(this.border.$dom);
+    ghostElement.data('dataElement', dataElement).appendTo(this.border.$dom);
 
     if (element.hasClass('text')) {
       jQuery('.cube.tl, .cube.t, .cube.tr, .cube.bl, .cube.b, .cube.br').css(
@@ -247,7 +354,7 @@ export class Workspace {
         'none'
       );
 
-      element.addClass('selected focused');
+      element.addClass('focused');
       element.children('.inner').attr('contenteditable', 'true');
       element.on('paste', onPaste);
 
@@ -283,7 +390,7 @@ export class Workspace {
       height: dataElement.getHeight(),
       top: dataElement.getTop(),
       left: dataElement.getLeft(),
-      transform: getStringTranform(0, 0, dataElement.getRotate()),
+      transform: getStringTranform(0, 0, dataElement.getAngle()),
     });
   }
 
@@ -425,3 +532,19 @@ function getStringTranform(left, top, rotate) {
     'translate3d(' + left + 'px,' + top + 'px, 0)rotateZ(' + rotate + 'deg)'
   );
 }
+
+export const getAngle = (a, b, c, d) => {
+  var e = 0;
+  a === c
+    ? (e = b > d ? 1.5 * Math.PI : 0.5 * Math.PI)
+    : ((e = Math.atan((d - b) / (c - a))),
+      a < c ? d < b && (e = 2 * Math.PI + e) : (e = Math.PI + e),
+      isNaN(e) && (e = 0));
+  return getRealAngle((180 * e) / Math.PI);
+};
+
+export const getRealAngle = (a) => {
+  a %= 360;
+  0 > a && (a += 360);
+  return a;
+};
