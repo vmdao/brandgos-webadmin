@@ -50,15 +50,7 @@ export abstract class BaseElement {
     this.$dom.addClass('element');
     this.$dom.data('dataElement', this);
 
-    this.updateStyle({
-      top: this.top,
-      left: this.left,
-      width: this.width,
-      height: this.height,
-      angle: this.angle,
-      scale: this.scale,
-      translate: this.transparent,
-    });
+    this.updateStyle();
   }
 
   elementAppendTo(parent) {
@@ -219,24 +211,19 @@ export abstract class BaseElement {
   updateAngle(value) {
     this.setAngle(value);
     const styles = {
-      translate: `rotate(${this.angle})`,
+      translate: `translate(${this.top}px, ${this.left}px) rotate(${this.angle}deg)`,
     };
 
     this.$dom.css(styles);
   }
 
-  updateStyle(values) {
+  updateStyle() {
     const styles = {
-      ...{
-        width: this.width,
-        height: this.height,
-        top: this.top,
-        lef: this.left,
-        transparent: this.transparent,
-        translate: `rotate(${this.angle})`,
-        scale: this.scale,
-      },
-      ...values,
+      width: this.width,
+      height: this.height,
+      opacity: this.transparent,
+      transform: `translate(${this.left}px, ${this.top}px) rotate(${this.angle}deg)`,
+      scale: this.scale,
     };
 
     this.$dom.css(styles);
