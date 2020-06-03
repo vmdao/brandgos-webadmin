@@ -18,7 +18,7 @@ export interface DataMenuItemChild {
 }
 
 export class ToolbarMenu extends BaseMenu {
-  htmlWraper = `<menu class="menu toolbar"><ul class="toolbar__list"></ul></menu>`;
+  htmlWrapper = `<menu class="menu toolbar"><ul class="toolbar__list"></ul></menu>`;
   constructor(options: {
     where?: string;
     type?: string;
@@ -30,7 +30,8 @@ export class ToolbarMenu extends BaseMenu {
   builderMenu(items: Array<DataMenuItem>) {
     items.forEach((item) => {
       const menuItemUI = this.factoryMenuItem(item);
-      this.renderItem(menuItemUI);
+      menuItemUI.render();
+      this.register(menuItemUI);
     });
   }
 

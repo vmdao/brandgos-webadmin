@@ -1,10 +1,11 @@
 import { BaseElement } from '../elements/base.abstract';
+import * as _ from 'lodash';
 import * as jQuery from 'jquery';
 import { EventElement } from '../events/EventElement';
-import * as _ from 'lodash';
-import { ToolbarMenu } from '../toolkit/toolbar/menu';
-import { TextSvgElement, SvgElement, TextElement } from '../elements';
 import { Border } from './border';
+
+import { TextSvgElement, SvgElement, TextElement } from '../elements';
+import { ToolbarMenu } from '../toolkit/toolbar/menu';
 
 import Selecto from 'selecto';
 import Moveable from 'moveable';
@@ -22,8 +23,7 @@ export class Workspace {
   order: number;
   border: Border;
   elements: Array<BaseElement> = [];
-
-  //   trigger = new EventEmitter();
+  $toolbar;
   constructor(option) {
     this.documentId = option.documentId;
     this.width = option.width;
@@ -34,9 +34,9 @@ export class Workspace {
     this.border = option.border;
     this.$domWrapper = jQuery(`<div class="workspace" id="workspace"></div>`);
     this.$dom = jQuery(`<div class="elements"></div>`);
+    this.$toolbar = jQuery(`#designtool`);
   }
 
-  //   setupEmiter
   render(selector: string) {
     this.renderSize();
     this.$dom = jQuery(`<div class="elements"></div>`);
@@ -84,7 +84,7 @@ export class Workspace {
     this.$dom.append(element.$dom);
   }
 
-  buildMenu(element: BaseElement) {
+  buildMenu(dataElement: BaseElement) {
     const items = [
       {
         type: 'button',
@@ -95,10 +95,10 @@ export class Workspace {
       },
     ];
 
-    const options = { where: '', type: 'toobar', dataElement: element };
+    const options = { where: '', type: 'toobar', dataElement };
     const menu = new ToolbarMenu(options);
+    menu.render();
     menu.builderMenu(items);
-
     return menu;
   }
 
@@ -282,18 +282,6 @@ export class Workspace {
       })
       .on('rotateGroup', ({ events, delta }) => {
         events.forEach((ev) => {
-          // const left = drag.beforeDist[0];
-          // const top = drag.beforeDist[1];
-          // const deg = beforeDist;
-          // console.log('left', left, top, deg, 'beforeRotate', beforeRotate);
-          // const frame = frameMap.get(target);
-          // frame.rotate = beforeRotate;
-          // target.style.transform = `translate(${frame.translate[0]}px, ${frame.translate[1]}px) rotate(${frame.rotate}deg)`;
-          // console.log(ev);
-          // const left = ev.drag.beforeDist[0];
-          // const top = ev.drag.beforeDist[1];
-          // const deg = ev.beforeDist;
-
           const frame = frameMap.get(ev.target);
           frame.rotate = ev.beforeRotate;
           // get drag event
@@ -302,18 +290,6 @@ export class Workspace {
             `translate(${ev.drag.beforeTranslate[0]}px, ${ev.drag.beforeTranslate[1]}px) ` +
             `rotate(${ev.beforeRotate}deg)`;
         });
-
-        // events.forEach(({ target, beforeRotate, drag }, i) => {
-        //   const frame = frames[i];
-
-        //   // frame.rotate = beforeRotate;
-
-        //   // get drag event
-        //   // frame.translate = drag.beforeTranslate;
-        //   target.style.transform =
-        //     `translate(${drag.beforeTranslate[0]}px, ${drag.beforeTranslate[1]}px) ` +
-        //     `rotate(${beforeRotate}deg)`;
-        // });
       })
       .on('rotateGroupEnd', ({ targets, isDrag, clientX, clientY }) => {
         console.log('onRotateGroupEnd', targets, isDrag);
@@ -329,9 +305,22 @@ export class Workspace {
           e.stop();
         }
       })
-      .on('select', (e) => {
-        targets = e.selected;
+      .on('selectStart', (e) => {})
+      .on('select', ({ selected }) => {
+        targets = selected;
         moveable.target = targets;
+
+        if (targets.length == 1) {
+          const elementSelected = jQuery(targets[0]);
+          const dataElement = elementSelected.data('dataElement');
+          let dataMenu = elementSelected.data('dataMenu');
+          this.$toolbar.html('');
+          if (!dataMenu) {
+            dataMenu = this.createMenu(dataElement.type, dataElement);
+            elementSelected.data('dataMenu', dataMenu);
+            dataMenu.render('#designtool');
+          }
+        }
       })
       .on('selectEnd', (e) => {
         if (e.isDragStart) {

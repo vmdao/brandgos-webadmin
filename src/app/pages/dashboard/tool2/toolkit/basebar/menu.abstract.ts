@@ -8,10 +8,11 @@ export abstract class BaseMenu {
     dataElement: BaseElement;
   };
   $dom: any;
-  items: Array<any>;
+  items: Array<any> = [];
   where: string;
   type: string;
   htmlWrapper = '';
+
   constructor(options: {
     where?: string;
     type?: string;
@@ -25,8 +26,6 @@ export abstract class BaseMenu {
     if (options.type) {
       this.type = options.type;
     }
-
-    this.$dom = jQuery(this.htmlWrapper);
   }
 
   register(item) {
@@ -38,5 +37,10 @@ export abstract class BaseMenu {
     this.$dom.append(item.$dom);
   }
 
-  render() {}
+  render(selector?: any) {
+    this.$dom = jQuery(this.htmlWrapper);
+    if (selector) {
+      this.$dom.appendTo(selector);
+    }
+  }
 }
