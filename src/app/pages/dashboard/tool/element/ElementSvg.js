@@ -49,12 +49,12 @@ const ghost = ElementSvg.prototype;
 ghost.createDomSvg = function (data, replaceImg) {
   const childsText = this.contents
     ? this.contents.filter(function (element) {
-        return 'text' === element.typeElement;
+        return 'text' === element.elementType;
       })
     : [];
   const childsImage = this.contents
     ? this.contents.filter(function (element) {
-        return 'image' === element.typeElement;
+        return 'image' === element.elementType;
       })
     : [];
   if (vq(data, !0)) {

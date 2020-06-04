@@ -1,24 +1,26 @@
 import { BaseMenu } from '../basebar/menu.abstract';
 import { BaseElement } from '../../elements/base.abstract';
 import { ButtonUI } from './ui/button.ui';
+import { Command } from '../command';
 
 export interface DataMenuItem {
   type: string;
-  options: {
-    icon: string;
-    children: Array<DataMenuItemChild>;
-  };
+  name: string;
+  icon: string;
+  children: Array<DataMenuItemChild>;
+  actions: Array<{ event: string; command: Command }>;
 }
 
 export interface DataMenuItemChild {
   type: string;
-  options: {
-    icon: string;
-  };
+  icon: string;
+  name: string;
+  actions: Array<{ event: string; command: Command }>;
 }
 
 export class ToolbarMenu extends BaseMenu {
-  htmlWrapper = `<menu class="menu toolbar"><ul class="toolbar__list"></ul></menu>`;
+  htmlWrapper = `<menu class="menu toolbar"></menu>`;
+  html = `<ul class="toolbar__list"></ul>`;
   constructor(options: {
     where?: string;
     type?: string;
@@ -38,23 +40,26 @@ export class ToolbarMenu extends BaseMenu {
   factoryMenuItem(item: DataMenuItem) {
     switch (item.type) {
       case 'button': {
-        const options = { ...item.options, children: [] };
-        if (item.options && Array.isArray(item.options.children)) {
-          options.children = item.options.children.map((c) => {
+        const options = { ...item, children: [] };
+        if (options && Array.isArray(item.children)) {
+          options.children = options.children.map((c) => {
             return this.factoryMenuItemChild(c);
           });
         }
         return new ButtonUI(options);
       }
+      default:
+        return new ButtonUI({ ...item });
     }
   }
 
   factoryMenuItemChild(item: DataMenuItemChild) {
     switch (item.type) {
       case 'button': {
-        const options = { ...item.options, children: [] };
-        return new ButtonUI(options);
+        return new ButtonUI({ ...item });
       }
+      default:
+        return new ButtonUI({ ...item });
     }
   }
 }

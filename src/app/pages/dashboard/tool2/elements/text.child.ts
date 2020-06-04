@@ -12,6 +12,7 @@ export class TextChild {
   lightHeight: number;
   textAlign: string;
   fontFamily: string;
+  uppercase: string;
   color: string;
   html: string;
   parent: BaseElement;
@@ -26,6 +27,7 @@ export class TextChild {
     this.lightHeight = options.lightHeight;
     this.textAlign = options.textAlign;
     this.color = options.color;
+    this.uppercase = options.uppercase;
     this.html = options.html;
 
     this.$dom = jQuery(`<div></div>`);

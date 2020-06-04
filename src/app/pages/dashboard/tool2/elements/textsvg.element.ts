@@ -10,4 +10,28 @@ export class TextSvgElement extends BaseElement {
     this.text.setTypeBehavior(new TypeSvgBehavior(this));
     this.setMoveBehavior(new MoveSingleBehavior(this));
   }
+
+  getData() {
+    return {
+      elementType: this.elementType,
+      elementIndex: this.order,
+      transparency: this.transparent,
+      rotation: this.angle,
+      width: this.width,
+      height: this.height,
+      top: this.top,
+      left: this.left,
+      scale: this.scale,
+      style: {
+        curve: this.text.curve,
+        fontSize: this.text.fontsize,
+        lineHeight: this.text.fontsize,
+        fontFamily: this.text.fontFamily,
+        textAlign: this.text.textAlign,
+        color: this.text.color,
+        uppercase: this.text.uppercase,
+        url: '/assets/UV-Agin.ttf',
+      },
+    };
+  }
 }

@@ -88,7 +88,7 @@ ghost.updateLayer = function (dataElement, type) {
 };
 
 function switchElement(data) {
-  switch (data.typeElement) {
+  switch (data.elementType) {
     case 'image':
       return new ElementImage(data);
     case 'text':

@@ -7,11 +7,18 @@ export abstract class BaseMenu {
     type?: string;
     dataElement: BaseElement;
   };
-  $dom: any;
+
   items: Array<any> = [];
   where: string;
   type: string;
+
+  html = '';
+  $dom: any;
   htmlWrapper = '';
+  $domWrapper: any;
+
+  isActived = false;
+  isRendered = false;
 
   constructor(options: {
     where?: string;
@@ -34,13 +41,36 @@ export abstract class BaseMenu {
   }
 
   renderItem(item) {
-    this.$dom.append(item.$dom);
+    item.appendTo(this.$dom);
   }
 
-  render(selector?: any) {
-    this.$dom = jQuery(this.htmlWrapper);
-    if (selector) {
-      this.$dom.appendTo(selector);
+  render() {
+    if (!this.isRendered) {
+      this.$dom = jQuery(this.html);
+      this.$domWrapper = jQuery(this.htmlWrapper);
+      this.$domWrapper.append(this.$dom);
+      this.isRendered = true;
+    }
+  }
+
+  reRender() {
+    this.$dom = jQuery(this.html);
+    this.$domWrapper = jQuery(this.htmlWrapper);
+    this.$domWrapper.append(this.$dom);
+    this.isRendered = true;
+  }
+
+  appendTo(selector) {
+    if (!this.isActived) {
+      this.$domWrapper.appendTo(selector);
+      this.isActived = true;
+    }
+  }
+
+  detach() {
+    if (this.isActived) {
+      this.$domWrapper.detach();
+      this.isActived = false;
     }
   }
 }

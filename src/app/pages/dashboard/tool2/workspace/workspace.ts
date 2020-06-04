@@ -1,7 +1,6 @@
 import { BaseElement } from '../elements/base.abstract';
 import * as _ from 'lodash';
 import * as jQuery from 'jquery';
-import { EventElement } from '../events/EventElement';
 import { Border } from './border';
 
 import { TextSvgElement, SvgElement, TextElement } from '../elements';
@@ -9,7 +8,7 @@ import { ToolbarMenu } from '../toolkit/toolbar/menu';
 
 import Selecto from 'selecto';
 import Moveable from 'moveable';
-
+import { ColorCommand, CloneCommand } from '../toolkit/command';
 export class Workspace {
   $dom: any;
   $domWrapper: any;
@@ -24,6 +23,7 @@ export class Workspace {
   border: Border;
   elements: Array<BaseElement> = [];
   $toolbar;
+
   constructor(option) {
     this.documentId = option.documentId;
     this.width = option.width;
@@ -62,8 +62,43 @@ export class Workspace {
     this.addElement(element);
   };
 
+  offMenuElements() {
+    this.elements.forEach((dataElement) => {
+      const dataMenu = dataElement.$dom.data('dataMenu');
+      if (dataMenu) {
+        dataMenu.detach();
+      }
+    });
+
+    this.$toolbar.removeClass('menu--active');
+  }
+
+  offMenuElementsWithout(dataElement) {
+    this.elements
+      .filter((e) => {
+        if (e !== dataElement) {
+          return true;
+        }
+        return false;
+      })
+      .forEach((e) => {
+        const dataMenu = e.$dom.data('dataMenu');
+        if (dataMenu) {
+          dataMenu.detach();
+        }
+      });
+
+    let dataMenu = dataElement.$dom.data('dataMenu');
+    if (!dataMenu) {
+      dataMenu = this.createMenu(dataElement.type, dataElement);
+      dataElement.$dom.data('dataMenu', dataMenu);
+    }
+    dataMenu.appendTo('#designtool');
+    this.$toolbar.addClass('menu--active');
+  }
+
   factoryCreateElement(dataElement) {
-    switch (dataElement.typeElement) {
+    switch (dataElement.elementType) {
       case 'image':
         return new TextSvgElement(dataElement);
       case 'text':
@@ -75,9 +110,9 @@ export class Workspace {
     }
   }
 
-  addElement(element: BaseElement) {
-    this.elements = this.elements.concat([element]);
-    this.renderElement(element);
+  addElement(dataElement: BaseElement) {
+    this.elements = this.elements.concat([dataElement]);
+    this.renderElement(dataElement);
   }
 
   renderElement(element: BaseElement) {
@@ -85,13 +120,22 @@ export class Workspace {
   }
 
   buildMenu(dataElement: BaseElement) {
+    const changeColorComand = new ColorCommand(dataElement);
+    const changCloneComand = new CloneCommand(dataElement, this);
     const items = [
       {
         type: 'button',
-        options: {
-          icon: '',
-          children: [{ type: 'button', options: { icon: '' } }],
-        },
+        icon: '',
+        name: 'Copy',
+        actions: [{ event: 'click', command: changeColorComand }],
+        children: [{ type: 'button', name: 'Copy', icon: '', actions: [] }],
+      },
+      {
+        type: 'button',
+        icon: 'uppercase',
+        name: 'Uppercase',
+        actions: [{ event: 'click', command: changCloneComand }],
+        children: [],
       },
     ];
 
@@ -311,15 +355,9 @@ export class Workspace {
         moveable.target = targets;
 
         if (targets.length == 1) {
-          const elementSelected = jQuery(targets[0]);
-          const dataElement = elementSelected.data('dataElement');
-          let dataMenu = elementSelected.data('dataMenu');
-          this.$toolbar.html('');
-          if (!dataMenu) {
-            dataMenu = this.createMenu(dataElement.type, dataElement);
-            elementSelected.data('dataMenu', dataMenu);
-            dataMenu.render('#designtool');
-          }
+          this.selectedElement(jQuery(targets[0]));
+        } else {
+          this.offMenuElements();
         }
       })
       .on('selectEnd', (e) => {
@@ -333,274 +371,10 @@ export class Workspace {
       });
   }
 
-  rotateMouseDown(event) {
-    if (3 === event.which || event.ctrlKey) return !0;
-    const cube = jQuery(event.currentTarget);
-    cube.addClass('on');
-
-    let ghostElement = cube.parents('.selectedBound');
-    let dataElement = ghostElement.data('dataElement');
-    const elementSelect = dataElement.$dom;
-    let elementOffset = elementSelect.offset();
-    let matrixX = elementOffset.left + dataElement.getWidth() / 2;
-    let matrixY = elementOffset.top + dataElement.getHeight() / 2;
-
-    let mouseX =
-      void 0 !== event.clientX
-        ? event.clientX
-        : event.originalEvent.touches[0].client;
-    let mouseY =
-      void 0 !== event.clientY
-        ? event.clientY
-        : event.originalEvent.touches[0].clientY;
-    let rotateMouseStart = getAngle(matrixX, matrixY, mouseX, mouseY);
-    let angleNew = 0;
-
-    let rotateStart = dataElement.getRotate();
-    elementSelect.data('rotateStart', rotateStart);
-
-    const eventDocument = new EventElement(jQuery(document));
-    eventDocument
-      .on('mousemove|touchmove', setEventMouseMove.bind(this))
-      .on('mouseup|touchend', setEventMouseUp.bind(this));
-    console.log('setEventMouseMove');
-    function setEventMouseMove(event) {
-      console.log('setEventMouseMove');
-      mouseX =
-        void 0 !== event.clientX
-          ? event.clientX
-          : event.originalEvent.touches[0].clientX;
-      mouseY =
-        void 0 !== event.clientY
-          ? event.clientY
-          : event.originalEvent.touches[0].clientY;
-
-      angleNew =
-        rotateStart +
-        getAngle(matrixX, matrixY, mouseX, mouseY) -
-        rotateMouseStart;
-
-      var angleModulo = angleNew % 45;
-      0 > angleModulo && (angleModulo += 45);
-
-      var angleTrend = angleNew > rotateStart,
-        angleQuaterX = angleTrend && 42 < angleModulo;
-      // angleQuaterY = 3 > angleModulo || 42 < angleModulo;
-      angleTrend = !angleTrend && 3 > angleModulo;
-      angleQuaterX
-        ? (angleNew = angleNew + 45 - angleModulo)
-        : angleTrend && (angleNew -= angleModulo);
-      if (dataElement.getSelected() && ghostElement) {
-        var value = getStringTranform(0, 0, angleNew);
-        ghostElement.css('transform', value);
-        elementSelect.css('transform', value);
-      }
-      dataElement.setRotate(angleNew);
-      return !1;
-    }
-
-    function setEventMouseUp(event) {
-      setCusorType();
-      eventDocument
-        .off('mousemove|touchmove', setEventMouseMove)
-        .off('mouseup|touchend', setEventMouseUp);
-    }
-
-    function setCusorType() {
-      var cusorType =
-        (angleNew >= -23 && angleNew < 25) ||
-        (angleNew >= 337 && angleNew <= 359)
-          ? 'otega0'
-          : angleNew >= 25 && angleNew < 67
-          ? 'otega1'
-          : angleNew >= 67 && angleNew < 113
-          ? 'otega2'
-          : angleNew >= 113 && angleNew < 158
-          ? 'otega3'
-          : angleNew >= 158 && angleNew < 203
-          ? 'otega4'
-          : (angleNew >= 203 && angleNew < 247) ||
-            (angleNew <= -113 && angleNew > -157)
-          ? 'otega5'
-          : (angleNew >= 247 && angleNew < 292) ||
-            (angleNew <= -68 && angleNew > -113)
-          ? 'otega6'
-          : 'otega7';
-
-      [0, 1, 2, 3, 4, 5, 6, 7].forEach((number) => {
-        ghostElement.removeClass('otega' + number);
-      });
-      ghostElement.addClass(cusorType);
-    }
-    return !1;
-  }
-  elementMouseDown(eventMousedown) {
-    const eventDocument = new EventElement(jQuery(document));
-    if (3 === eventMousedown.which || eventMousedown.ctrlKey) {
-      return true;
-    }
-
-    const eventTarget = jQuery(eventMousedown.currentTarget);
-    const elementSelect = eventTarget;
-
-    const dataElement = elementSelect.data('dataElement');
-    const ghostElement = elementSelect.data('dataBoxer');
-
-    const startX = dataElement.getLeft();
-    const startY = dataElement.getTop();
-    const mouseStartX =
-      void 0 !== eventMousedown.clientX
-        ? eventMousedown.clientX
-        : eventMousedown.originalEvent.touches[0].clientX;
-
-    const mouseStartY =
-      void 0 !== eventMousedown.clientY
-        ? eventMousedown.clientY
-        : eventMousedown.originalEvent.touches[0].clientY;
-
-    let mouseX = 0;
-    let mouseY = 0;
-    let currentTop = 0;
-    let currentLeft = 0;
-
-    elementSelect.data('startX', startX);
-    elementSelect.data('startY', startY);
-
-    const menuElement = dataElement.$dom.data('menuElement');
-    if (menuElement) {
-      menuElement.hideSubmenu();
-    }
-
-    if (!dataElement.getSelected()) {
-      this.checkElementSelected(eventMousedown);
-    }
-
-    eventDocument
-      .on('mousemove|touchmove', setEventMouseMove.bind(this))
-      .on('mouseup|touchend', setEventMouseUp.bind(this));
-
-    function setEventMouseMove(event) {
-      let deltaX = 0;
-      let deltaY = 0;
-
-      mouseX =
-        void 0 !== event.clientX
-          ? event.clientX
-          : event.originalEvent.touches[0].clientX;
-
-      mouseY =
-        void 0 !== event.clientY
-          ? event.clientY
-          : event.originalEvent.touches[0].clientY;
-
-      deltaX = mouseX - mouseStartX;
-      deltaY = mouseY - mouseStartY;
-
-      currentLeft = startX + deltaX;
-      currentTop = startY + deltaY;
-      const rotateStart = dataElement.getAngle();
-      const style = {
-        transform: getStringTranform(currentLeft, currentTop, rotateStart),
-      };
-      if (dataElement.getSelected() && ghostElement) {
-        ghostElement.css(style);
-      }
-      elementSelect.css(style);
-      return !1;
-    }
-
-    function setEventMouseUp(event) {
-      eventDocument
-        .off('mousemove|touchmove', setEventMouseMove.bind(this))
-        .off('mouseup|touchend', setEventMouseUp.bind(this));
-
-      if (currentLeft === mouseX && mouseY === currentTop) {
-        if (!dataElement.getSelected()) {
-          this.createSelectedElement(elementSelect);
-          dataElement.updateSelected(true);
-        }
-      } else {
-        dataElement.performMove({ left: currentLeft, top: currentTop });
-      }
-    }
-    return !1;
-  }
-
-  checkElementSelected(event) {
-    // if (unSelected(event) && workspaceModel) {
-    //   workspaceModel.getElements().forEach(removeElementSelected);
-    // }
-  }
-
-  createSelectedElement(element) {
-    let ghostElement = element.data('ghostElement');
-    let menuElement = element.data('menuElement');
-    const dataElement = element.data('dataElement');
-
-    if (dataElement.getSelected()) {
-      return;
-    }
-
-    dataElement.updateSelected(true);
-
-    if (!ghostElement) {
-      ghostElement = jQuery(
-        // tslint:disable-next-line: max-line-length
-        `<div class="selectedBound handleCircle"><div class="ghostElement"></div><a class="cube tl"></a><a class="cube t"></a><a class="cube tr"></a><a class="cube r"></a><a class="cube br"></a><a class="cube b"></a><a class="cube bl"></a><a class="cube l"></a><a class="rotate" title="Rotate"></a></div>`
-      );
-      element.data('dataBoxer', ghostElement);
-    }
-
-    if (element.hasClass('text')) {
-      ghostElement.addClass('text');
-    }
-
-    ghostElement.data('dataElement', dataElement).appendTo(this.border.$dom);
-
-    if (element.hasClass('text')) {
-      jQuery('.cube.tl, .cube.t, .cube.tr, .cube.bl, .cube.b, .cube.br').css(
-        'display',
-        'none'
-      );
-
-      element.addClass('focused');
-      element.children('.inner').attr('contenteditable', 'true');
-      element.on('paste', onPaste);
-
-      if (!menuElement) {
-        menuElement = this.createMenu('text', dataElement);
-      }
-
-      element.data('menuElement', menuElement);
-    } else if (element.hasClass('image')) {
-      jQuery('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
-      if (!menuElement) {
-        menuElement = this.createMenu('image', dataElement);
-      }
-    } else if (element.hasClass('svg')) {
-      jQuery('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
-      if (!menuElement) {
-        menuElement = this.createMenu('svg', dataElement);
-      }
-    } else if (element.hasClass('textsvg')) {
-      jQuery('.cube.l, .cube.t, .cube.r, .cube.b').css('display', 'none');
-      if (!menuElement) {
-        menuElement = this.createMenu('textsvg', dataElement);
-      }
-    }
-
-    if (menuElement) {
-      element.data('menuElement', menuElement);
-      menuElement.render();
-    }
-
-    ghostElement.css({
-      width: dataElement.getWidth(),
-      height: dataElement.getHeight(),
-      top: dataElement.getTop(),
-      left: dataElement.getLeft(),
-      transform: getStringTranform(0, 0, dataElement.getAngle()),
-    });
+  selectedElement(elementSelected) {
+    const $elementSelected = jQuery(elementSelected);
+    const dataElement = $elementSelected.data('dataElement');
+    this.offMenuElementsWithout(dataElement);
   }
 
   createMenu(type, dataElement) {
@@ -676,33 +450,6 @@ export class Workspace {
     //   );
     // }
     // return menu;
-  }
-
-  unSelected(event) {
-    return (
-      event.currentTarget.id !== 'zone-left' ||
-      (event.currentTarget.id === 'zone-left' &&
-        (event.target.id === 'areaWorkspace' ||
-          event.target.id === 'elements' ||
-          event.target.id === 'zone-left'))
-    );
-  }
-
-  removeElementSelected(element) {
-    if (element.getDom().hasClass('selected')) {
-      const menuElement = element.getDom().data('menuElement');
-      element.setSelected(!1);
-      element.getDom().removeClass('selected');
-      if (element.getDom().hasClass('text')) {
-        element.getDom().removeClass('focused');
-        element.getDom().insertAfter(jQuery('.element:eq(3)'));
-        element.getDom().children('.inner').attr('contenteditable', false);
-      }
-      element.remove();
-      if (menuElement.$dom) {
-        menuElement.detach();
-      }
-    }
   }
 
   updateStyle(values) {

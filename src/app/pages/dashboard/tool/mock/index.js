@@ -141,7 +141,7 @@ export default {
     height: 360,
     elements: [
       {
-        typeElement: 'svgtext',
+        elementType: 'svgtext',
         userEdited: true,
         elementIndex: 5,
         transparency: 1,
@@ -163,7 +163,7 @@ export default {
         },
       },
       {
-        typeElement: 'svgtext',
+        elementType: 'svgtext',
         userEdited: true,
         elementIndex: 5,
         transparency: 1,
@@ -186,7 +186,7 @@ export default {
       },
       {
         type: 'UplevoImage',
-        typeElement: 'svgtext',
+        elementType: 'svgtext',
         userEdited: true,
         elementIndex: 5,
         transparency: 1,
@@ -208,7 +208,7 @@ export default {
         },
       },
       {
-        typeElement: 'svgtext',
+        elementType: 'svgtext',
         userEdited: true,
         elementIndex: 5,
         transparency: 1,

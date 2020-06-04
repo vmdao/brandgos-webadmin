@@ -153,7 +153,7 @@ export default {
           var data = {
             code: '-JTDmx5Qdl1',
             type: 'UplevoImage',
-            typeElement: 'image',
+            elementType: 'image',
             userEdited: true,
             elementIndex: 0,
             transparency: 1,
@@ -184,7 +184,7 @@ export default {
           var data = {
             code: '-JTDmx5Qdl1',
             type: 'UplevoImage',
-            typeElement: 'image',
+            elementType: 'image',
             userEdited: true,
             elementIndex: 0,
             transparency: 1,

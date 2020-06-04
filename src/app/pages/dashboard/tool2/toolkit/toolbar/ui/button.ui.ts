@@ -5,14 +5,16 @@ export class ButtonUI extends BaseMenuItemUI {
 
   constructor(options) {
     super(options);
-    this.html = `<li class="toolbar__item ${
-      this.code ? 'toolbar__item--' + this.code : ''
-    } ${this.isActive ? 'toolbar__item--active' : ''}"> 
-        <button class="toolbar__button ${
-          this.code ? 'toolbar__button--' + this.code : ''
-        } ${this.options.icon ? 'toolbar__button--icon' : ''}">
-        <span class="toolbar__label toolbar__label--left">${
-          this.name
-        }</span></button> </li>`;
+    this.html = `<button class="toolbar__button 
+    ${this.contentIcon ? 'toolbar__button--' + this.contentIcon : ''} 
+    ${this.contentIcon ? 'toolbar__button--icon' : ''}">
+        <span class="toolbar__label toolbar__label--left">
+        ${this.contentName}</span></button>`;
+  }
+
+  setCommand(action) {
+    this.$dom.on(action.event, (event) => {
+      action.command.execute(this.isActive);
+    });
   }
 }

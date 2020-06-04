@@ -1,4 +1,5 @@
 import * as jQuery from 'jquery';
+import { omit } from 'lodash';
 
 import { MoveBehavior } from './interfaces/move.interface';
 import { RotateBehavior } from './interfaces/rotate.interface';
@@ -35,6 +36,7 @@ export abstract class BaseElement {
   constructor(options: any) {
     this.elementId = options.elementId;
     this.elementCode = options.elementId;
+    this.elementType = options.elementType;
 
     this.top = options.top || 0;
     this.left = options.left || 0;
@@ -227,5 +229,19 @@ export abstract class BaseElement {
     };
 
     this.$dom.css(styles);
+  }
+
+  getData() {
+    return {
+      elementType: this.elementType,
+      elementIndex: this.order,
+      transparency: this.transparent,
+      rotation: this.angle,
+      width: this.width,
+      height: this.height,
+      top: this.top,
+      left: this.left,
+      scale: this.scale,
+    };
   }
 }

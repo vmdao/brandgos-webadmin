@@ -9,7 +9,7 @@ function ElementBase(data) {
   this.rotation = this.height = this.width = this.top = this.left = 0;
   this.index = data.elementIndex;
   this.type = data.type || '';
-  this.typeElement = data.typeElement || '';
+  this.elementType = data.elementType || '';
   this.eid = new Date().getTime();
 }
 

@@ -12,6 +12,7 @@ export class TextSvgChild {
   letterSpacing: number;
   lightHeight: number;
   textAlign: string;
+  uppercase: string;
   fontFamily: string;
   color: string;
   html: string;
@@ -26,6 +27,8 @@ export class TextSvgChild {
     this.letterSpacing = options.style.letterSpacing;
     this.lightHeight = options.style.lightHeight;
     this.textAlign = options.style.textAlign;
+    this.uppercase = options.uppercase;
+
     this.color = options.style.color;
     this.html = options.html;
 
