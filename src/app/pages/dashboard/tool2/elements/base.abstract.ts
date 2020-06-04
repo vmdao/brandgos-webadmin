@@ -1,10 +1,10 @@
 import * as jQuery from 'jquery';
-import { omit } from 'lodash';
 
 import { MoveBehavior } from './interfaces/move.interface';
 import { RotateBehavior } from './interfaces/rotate.interface';
 import { TextChild } from './text.child';
 import { SvgChild } from './svg.child';
+import { BaseTextChild } from './base-text-child.abstract';
 
 export abstract class BaseElement {
   $dom: any;
@@ -27,7 +27,7 @@ export abstract class BaseElement {
 
   selected = false;
 
-  text: TextChild;
+  text: BaseTextChild;
   svg: SvgChild;
 
   moveBehavior: MoveBehavior;
@@ -130,7 +130,7 @@ export abstract class BaseElement {
     };
   }
 
-  setText(text: TextChild) {
+  setText(text: BaseTextChild) {
     this.text = text;
   }
 

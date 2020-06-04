@@ -32,6 +32,10 @@ export abstract class BaseMenuItemUI {
 
   constructor(options: MenuItemDto) {
     this.configOption(options);
+    this.htmlWrapper = `<li class="toolbar__item
+    ${this.code ? 'toolbar__item--' + this.code : ''} 
+    ${this.isActive ? 'toolbar__item--active' : ''}">
+    </li>`;
   }
 
   configOption(options) {
@@ -42,11 +46,6 @@ export abstract class BaseMenuItemUI {
   }
 
   render() {
-    this.htmlWrapper = `<li class="toolbar__item
-    ${this.code ? 'toolbar__item--' + this.code : ''} 
-    ${this.isActive ? 'toolbar__item--active' : ''}">
-    </li>`;
-
     this.$dom = jQuery(this.html);
     this.$domWrapper = jQuery(this.htmlWrapper);
     this.$domWrapper.append(this.$dom);

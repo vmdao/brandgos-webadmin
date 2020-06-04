@@ -1,3 +1,3 @@
 export interface Command {
-  execute(value: any);
+  execute(value?: any);
 }

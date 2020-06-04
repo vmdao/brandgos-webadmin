@@ -5,7 +5,8 @@ export class TypeTextBehavior implements TypeBehavior {
   constructor(element: BaseElement) {
     this.element = element;
   }
-  changeFontsize(value: number) {}
+  render() {}
+  changeFontSize(value: number) {}
   changeLineHeight(value: number) {}
   changeTextAlign(value: string) {}
   changeColor(value: string) {}
@@ -13,4 +14,5 @@ export class TypeTextBehavior implements TypeBehavior {
   changeContent(value: string) {}
   changeFontfamily(value: string) {}
   changeCurve(value: number) {}
+  changeTextTransform(value: string) {}
 }

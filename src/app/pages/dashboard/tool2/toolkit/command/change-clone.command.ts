@@ -12,6 +12,8 @@ export class CloneCommand implements Command {
 
   execute(value: any) {
     const dataElement = this.element.getData();
+    dataElement.top += 20;
+    dataElement.left += 20;
     this.workspace.createElement(dataElement);
   }
 }

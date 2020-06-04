@@ -1,6 +1,6 @@
 import { BaseMenu } from '../basebar/menu.abstract';
 import { BaseElement } from '../../elements/base.abstract';
-import { ButtonUI } from './ui/button.ui';
+import { ButtonUI, ButtonToggleUI } from './ui';
 import { Command } from '../command';
 
 export interface DataMenuItem {
@@ -48,6 +48,10 @@ export class ToolbarMenu extends BaseMenu {
         }
         return new ButtonUI(options);
       }
+      case 'button-toggle': {
+        const options = { ...item, children: [] };
+        return new ButtonToggleUI(options);
+      }
       default:
         return new ButtonUI({ ...item });
     }
@@ -57,6 +61,9 @@ export class ToolbarMenu extends BaseMenu {
     switch (item.type) {
       case 'button': {
         return new ButtonUI({ ...item });
+      }
+      case 'button-toggle': {
+        return new ButtonToggleUI({ ...item });
       }
       default:
         return new ButtonUI({ ...item });

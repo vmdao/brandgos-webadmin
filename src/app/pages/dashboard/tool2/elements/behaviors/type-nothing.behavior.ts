@@ -5,7 +5,8 @@ export class TypeNothingBehavior implements TypeBehavior {
   constructor(element: BaseElement) {
     this.element = element;
   }
-  changeFontsize(value: number) {}
+  render() {}
+  changeFontSize(value: number) {}
   changeLineHeight(value: number) {}
   changeTextAlign(value: string) {}
   changeColor(value: string) {}
@@ -13,4 +14,5 @@ export class TypeNothingBehavior implements TypeBehavior {
   changeFontfamily(value: string) {}
   changeCurve(value: number) {}
   changeContent(value: string) {}
+  changeTextTransform(value: string) {}
 }

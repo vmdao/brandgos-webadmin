@@ -1,5 +1,6 @@
 export interface TypeBehavior {
-  changeFontsize(value: number);
+  render();
+  changeFontSize(value: number);
   changeLineHeight(value: number);
   changeTextAlign(value: string);
   changeColor(value: string);
@@ -7,4 +8,5 @@ export interface TypeBehavior {
   changeCurve(value: number);
   changeContent(value: string);
   changeFontfamily(value: string);
+  changeTextTransform(value: string);
 }

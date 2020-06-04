@@ -14,7 +14,7 @@ export class ButtonUI extends BaseMenuItemUI {
 
   setCommand(action) {
     this.$dom.on(action.event, (event) => {
-      action.command.execute(this.isActive);
+      action.command.execute();
     });
   }
 }

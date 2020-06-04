@@ -17,10 +17,10 @@ export class SvgChild {
   originThumb: string;
 
   constructor(options: any) {
-    this.background = options.fontsize;
-    this.color1 = options.letterSpacing;
-    this.color2 = options.lightHeight;
-    this.color3 = options.textAlign;
+    this.background = options.background;
+    this.color1 = options.color1;
+    this.color2 = options.color2;
+    this.color3 = options.color3;
     this.originUrl = options.originUrl;
     this.originThumb = options.originThumb;
 

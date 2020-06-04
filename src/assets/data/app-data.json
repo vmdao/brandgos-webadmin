@@ -1,7 +1,7 @@
 {
   "app": {
-    "name": "A Dong",
-    "description": "Á Đông for admin"
+    "name": "Brandgos",
+    "description": "Brandgos for admin"
   },
   "menu": [{
       "text": "Dashboard",

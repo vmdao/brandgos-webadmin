@@ -8,7 +8,11 @@ import { ToolbarMenu } from '../toolkit/toolbar/menu';
 
 import Selecto from 'selecto';
 import Moveable from 'moveable';
-import { ColorCommand, CloneCommand } from '../toolkit/command';
+import {
+  ColorCommand,
+  CloneCommand,
+  TransformCommand,
+} from '../toolkit/command';
 export class Workspace {
   $dom: any;
   $domWrapper: any;
@@ -120,21 +124,21 @@ export class Workspace {
   }
 
   buildMenu(dataElement: BaseElement) {
-    const changeColorComand = new ColorCommand(dataElement);
-    const changCloneComand = new CloneCommand(dataElement, this);
+    const transformCommand = new TransformCommand(dataElement);
+    const cloneComand = new CloneCommand(dataElement, this);
     const items = [
       {
-        type: 'button',
-        icon: '',
-        name: 'Copy',
-        actions: [{ event: 'click', command: changeColorComand }],
-        children: [{ type: 'button', name: 'Copy', icon: '', actions: [] }],
+        type: 'button-toggle',
+        icon: 'uppercase',
+        name: 'transform',
+        actions: [{ event: 'click', command: transformCommand }],
+        children: [],
       },
       {
         type: 'button',
-        icon: 'uppercase',
-        name: 'Uppercase',
-        actions: [{ event: 'click', command: changCloneComand }],
+        icon: '',
+        name: 'Clone',
+        actions: [{ event: 'click', command: cloneComand }],
         children: [],
       },
     ];
@@ -395,7 +399,7 @@ export class Workspace {
     //       },
     //       listenerTranparency: setEventChangeTransparency,
     //       listenerColor1: setEventChangeFontColor,
-    //       listenerUppercase: setEventChangeUppercase,
+    //       listenertransform: setEventChangetransform,
     //       listenerCopy: setEventChangeCopy,
     //       listenerDelete: setEventChangeDelete,
     //     },
@@ -442,7 +446,7 @@ export class Workspace {
     //       },
     //       listenerTranparency: setEventChangeTransparency,
     //       listenerColor1: setEventChangeColor1,
-    //       listenerUppercase: setEventChangeUppercase,
+    //       listenertransform: setEventChangetransform,
     //       listenerCopy: setEventChangeCopy,
     //       listenerDelete: setEventChangeDelete,
     //     },
