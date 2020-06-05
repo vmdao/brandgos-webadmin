@@ -34,6 +34,7 @@
     "@ngrx/store-devtools": "^9.0.0",
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^4.0.0",
+    "@simonwep/pickr": "^1.6.0",
     "@svgdotjs/svg.js": "^3.0.16",
     "angulartics2": "^8.3.0",
     "backbone": "^1.4.0",

@@ -179,6 +179,8 @@ menu.menu.toolbar {
   justify-content: space-between;
   cursor: pointer;
   font-family: inherit;
+  display: flex;
+  align-items: center;
 }
 .toolbar__button {
   padding: 0 5px;
@@ -445,6 +447,7 @@ menu.menu.toolbar {
 .menuList .active .toolbar__button {
   background-color: #ebece9;
   border: none;
+  border-radius: 4px;
 }
 
 .toolbar__item--slider {
@@ -559,6 +562,7 @@ menu.menu.toolbar {
     inset -1px -1px 0 rgba(255, 255, 255, 0.25);
   border-radius: 5px;
   border: none !important;
+  padding: 0;
 }
 
 .toolbar__item--color menu.toolbar {

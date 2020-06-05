@@ -1,6 +1,6 @@
 import { BaseMenu } from '../basebar/menu.abstract';
 import { BaseElement } from '../../elements/base.abstract';
-import { ButtonUI, ButtonToggleUI } from './ui';
+import { ButtonUI, ButtonToggleUI, ButtonColorUI, DropdownUI } from './ui';
 import { Command } from '../command';
 
 export interface DataMenuItem {
@@ -9,6 +9,7 @@ export interface DataMenuItem {
   icon: string;
   children: Array<DataMenuItemChild>;
   actions: Array<{ event: string; command: Command }>;
+  context: any;
 }
 
 export interface DataMenuItemChild {
@@ -16,11 +17,13 @@ export interface DataMenuItemChild {
   icon: string;
   name: string;
   actions: Array<{ event: string; command: Command }>;
+  context: any;
 }
 
 export class ToolbarMenu extends BaseMenu {
   htmlWrapper = `<menu class="menu toolbar"></menu>`;
   html = `<ul class="toolbar__list"></ul>`;
+
   constructor(options: {
     where?: string;
     type?: string;
@@ -52,6 +55,14 @@ export class ToolbarMenu extends BaseMenu {
         const options = { ...item, children: [] };
         return new ButtonToggleUI(options);
       }
+      case 'button-color': {
+        const options = { ...item, children: [] };
+        return new ButtonColorUI(options);
+      }
+      case 'dropdown': {
+        const options = { ...item, children: [] };
+        return new DropdownUI(options);
+      }
       default:
         return new ButtonUI({ ...item });
     }
@@ -61,9 +72,6 @@ export class ToolbarMenu extends BaseMenu {
     switch (item.type) {
       case 'button': {
         return new ButtonUI({ ...item });
-      }
-      case 'button-toggle': {
-        return new ButtonToggleUI({ ...item });
       }
       default:
         return new ButtonUI({ ...item });

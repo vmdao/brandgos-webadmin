@@ -12,6 +12,9 @@ import {
   ColorCommand,
   CloneCommand,
   TransformCommand,
+  DeleteCommand,
+  FontFamilyCommand,
+  FontsizeCommand,
 } from '../toolkit/command';
 export class Workspace {
   $dom: any;
@@ -27,6 +30,8 @@ export class Workspace {
   border: Border;
   elements: Array<BaseElement> = [];
   $toolbar;
+  managerSelector: Selecto;
+  managerMoveabler: Moveable;
 
   constructor(option) {
     this.documentId = option.documentId;
@@ -94,7 +99,7 @@ export class Workspace {
 
     let dataMenu = dataElement.$dom.data('dataMenu');
     if (!dataMenu) {
-      dataMenu = this.createMenu(dataElement.type, dataElement);
+      dataMenu = this.createMenu(dataElement);
       dataElement.$dom.data('dataMenu', dataMenu);
     }
     dataMenu.appendTo('#designtool');
@@ -119,20 +124,130 @@ export class Workspace {
     this.renderElement(dataElement);
   }
 
+  deleteElement(dataElement: BaseElement) {
+    this.elements = this.elements.filter((e) => e !== dataElement);
+    this.renderDestroyElement(dataElement);
+
+    // hardcore remove movebaler
+    this.managerMoveabler.target = null;
+  }
+
+  renderDestroyElement(element: BaseElement) {
+    element.$dom.remove();
+  }
+
   renderElement(element: BaseElement) {
     this.$dom.append(element.$dom);
   }
 
   buildMenu(dataElement: BaseElement) {
-    const transformCommand = new TransformCommand(dataElement);
+    const fontFamilyCommand = new FontFamilyCommand(dataElement, this);
+    const fontsizeCommand = new FontsizeCommand(dataElement, this);
+    const colorCommand = new ColorCommand(dataElement);
+    const transformCommand = new TransformCommand(dataElement, this);
     const cloneComand = new CloneCommand(dataElement, this);
+    const deleteCommand = new DeleteCommand(dataElement, this);
+
+    const fonts = [
+      '/assets/UV-Akashi.ttf',
+      '/assets/cantata-one-regular.otf',
+      '/assets/Roboto-Thin.ttf',
+      '/assets/UV-Agin.ttf',
+    ];
     const items = [
+      {
+        type: 'dropdown',
+        icon: '',
+        name: 'Font Family',
+        code: 'fontFamily',
+        actions: [{ event: 'click', command: fontFamilyCommand }],
+        children: [],
+        context: {
+          list: [
+            {
+              label: 'Aileron Bold',
+              width: 138,
+              height: 35,
+              url: '/assets/UV-Agin.ttf',
+              thumbUrl:
+                'https://static.canva.com/static/images/fonts/Aileron.png',
+            },
+            {
+              label: 'Aileron Thin',
+              width: 90,
+              height: 35,
+              url: '/assets/cantata-one-regular.otf',
+              thumbUrl:
+                'https://static.canva.com/static/images/fonts/Aileron-Thin.png',
+            },
+            {
+              label: 'Aileron Bold',
+              width: 138,
+              height: 35,
+              url: '/assets/UV-Agin.ttf',
+              thumbUrl:
+                'https://static.canva.com/static/images/fonts/Aileron.png',
+            },
+            {
+              label: 'Aileron Thin',
+              width: 90,
+              height: 35,
+              url: '/assets/cantata-one-regular.otf',
+              thumbUrl:
+                'https://static.canva.com/static/images/fonts/Aileron-Thin.png',
+            },
+          ],
+        },
+      },
+
+      {
+        type: 'dropdown',
+        icon: '',
+        name: 'FontSize',
+        code: 'fontSize',
+        actions: [{ event: 'click', command: fontsizeCommand }],
+        children: [],
+        context: {
+          list: [
+            {
+              label: '30px',
+              value: 30,
+            },
+            {
+              label: '40px',
+              value: 40,
+            },
+            {
+              label: '50px',
+              value: 50,
+            },
+            {
+              label: '60px',
+              value: 60,
+            },
+          ],
+        },
+      },
+
       {
         type: 'button-toggle',
         icon: 'uppercase',
         name: 'transform',
         actions: [{ event: 'click', command: transformCommand }],
         children: [],
+        context: {
+          isActive: dataElement.text.transform === 'uppercase' ? true : false,
+        },
+      },
+      {
+        type: 'button-color',
+        icon: '',
+        name: 'color',
+        actions: [{ event: 'change', command: colorCommand }],
+        children: [],
+        context: {
+          color: dataElement.text.color,
+        },
       },
       {
         type: 'button',
@@ -140,6 +255,15 @@ export class Workspace {
         name: 'Clone',
         actions: [{ event: 'click', command: cloneComand }],
         children: [],
+        context: {},
+      },
+      {
+        type: 'button',
+        icon: '',
+        name: 'Delete',
+        actions: [{ event: 'click', command: deleteCommand }],
+        children: [],
+        context: {},
       },
     ];
 
@@ -175,7 +299,7 @@ export class Workspace {
     //   );
     const frameMap = new Map();
     let targets = [];
-    const selecto = new Selecto({
+    this.managerSelector = new Selecto({
       container: this.$dom.get(0),
       dragContainer: '.elements',
       selectableTargets: ['.elements .element'],
@@ -185,7 +309,7 @@ export class Workspace {
       toggleContinueSelect: ['shift'],
     });
 
-    const moveable = new Moveable(this.$dom.get(0), {
+    this.managerMoveabler = new Moveable(this.$dom.get(0), {
       draggable: true,
       resizable: true,
       throttleResize: 0,
@@ -193,7 +317,7 @@ export class Workspace {
       rotatable: true,
     });
 
-    moveable
+    this.managerMoveabler
       .on('dragStart', ({ target, set }) => {
         const dataElement = jQuery(target).data('dataElement');
         if (!frameMap.has(target)) {
@@ -220,7 +344,7 @@ export class Workspace {
         dataElement.setTop(frame.translate[1]);
       });
 
-    moveable
+    this.managerMoveabler
       .on('rotateStart', ({ target, set }) => {
         const dataElement = jQuery(target).data('dataElement');
         if (!frameMap.has(target)) {
@@ -243,16 +367,16 @@ export class Workspace {
         dataElement.setAngle(frame.rotate);
       });
 
-    moveable.on('resize', ({ target, width, height, dist }) => {
+    this.managerMoveabler.on('resize', ({ target, width, height, dist }) => {
       target.style.width = width + 'px';
       target.style.height = height + 'px';
     });
 
-    moveable.on('clickGroup', (e) => {
-      selecto.clickTarget(e.inputEvent, e.inputTarget);
+    this.managerMoveabler.on('clickGroup', (e) => {
+      this.managerSelector.clickTarget(e.inputEvent, e.inputTarget);
     });
 
-    moveable
+    this.managerMoveabler
       .on('dragGroupStart', ({ events }) => {
         events.forEach(({ target, set }) => {
           if (!frameMap.has(target)) {
@@ -280,7 +404,7 @@ export class Workspace {
         });
       });
 
-    moveable
+    this.managerMoveabler
       .on('resizeGroupStart', ({ events }) => {
         events.forEach((ev, i) => {
           const frame = frames[i];
@@ -312,7 +436,7 @@ export class Workspace {
         console.log('onResizeGroupEnd', targets, isDrag);
       });
 
-    moveable
+    this.managerMoveabler
       .on('rotateGroupStart', ({ events }) => {
         events.forEach(({ target, set }) => {
           if (!frameMap.has(target)) {
@@ -343,11 +467,11 @@ export class Workspace {
         console.log('onRotateGroupEnd', targets, isDrag);
       });
 
-    selecto
+    this.managerSelector
       .on('dragStart', (e) => {
         const target = e.inputEvent.target;
         if (
-          moveable.isMoveableElement(target) ||
+          this.managerMoveabler.isMoveableElement(target) ||
           targets.some((t) => t === target || t.contains(target))
         ) {
           e.stop();
@@ -356,7 +480,7 @@ export class Workspace {
       .on('selectStart', (e) => {})
       .on('select', ({ selected }) => {
         targets = selected;
-        moveable.target = targets;
+        this.managerMoveabler.target = targets;
 
         if (targets.length == 1) {
           this.selectedElement(jQuery(targets[0]));
@@ -369,7 +493,7 @@ export class Workspace {
           e.inputEvent.preventDefault();
 
           setTimeout(() => {
-            moveable.dragStart(e.inputEvent);
+            this.managerMoveabler.dragStart(e.inputEvent);
           });
         }
       });
@@ -381,7 +505,7 @@ export class Workspace {
     this.offMenuElementsWithout(dataElement);
   }
 
-  createMenu(type, dataElement) {
+  createMenu(dataElement) {
     return this.buildMenu(dataElement);
     // let menu = null;
     // if (type === 'text') {

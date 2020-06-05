@@ -4,51 +4,57 @@ import * as jQuery from 'jquery';
 
 import { SVG } from '@svgdotjs/svg.js';
 import { Text2Svg } from '../../utils/text2svg.js';
+import { BaseTextChild } from '../base-text-child.abstract';
 export class TypeSvgBehavior implements TypeBehavior {
   element: BaseElement;
+  text: BaseTextChild;
+  $dom;
+
   constructor(element: BaseElement) {
     this.element = element;
-    console.log('TypeSvgBehavior');
+    this.text = element.text;
+    this.$dom = this.text.$dom;
+    this.render();
   }
-  changeFontSize(value: number) {}
+
+  changeFontSize(value: any) {
+    this.getHtmlSvg(value);
+  }
   changeLineHeight(value: number) {}
   changeTextAlign(value: string) {}
-  changeColor(value: string) {}
-  changeLetterSpacing(value: number) {}
-  changeFontfamily(value: string) {}
-  changeCurve(value: number) {}
-  changeContent(value: string) {}
-  changeTextTransform(value: string) {
-    this.element.text.perforTextTransform(value);
+  changeColor(value: string) {
+    this.$dom.find('[fill]').css('fill', value);
+  }
+  changeLetterSpacing(value: any) {}
+  changeFontfamily(value: any) {
+    this.getHtmlSvg(value);
+  }
+  changeCurve(value: any) {}
+  changeContent(value: any) {}
+  changeTextTransform(value: any) {
+    this.getHtmlSvg(value);
   }
 
   render() {
-    console.log(this.element, 'TypeSvgBehavior render');
-    this.getSvgHtml(this.element);
+    this.getHtmlSvg();
   }
 
-  getSvgHtml(parent) {
-    const fonts = [
-      '/assets/UV-Akashi.ttf',
-      '/assets/cantata-one-regular.otf',
-      '/assets/Roboto-Thin.ttf',
-      '/assets/UV-Agin.ttf',
-    ];
-    const data = this.element.text.getData();
-    Text2Svg.load(data.url, (text2svg) => {
-      const path = text2svg.toPath(parent.html, data);
+  getHtmlSvg(value?: any) {
+    const data = this.text.getData();
+    Text2Svg.load(data['url'], (text2svg) => {
+      const path = text2svg.toPath(data['htmlSvg'], data);
       const width = path.width;
       const height = path.height;
 
-      const draw = SVG().size('100%', '100%').viewbox(0, 0, width, height);
+      const draw = SVG().size(width, height).viewbox(0, 0, width, height);
 
       draw.path(path.pathData);
       draw.fill(data.color);
-
-      parent.setWidth(width);
-      parent.setHeight(height);
-
+      this.element.updateSizeByFontsize({ width, height });
       this.renderSvgDom(draw.svg());
+      if (value && typeof value.callback === 'function') {
+        value.callback();
+      }
     });
   }
 

@@ -1,5 +1,6 @@
 import * as jQuery from 'jquery';
 import { BaseElement } from '../../elements/base.abstract';
+import { BaseMenuItemUI } from './ui.asbtract';
 
 export abstract class BaseMenu {
   options: {
@@ -8,7 +9,7 @@ export abstract class BaseMenu {
     dataElement: BaseElement;
   };
 
-  items: Array<any> = [];
+  items: Array<BaseMenuItemUI> = [];
   where: string;
   type: string;
 
@@ -72,5 +73,12 @@ export abstract class BaseMenu {
       this.$domWrapper.detach();
       this.isActived = false;
     }
+  }
+
+  getData() {
+    return this.items.map((item: BaseMenuItemUI) => {
+      const dataItem = item.getData();
+      return dataItem;
+    });
   }
 }

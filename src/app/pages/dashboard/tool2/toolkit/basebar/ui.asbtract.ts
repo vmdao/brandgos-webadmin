@@ -1,8 +1,11 @@
 import * as jQuery from 'jquery';
 
 import { Command } from '../command';
+import { OnViewed } from '../../lifecycle';
 
 export interface MenuItemDto {
+  type?: string;
+  code?: string;
   icon?: string;
   name?: string;
   children?: Array<BaseMenuItemUI>;
@@ -14,8 +17,9 @@ export interface MenuItemActionDto {
   command: Command;
 }
 
-export abstract class BaseMenuItemUI {
+export abstract class BaseMenuItemUI implements OnViewed {
   code: string;
+  type: string;
   contentName: string;
   contentIcon: string;
   children: Array<{ BaseMenuItemUI }>;
@@ -28,21 +32,23 @@ export abstract class BaseMenuItemUI {
   html = '';
   htmlWrapper = '';
 
-  isActive = false;
+  context: { isActive?: boolean; color?: string } = { isActive: false };
 
   constructor(options: MenuItemDto) {
     this.configOption(options);
     this.htmlWrapper = `<li class="toolbar__item
-    ${this.code ? 'toolbar__item--' + this.code : ''} 
-    ${this.isActive ? 'toolbar__item--active' : ''}">
-    </li>`;
+    ${this.code ? 'toolbar__item--' + this.code : ''}"></li>`;
   }
 
   configOption(options) {
+    this.context = options.context || { isActive: false };
     this.contentName = options.name || '';
     this.contentIcon = options.icon || '';
+    this.code = options.code;
+    this.type = options.type;
     this.children = options.children || [];
     this.actions = options.actions || [];
+    this.options = options;
   }
 
   render() {
@@ -69,6 +75,26 @@ export abstract class BaseMenuItemUI {
 
   appendTo(selector) {
     this.$domWrapper.appendTo(selector);
+    this.onViewed();
     return this;
   }
+
+  getData() {
+    return {
+      type: this.type,
+      code: this.code,
+      icon: this.contentIcon,
+      action: this.actions,
+      children: this.getDataChild(),
+    };
+  }
+
+  getDataChild() {
+    return this.children.map((c) => {
+      console.log(c);
+      return {};
+    });
+  }
+
+  onViewed(value?: any) {}
 }

@@ -244,4 +244,10 @@ export abstract class BaseElement {
       scale: this.scale,
     };
   }
+
+  updateSizeByFontsize(size: { width: number; height: number }) {
+    this.setWidth(size.width);
+    this.setHeight(size.height);
+    this.$dom.css(size);
+  }
 }

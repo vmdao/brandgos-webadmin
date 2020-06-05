@@ -35,6 +35,7 @@
             "styles": [
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "node_modules/ngx-toastr/toastr.css",
+              "node_modules/@simonwep/pickr/dist/themes/classic.min.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -190,6 +191,7 @@
             "styles": [
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "node_modules/ngx-toastr/toastr.css",
+              "node_modules/@simonwep/pickr/dist/themes/classic.min.css",
               "src/styles.scss"
             ],
             "scripts": []

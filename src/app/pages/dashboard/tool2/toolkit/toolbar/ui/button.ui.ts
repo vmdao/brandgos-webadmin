@@ -1,8 +1,6 @@
 import { BaseMenuItemUI } from '../../basebar/ui.asbtract';
 
 export class ButtonUI extends BaseMenuItemUI {
-  isActive = false;
-
   constructor(options) {
     super(options);
     this.html = `<button class="toolbar__button 
