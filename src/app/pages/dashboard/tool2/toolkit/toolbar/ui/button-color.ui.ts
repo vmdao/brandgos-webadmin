@@ -13,7 +13,6 @@ export class ButtonColorUI extends BaseMenuItemUI implements OnViewed {
     this.$domWrapper = jQuery(this.htmlWrapper);
     this.$domWrapper.append(this.$dom);
     this.setCommands();
-
     return this;
   }
 

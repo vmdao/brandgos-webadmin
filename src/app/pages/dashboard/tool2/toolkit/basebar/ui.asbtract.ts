@@ -32,7 +32,14 @@ export abstract class BaseMenuItemUI implements OnViewed {
   html = '';
   htmlWrapper = '';
 
-  context: { isActive?: boolean; color?: string } = { isActive: false };
+  context: {
+    isActive?: boolean;
+    color?: string;
+    min?: number;
+    max?: number;
+    step?: number;
+    valueDefault?: any;
+  } = {};
 
   constructor(options: MenuItemDto) {
     this.configOption(options);

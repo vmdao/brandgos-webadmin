@@ -1,6 +1,13 @@
 import { BaseMenu } from '../basebar/menu.abstract';
 import { BaseElement } from '../../elements/base.abstract';
-import { ButtonUI, ButtonToggleUI, ButtonColorUI, DropdownUI } from './ui';
+import {
+  ButtonUI,
+  ButtonToggleUI,
+  ButtonColorUI,
+  DropdownUI,
+  SliderOneUI,
+  DropPadUI,
+} from './ui';
 import { Command } from '../command';
 
 export interface DataMenuItem {
@@ -59,6 +66,14 @@ export class ToolbarMenu extends BaseMenu {
         const options = { ...item, children: [] };
         return new ButtonColorUI(options);
       }
+      case 'slider-one': {
+        const options = { ...item, children: [] };
+        return new SliderOneUI(options);
+      }
+      case 'drop-pad': {
+        const options = { ...item, children: [] };
+        return new DropPadUI(options);
+      }
       case 'dropdown': {
         const options = { ...item, children: [] };
         return new DropdownUI(options);
@@ -72,6 +87,10 @@ export class ToolbarMenu extends BaseMenu {
     switch (item.type) {
       case 'button': {
         return new ButtonUI({ ...item });
+      }
+      case 'slider-one': {
+        const options = { ...item };
+        return new SliderOneUI(options);
       }
       default:
         return new ButtonUI({ ...item });

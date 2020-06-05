@@ -154,6 +154,7 @@ export class Workspace {
       '/assets/Roboto-Thin.ttf',
       '/assets/UV-Agin.ttf',
     ];
+
     const items = [
       {
         type: 'dropdown',
@@ -199,7 +200,6 @@ export class Workspace {
           ],
         },
       },
-
       {
         type: 'dropdown',
         icon: '',
@@ -228,7 +228,6 @@ export class Workspace {
           ],
         },
       },
-
       {
         type: 'button-toggle',
         icon: 'uppercase',
@@ -239,6 +238,29 @@ export class Workspace {
           isActive: dataElement.text.transform === 'uppercase' ? true : false,
         },
       },
+      {
+        type: 'drop-pad',
+        icon: 'transparency',
+        code: 'transparency',
+        name: 'transparency',
+        actions: [],
+        children: [
+          {
+            type: 'slider-one',
+            icon: 'slider',
+            name: 'slider',
+            actions: [{ event: 'change', command: transformCommand }],
+            context: {
+              min: 0,
+              max: 200,
+              step: 1,
+              valueDefault: 100,
+            },
+          },
+        ],
+        context: {},
+      },
+
       {
         type: 'button-color',
         icon: '',
@@ -259,7 +281,7 @@ export class Workspace {
       },
       {
         type: 'button',
-        icon: '',
+        icon: 'delete',
         name: 'Delete',
         actions: [{ event: 'click', command: deleteCommand }],
         children: [],
