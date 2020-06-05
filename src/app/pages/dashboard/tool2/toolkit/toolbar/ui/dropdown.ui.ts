@@ -55,7 +55,9 @@ export class DropdownUI extends BaseMenuItemUI {
   setEvent() {
     this.$domWrapper.find('> .toolbar__button').on('click', (event) => {
       this.$domWrapper.addClass('toolbar__item--submenuExpanded');
-      this.$document.find('#workspace').one('click', eventClickOff.bind(this));
+      this.$document
+        .find('#areaWorkspace')
+        .one('click', eventClickOff.bind(this));
     });
 
     function eventClickOff(event) {

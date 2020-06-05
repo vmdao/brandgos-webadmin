@@ -47,9 +47,8 @@ export abstract class BaseElement {
     this.order = options.order;
     this.transparent = options.transparent || 1;
 
-    this.$dom = jQuery(`<div></div>`);
-
-    this.$dom.addClass('element');
+    this.$dom = jQuery(`<div class="element"></div>`);
+    this.$dom.addClass(this.elementType);
     this.$dom.data('dataElement', this);
 
     this.updateStyle();
@@ -176,7 +175,7 @@ export abstract class BaseElement {
     return this.transparent;
   }
 
-  updateTransparent(value) {
+  updateTransparency(value) {
     this.setTransparent(value);
     const styles = {
       opacity: this.transparent,
@@ -227,7 +226,6 @@ export abstract class BaseElement {
       transform: `translate(${this.left}px, ${this.top}px) rotate(${this.angle}deg)`,
       scale: this.scale,
     };
-
     this.$dom.css(styles);
   }
 
@@ -235,7 +233,7 @@ export abstract class BaseElement {
     return {
       elementType: this.elementType,
       elementIndex: this.order,
-      transparency: this.transparent,
+      transparent: this.transparent,
       rotation: this.angle,
       width: this.width,
       height: this.height,

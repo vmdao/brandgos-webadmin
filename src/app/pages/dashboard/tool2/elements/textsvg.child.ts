@@ -6,7 +6,7 @@ export class TextSvgChild extends BaseTextChild {
   constructor(options: any, parent) {
     super(options, parent);
     this.url = options.style.url;
-    this.htmlSvg = this.getHtmlSvg();
+    this.htmlSvg = this.getHtmlTransform();
   }
 
   render() {
@@ -15,7 +15,7 @@ export class TextSvgChild extends BaseTextChild {
 
   perforTextTransform(value: any) {
     this.transform = value.value;
-    this.htmlSvg = this.getHtmlSvg();
+    this.htmlSvg = this.getHtmlTransform();
     this.typeBehavior.changeTextTransform(value);
   }
 
@@ -35,7 +35,7 @@ export class TextSvgChild extends BaseTextChild {
     this.typeBehavior.changeColor(value);
   }
 
-  getHtmlSvg() {
+  getHtmlTransform() {
     return this.transform === 'uppercase' ? this.html.toUpperCase() : this.html;
   }
 

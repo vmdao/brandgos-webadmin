@@ -23,7 +23,7 @@ export class DropPadUI extends BaseMenuItemUI {
   render() {
     this.$dom = jQuery(this.html);
     this.$domWrapper = jQuery(this.htmlWrapper);
-
+    this.$domList = this.buildDomList();
     this.$domWrapper.append(this.$dom);
     this.$domWrapper.append(this.$domList);
     this.$document = jQuery(window.document);
@@ -62,6 +62,13 @@ export class DropPadUI extends BaseMenuItemUI {
   }
 
   addItem(item) {
-    item.appendTo(this.$dom);
+    item.appendTo(this.$domList);
+  }
+
+  buildDomList() {
+    const wrapper = jQuery(
+      `<menu class="menuList"><ul class="menuList__inner"></ul></menu>`
+    );
+    return wrapper;
   }
 }

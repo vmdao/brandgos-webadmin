@@ -18,7 +18,7 @@ export class TextSvgElement extends BaseElement {
     return {
       elementType: this.elementType,
       elementIndex: this.order,
-      transparency: this.transparent,
+      transparent: this.transparent,
       rotation: this.angle,
       width: this.width,
       height: this.height,

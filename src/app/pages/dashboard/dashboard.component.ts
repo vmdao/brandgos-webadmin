@@ -1,5 +1,4 @@
 import { Component, NgZone, OnInit } from '@angular/core';
-import tool from './tool/index.js';
 import { Workspace, Border } from './tool2';
 
 import * as mock from './tool/mock/index.js';
@@ -11,15 +10,22 @@ const { localStorages } = mock.default;
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+  workspace: Workspace;
   constructor(private zone: NgZone) {}
 
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
       const border = new Border({ ...localStorages });
-      const workspace = new Workspace({ ...localStorages, border: border });
-      workspace.render('#areaWorkspace');
-      workspace.createElements(localStorages.elements);
-      // tool.init();
+      this.workspace = new Workspace({ ...localStorages, border: border });
+      this.workspace.render('#areaWorkspace');
+      this.workspace.createElements(localStorages.elements);
     });
+  }
+
+  onClickItem(item) {
+    if (this.workspace) {
+      console.log('onClickItem', item);
+      this.workspace.createElement(item);
+    }
   }
 }

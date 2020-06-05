@@ -51,11 +51,6 @@ export class ToolbarMenu extends BaseMenu {
     switch (item.type) {
       case 'button': {
         const options = { ...item, children: [] };
-        if (options && Array.isArray(item.children)) {
-          options.children = options.children.map((c) => {
-            return this.factoryMenuItemChild(c);
-          });
-        }
         return new ButtonUI(options);
       }
       case 'button-toggle': {
@@ -71,8 +66,16 @@ export class ToolbarMenu extends BaseMenu {
         return new SliderOneUI(options);
       }
       case 'drop-pad': {
-        const options = { ...item, children: [] };
-        return new DropPadUI(options);
+        const options = { ...item };
+        let children = [];
+        if (options && Array.isArray(item.children)) {
+          children = options.children.map((c) => {
+            const child = this.factoryMenuItemChild(c);
+            child.render();
+            return child;
+          });
+        }
+        return new DropPadUI({ ...options, children });
       }
       case 'dropdown': {
         const options = { ...item, children: [] };

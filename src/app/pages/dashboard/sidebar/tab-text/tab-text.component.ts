@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-tab-text',
@@ -6,42 +6,57 @@ import { Component } from '@angular/core';
   styleUrls: ['./tab-text.component.scss'],
 })
 export class TabTextComponent {
-  shapes = [
-    {
-      key: '1',
-      url: '/assets/resources/shapes/shape-01.svg',
-      name: 'shape 01',
-    },
-    {
-      key: '2',
-      url: '/assets/resources/shapes/shape-02.svg',
-      name: 'shape 01',
-    },
-    {
-      key: '3',
-      url: '/assets/resources/shapes/shape-03.svg',
-      name: 'shape 01',
-    },
-    {
-      key: '4',
-      url: '/assets/resources/shapes/shape-04.svg',
-      name: 'shape 01',
-    },
-    {
-      key: '5',
-      url: '/assets/resources/shapes/shape-05.svg',
-      name: 'shape 01',
-    },
-    {
-      key: '6',
-      url: '/assets/resources/shapes/shape-06.svg',
-      name: 'shape 01',
-    },
-  ];
+  @Output()
+  clickItem: EventEmitter<any> = new EventEmitter();
 
   onClickSearch(event) {
     console.log(event);
   }
 
-  onClickItem(item) {}
+  onClickItem(item) {
+    const dataText =
+      item === 'big'
+        ? {
+            top: 129,
+            left: 165,
+            html: 'Logo Name',
+            url: '/assets/cantata-one-regular.otf',
+            fontFamily: 'Roboto',
+            fontSize: 42,
+            color: '#000000',
+          }
+        : {
+            top: 181,
+            left: 163,
+            html: 'Tagline Company',
+            url: '/assets/cantata-one-regular.otf',
+            fontFamily: 'Roboto',
+            fontSize: 28,
+            color: '#000000',
+          };
+
+    const data = {
+      elementType: 'svgtext',
+      userEdited: true,
+      elementIndex: 1,
+      transparency: 1,
+      rotation: 0.0,
+      width: 270,
+      height: 42.0,
+      top: dataText.top,
+      left: dataText.left,
+      html: dataText.html,
+      style: {
+        curve: 0,
+        fontSize: dataText.fontSize,
+        lineHeight: 1.4,
+        fontFamily: dataText.fontFamily,
+        textAlign: 'left',
+        color: dataText.color,
+        transform: 'none',
+        url: dataText.url,
+      },
+    };
+    this.clickItem.emit(data);
+  }
 }

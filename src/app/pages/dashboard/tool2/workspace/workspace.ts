@@ -15,6 +15,7 @@ import {
   DeleteCommand,
   FontFamilyCommand,
   FontsizeCommand,
+  TransparencyCommand,
 } from '../toolkit/command';
 export class Workspace {
   $dom: any;
@@ -66,10 +67,11 @@ export class Workspace {
     });
   }
 
-  createElement = function (dataElement) {
+  createElement(dataElement) {
+    console.log('data', dataElement);
     const element = this.factoryCreateElement(dataElement);
     this.addElement(element);
-  };
+  }
 
   offMenuElements() {
     this.elements.forEach((dataElement) => {
@@ -140,156 +142,8 @@ export class Workspace {
     this.$dom.append(element.$dom);
   }
 
-  buildMenu(dataElement: BaseElement) {
-    const fontFamilyCommand = new FontFamilyCommand(dataElement, this);
-    const fontsizeCommand = new FontsizeCommand(dataElement, this);
-    const colorCommand = new ColorCommand(dataElement);
-    const transformCommand = new TransformCommand(dataElement, this);
-    const cloneComand = new CloneCommand(dataElement, this);
-    const deleteCommand = new DeleteCommand(dataElement, this);
-
-    const fonts = [
-      '/assets/UV-Akashi.ttf',
-      '/assets/cantata-one-regular.otf',
-      '/assets/Roboto-Thin.ttf',
-      '/assets/UV-Agin.ttf',
-    ];
-
-    const items = [
-      {
-        type: 'dropdown',
-        icon: '',
-        name: 'Font Family',
-        code: 'fontFamily',
-        actions: [{ event: 'click', command: fontFamilyCommand }],
-        children: [],
-        context: {
-          list: [
-            {
-              label: 'Aileron Bold',
-              width: 138,
-              height: 35,
-              url: '/assets/UV-Agin.ttf',
-              thumbUrl:
-                'https://static.canva.com/static/images/fonts/Aileron.png',
-            },
-            {
-              label: 'Aileron Thin',
-              width: 90,
-              height: 35,
-              url: '/assets/cantata-one-regular.otf',
-              thumbUrl:
-                'https://static.canva.com/static/images/fonts/Aileron-Thin.png',
-            },
-            {
-              label: 'Aileron Bold',
-              width: 138,
-              height: 35,
-              url: '/assets/UV-Agin.ttf',
-              thumbUrl:
-                'https://static.canva.com/static/images/fonts/Aileron.png',
-            },
-            {
-              label: 'Aileron Thin',
-              width: 90,
-              height: 35,
-              url: '/assets/cantata-one-regular.otf',
-              thumbUrl:
-                'https://static.canva.com/static/images/fonts/Aileron-Thin.png',
-            },
-          ],
-        },
-      },
-      {
-        type: 'dropdown',
-        icon: '',
-        name: 'FontSize',
-        code: 'fontSize',
-        actions: [{ event: 'click', command: fontsizeCommand }],
-        children: [],
-        context: {
-          list: [
-            {
-              label: '30px',
-              value: 30,
-            },
-            {
-              label: '40px',
-              value: 40,
-            },
-            {
-              label: '50px',
-              value: 50,
-            },
-            {
-              label: '60px',
-              value: 60,
-            },
-          ],
-        },
-      },
-      {
-        type: 'button-toggle',
-        icon: 'uppercase',
-        name: 'transform',
-        actions: [{ event: 'click', command: transformCommand }],
-        children: [],
-        context: {
-          isActive: dataElement.text.transform === 'uppercase' ? true : false,
-        },
-      },
-      {
-        type: 'drop-pad',
-        icon: 'transparency',
-        code: 'transparency',
-        name: 'transparency',
-        actions: [],
-        children: [
-          {
-            type: 'slider-one',
-            icon: 'slider',
-            name: 'slider',
-            actions: [{ event: 'change', command: transformCommand }],
-            context: {
-              min: 0,
-              max: 200,
-              step: 1,
-              valueDefault: 100,
-            },
-          },
-        ],
-        context: {},
-      },
-
-      {
-        type: 'button-color',
-        icon: '',
-        name: 'color',
-        actions: [{ event: 'change', command: colorCommand }],
-        children: [],
-        context: {
-          color: dataElement.text.color,
-        },
-      },
-      {
-        type: 'button',
-        icon: '',
-        name: 'Clone',
-        actions: [{ event: 'click', command: cloneComand }],
-        children: [],
-        context: {},
-      },
-      {
-        type: 'button',
-        icon: 'delete',
-        name: 'Delete',
-        actions: [{ event: 'click', command: deleteCommand }],
-        children: [],
-        context: {},
-      },
-    ];
-
-    const options = { where: '', type: 'toobar', dataElement };
+  buildMenu(dataElement: BaseElement, items) {
+    const options = { where: '', type: 'toolbar', dataElement };
     const menu = new ToolbarMenu(options);
     menu.render();
     menu.builderMenu(items);
@@ -297,33 +151,11 @@ export class Workspace {
   }
 
   event() {
-    // new EventElement('#zone-left')
-    //   .on(
-    //     'mousedown',
-    //     '.element:not(.focused)',
-    //     this.elementMouseDown.bind(this)
-    //   )
-    //   .on(
-    //     'touchstart',
-    //     '.element:not(.focused)',
-    //     this.elementMouseDown.bind(this)
-    //   );
-    // new EventElement('#zone-left')
-    //   .on(
-    //     'mousedown',
-    //     '.selectedBound .rotate',
-    //     this.rotateMouseDown.bind(this)
-    //   )
-    //   .on(
-    //     'touchstart',
-    //     '.selectedBound .rotate ',
-    //     this.rotateMouseDown.bind(this)
-    //   );
     const frameMap = new Map();
     let targets = [];
     this.managerSelector = new Selecto({
       container: this.$dom.get(0),
-      dragContainer: '.elements',
+      dragContainer: '#areaWorkspace',
       selectableTargets: ['.elements .element'],
       hitRate: 0,
       selectByClick: true,
@@ -337,6 +169,13 @@ export class Workspace {
       throttleResize: 0,
       keepRatio: true,
       rotatable: true,
+      snapCenter: true,
+      snappable: true,
+      snapThreshold: 0,
+      throttleRotate: 0,
+
+      verticalGuidelines: [100, 200, 300],
+      horizontalGuidelines: [0, 100, 200],
     });
 
     this.managerMoveabler
@@ -475,14 +314,14 @@ export class Workspace {
         });
       })
       .on('rotateGroup', ({ events, delta }) => {
-        events.forEach((ev) => {
-          const frame = frameMap.get(ev.target);
-          frame.rotate = ev.beforeRotate;
+        events.forEach(({ target, beforeRotate, drag }) => {
+          const frame = frameMap.get(target);
+          frame.rotate = beforeRotate;
           // get drag event
-          frame.translate = ev.drag.beforeTranslate;
-          ev.target.style.transform =
-            `translate(${ev.drag.beforeTranslate[0]}px, ${ev.drag.beforeTranslate[1]}px) ` +
-            `rotate(${ev.beforeRotate}deg)`;
+          frame.translate = drag.beforeTranslate;
+          target.style.transform =
+            `translate(${drag.beforeTranslate[0]}px, ${drag.beforeTranslate[1]}px) ` +
+            `rotate(${beforeRotate}deg)`;
         });
       })
       .on('rotateGroupEnd', ({ targets, isDrag, clientX, clientY }) => {
@@ -528,78 +367,219 @@ export class Workspace {
   }
 
   createMenu(dataElement) {
-    return this.buildMenu(dataElement);
-    // let menu = null;
-    // if (type === 'text') {
-    //   menu = new Menu(
-    //     '#designtool',
-    //     'text',
-    //     {
-    //       listenerFontFamily: setEventChangeFontFamily,
-    //       listenerFontSize: setEventChangeFontSize,
-    //       listenerTextAlign: setEventChangeTextAlign,
-    //       listenerLayer: setEventChangeLayer,
-    //       listenerTextSpacing: {
-    //         listenerLineHeight: setEventChangeLineHeight,
-    //         listenerLetterSpacing: setEventChangeLetterSpacing,
-    //       },
-    //       listenerTranparency: setEventChangeTransparency,
-    //       listenerColor1: setEventChangeFontColor,
-    //       listenertransform: setEventChangetransform,
-    //       listenerCopy: setEventChangeCopy,
-    //       listenerDelete: setEventChangeDelete,
-    //     },
-    //     dataElement
-    //   );
-    // } else if (type === 'image') {
-    //   menu = new Menu(
-    //     '#designtool',
-    //     'image',
-    //     {
-    //       listenerLayer: setEventChangeLayer,
-    //       listenerTranparency: setEventChangeTransparency,
-    //       listenerCopy: setEventChangeCopy,
-    //       listenerDelete: setEventChangeDelete,
-    //     },
-    //     dataElement
-    //   );
-    // } else if (type === 'svg') {
-    //   menu = new Menu(
-    //     '#designtool',
-    //     'svg',
-    //     {
-    //       listenerLayer: setEventChangeLayer,
-    //       listenerTranparency: setEventChangeTransparency,
-    //       listenerColor1: setEventChangeColor1,
-    //       listenerColor2: setEventChangeColor2,
-    //       listenerColor3: setEventChangeColor3,
-    //       listenerCopy: setEventChangeCopy,
-    //       listenerDelete: setEventChangeDelete,
-    //     },
-    //     dataElement
-    //   );
-    // } else if (type === 'textsvg') {
-    //   menu = new Menu(
-    //     '#designtool',
-    //     'textsvg',
-    //     {
-    //       listenerFontFamily: setEventChangeFontFamily,
-    //       listenerFontSize: setEventChangeFontSize,
-    //       listenerLayer: setEventChangeLayer,
-    //       listenerTextSpacing: {
-    //         listenerLineHeight: setEventChangeLineHeight,
-    //         listenerLetterSpacing: setEventChangeLetterSpacing,
-    //       },
-    //       listenerTranparency: setEventChangeTransparency,
-    //       listenerColor1: setEventChangeColor1,
-    //       listenertransform: setEventChangetransform,
-    //       listenerCopy: setEventChangeCopy,
-    //       listenerDelete: setEventChangeDelete,
-    //     },
-    //     dataElement
-    //   );
-    // }
-    // return menu;
+    const transparencyCommand = new TransparencyCommand(dataElement);
+    const fontFamilyCommand = new FontFamilyCommand(dataElement, this);
+    const fontsizeCommand = new FontsizeCommand(dataElement, this);
+    const colorCommand = new ColorCommand(dataElement);
+    const transformCommand = new TransformCommand(dataElement, this);
+    const cloneComand = new CloneCommand(dataElement, this);
+    const deleteCommand = new DeleteCommand(dataElement, this);
+
+    const fonts = [
+      '/assets/UV-Akashi.ttf',
+      '/assets/cantata-one-regular.otf',
+      '/assets/Roboto-Thin.ttf',
+      '/assets/UV-Agin.ttf',
+    ];
+
+    let items = [];
+
+    switch (dataElement.elementType) {
+      case 'svgtext': {
+        items = [
+          {
+            type: 'dropdown',
+            icon: '',
+            name: 'Font Family',
+            code: 'fontFamily',
+            actions: [{ event: 'click', command: fontFamilyCommand }],
+            children: [],
+            context: {
+              list: [
+                {
+                  label: 'Aileron Bold',
+                  width: 138,
+                  height: 35,
+                  url: '/assets/UV-Agin.ttf',
+                  thumbUrl:
+                    'https://static.canva.com/static/images/fonts/Aileron.png',
+                },
+                {
+                  label: 'Aileron Thin',
+                  width: 90,
+                  height: 35,
+                  url: '/assets/cantata-one-regular.otf',
+                  thumbUrl:
+                    'https://static.canva.com/static/images/fonts/Aileron-Thin.png',
+                },
+                {
+                  label: 'Aileron Bold',
+                  width: 138,
+                  height: 35,
+                  url: '/assets/UV-Agin.ttf',
+                  thumbUrl:
+                    'https://static.canva.com/static/images/fonts/Aileron.png',
+                },
+                {
+                  label: 'Aileron Thin',
+                  width: 90,
+                  height: 35,
+                  url: '/assets/cantata-one-regular.otf',
+                  thumbUrl:
+                    'https://static.canva.com/static/images/fonts/Aileron-Thin.png',
+                },
+              ],
+            },
+          },
+          {
+            type: 'dropdown',
+            icon: '',
+            name: 'FontSize',
+            code: 'fontSize',
+            actions: [{ event: 'click', command: fontsizeCommand }],
+            children: [],
+            context: {
+              list: [
+                {
+                  label: '30px',
+                  value: 30,
+                },
+                {
+                  label: '40px',
+                  value: 40,
+                },
+                {
+                  label: '50px',
+                  value: 50,
+                },
+                {
+                  label: '60px',
+                  value: 60,
+                },
+              ],
+            },
+          },
+          {
+            type: 'button-toggle',
+            icon: 'uppercase',
+            name: 'transform',
+            actions: [{ event: 'click', command: transformCommand }],
+            children: [],
+            context: {
+              isActive:
+                dataElement.text.transform === 'uppercase' ? true : false,
+            },
+          },
+          {
+            type: 'drop-pad',
+            icon: 'transparency',
+            code: 'transparency',
+            name: 'transparency',
+            actions: [],
+            children: [
+              {
+                type: 'slider-one',
+                icon: 'slider',
+                name: 'Transprency',
+                actions: [{ event: 'change', command: transparencyCommand }],
+                context: {
+                  min: 0,
+                  max: 100,
+                  step: 1,
+                  valueDefault: 100,
+                },
+              },
+            ],
+            context: {},
+          },
+
+          {
+            type: 'button-color',
+            icon: '',
+            name: 'color',
+            actions: [{ event: 'change', command: colorCommand }],
+            children: [],
+            context: {
+              color: dataElement.text.color,
+            },
+          },
+          {
+            type: 'button',
+            icon: '',
+            name: 'Clone',
+            actions: [{ event: 'click', command: cloneComand }],
+            children: [],
+            context: {},
+          },
+          {
+            type: 'button',
+            icon: 'delete',
+            name: 'Delete',
+            actions: [{ event: 'click', command: deleteCommand }],
+            children: [],
+            context: {},
+          },
+        ];
+        break;
+      }
+      case 'svg': {
+        items = [
+          {
+            type: 'drop-pad',
+            icon: 'transparency',
+            code: 'transparency',
+            name: 'transparency',
+            actions: [],
+            children: [
+              {
+                type: 'slider-one',
+                icon: 'slider',
+                name: 'Transprency',
+                actions: [{ event: 'change', command: transparencyCommand }],
+                context: {
+                  min: 0,
+                  max: 100,
+                  step: 1,
+                  valueDefault: 100,
+                },
+              },
+            ],
+            context: {},
+          },
+          {
+            type: 'button-color',
+            icon: '',
+            name: 'color',
+            actions: [{ event: 'change', command: colorCommand }],
+            children: [],
+            context: {
+              color1: dataElement.svg.color1,
+              color2: dataElement.svg.color2,
+              color3: dataElement.svg.color3,
+            },
+          },
+          {
+            type: 'button',
+            icon: '',
+            name: 'Clone',
+            actions: [{ event: 'click', command: cloneComand }],
+            children: [],
+            context: {},
+          },
+          {
+            type: 'button',
+            icon: 'delete',
+            name: 'Delete',
+            actions: [{ event: 'click', command: deleteCommand }],
+            children: [],
+            context: {},
+          },
+        ];
+        break;
+      }
+    }
+
+    return this.buildMenu(dataElement, items);
   }
 
   updateStyle(values) {
@@ -613,44 +593,3 @@ export class Workspace {
     this.$dom.css(styles);
   }
 }
-
-/*  */
-function onPaste(a) {
-  if (document.queryCommandSupported('ms-pasteContentOnly')) {
-    document.execCommand('ms-pasteContentOnly');
-  } else if (
-    document.queryCommandSupported('insertHTML') &&
-    a.originalEvent.clipboardData
-  ) {
-    let b = a.originalEvent.clipboardData.getData('text/plain');
-    b = _.escape(b)
-      .replace(/\r?\n/g, '\x3cbr\x3e')
-      .replace(/ {2}/g, ' \x26nbsp;');
-    document.execCommand('insertHTML', !1, b);
-  } else {
-    throw Error('Beware! Unsupported browser. Sneaking around.');
-  }
-  a.preventDefault();
-}
-
-function getStringTranform(left, top, rotate) {
-  return (
-    'translate3d(' + left + 'px,' + top + 'px, 0)rotateZ(' + rotate + 'deg)'
-  );
-}
-
-export const getAngle = (a, b, c, d) => {
-  var e = 0;
-  a === c
-    ? (e = b > d ? 1.5 * Math.PI : 0.5 * Math.PI)
-    : ((e = Math.atan((d - b) / (c - a))),
-      a < c ? d < b && (e = 2 * Math.PI + e) : (e = Math.PI + e),
-      isNaN(e) && (e = 0));
-  return getRealAngle((180 * e) / Math.PI);
-};
-
-export const getRealAngle = (a) => {
-  a %= 360;
-  0 > a && (a += 360);
-  return a;
-};

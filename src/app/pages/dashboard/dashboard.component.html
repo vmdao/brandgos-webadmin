@@ -5,7 +5,7 @@
   <nz-content class="outer-content">
     <nz-layout class="inner-layout">
       <nz-sider nzWidth="400px" nzTheme="dark">
-        <app-sidebar></app-sidebar>
+        <app-sidebar (clickItem)="onClickItem($event)"></app-sidebar>
       </nz-sider>
       <nz-content class="inner-content">
         <section id="content">
