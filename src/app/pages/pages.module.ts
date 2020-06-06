@@ -25,7 +25,7 @@ import { reducers, effects, services } from './@store';
     LayoutModule,
     SharedModule,
     PagesRoutingModule,
-    StoreModule.forFeature('bussiness', reducers),
+    StoreModule.forFeature('storeApp', reducers),
     EffectsModule.forFeature(effects),
   ],
   entryComponents: ENTRIES_COMPONENTS,

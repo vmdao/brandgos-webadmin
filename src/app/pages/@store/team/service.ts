@@ -4,7 +4,7 @@ import { RestService } from '../../../@core/services/rest.service';
 
 import { TeamModel } from './model';
 import { TeamResultsModel, TeamResultModel } from './results.model';
-import { WorkerResultsModel } from '../worker';
+import { UserResultsModel } from '../user';
 
 const API_CUSTOMERS_URL = '/team';
 
@@ -33,7 +33,7 @@ export class TeamService {
     return this.restService.delete(`${API_CUSTOMERS_URL}/${key}`);
   }
 
-  getMembers(key): Observable<WorkerResultsModel> {
+  getMembers(key): Observable<UserResultsModel> {
     return this.restService.get(`${API_CUSTOMERS_URL}/${key}/members`);
   }
 }

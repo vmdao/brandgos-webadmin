@@ -1,7 +1,7 @@
 import { TeamsActions } from './actions';
 import { TeamModel } from './model';
 import { createReducer, on } from '@ngrx/store';
-import { WorkerModel } from '../worker';
+import { UserModel } from '../user';
 
 export enum TeamModalStatus {
   Init = 0,
@@ -64,7 +64,7 @@ export interface TeamState {
     errors: Array<any>;
     status: TeamModalStatus;
   };
-  members: Array<WorkerModel>;
+  members: Array<UserModel>;
   membersLoading: boolean;
 }
 

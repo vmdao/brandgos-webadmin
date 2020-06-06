@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 
 import { TeamModel } from './model';
 import { TeamResultsModel, TeamResultModel } from './results.model';
-import { WorkerResultsModel, WorkerModel } from '../worker';
+import { UserResultsModel, UserModel } from '../user';
 
 const getTeams = createAction('[TEAM] Get Teams', props<{ payload: any }>());
 
@@ -76,7 +76,7 @@ const getTeamMembers = createAction(
 
 const getTeamMembersSuccess = createAction(
   '[TEAM] Get Team Members Success',
-  props<{ payload: WorkerResultsModel }>()
+  props<{ payload: UserResultsModel }>()
 );
 
 export const getTeamMembersFailure = createAction(
@@ -92,7 +92,7 @@ const removeTeamMember = createAction(
 
 const addTeamMember = createAction(
   '[TEAM] Add Team Member',
-  props<{ member: WorkerModel }>()
+  props<{ member: UserModel }>()
 );
 
 export const TeamsActions = {
