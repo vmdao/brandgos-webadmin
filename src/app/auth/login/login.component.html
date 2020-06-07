@@ -1,10 +1,8 @@
 <div class="login-wrapper">
   <form nz-form [formGroup]="loginForm" (ngSubmit)="onSubmit()" role="form">
     <section class="title">
-      <h3 class="welcome">Chào mừng đến với</h3>
-      Quản lý công trình<br />
-      Á Đông
-      <h5 class="hint">Sử dụng tài khoản công ty cung cấp</h5>
+      Brandgos
+      <h5 class="hint">Make your logo</h5>
     </section>
     <div class="login-group">
       <nz-alert
@@ -53,7 +51,7 @@
           [nzLoading]="isAuthenticating$ | async"
           nzBlock
         >
-          {{ 'Login' | translate }}
+          {{ 'Login' }}
         </button>
       </nz-form-item>
     </div>

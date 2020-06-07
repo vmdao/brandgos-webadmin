@@ -8,6 +8,8 @@ import { ProductEffects } from './product/effects';
 import { CartEffects } from './cart/effects';
 
 import { ProjectEffects } from './project/effects';
+import { ItemEffects } from './item/effects';
+import { CollectionEffects } from './collection/effects';
 
 export const effects: any[] = [
   UserEffects,
@@ -20,4 +22,6 @@ export const effects: any[] = [
   CartEffects,
 
   ProjectEffects,
+  ItemEffects,
+  CollectionEffects,
 ];

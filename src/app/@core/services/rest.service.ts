@@ -54,7 +54,11 @@ export class RestService {
     let params = new HttpParams();
     Object.keys(paramsIn).forEach((key) => {
       if (paramsIn[key] !== undefined) {
-        if (typeof paramsIn[key] === 'object') {
+        if (Array.isArray(paramsIn[key])) {
+          paramsIn[key].forEach((e) => {
+            params = params.append(key, e);
+          });
+        } else if (typeof paramsIn[key] === 'object') {
           params = params.append(key, JSON.stringify(paramsIn[key]));
         } else {
           params = params.append(key, paramsIn[key]);
@@ -81,6 +85,24 @@ export class RestService {
       }
     });
     return this.http.put(this.baseUrl + path, body, { headers }).pipe(
+      map((res) => this.displaySuccessMessage(res, showSuccess)),
+      catchError((err) => this.handleError(err))
+    );
+  }
+
+  patch(
+    path: string,
+    body: any = {},
+    headersIn = {},
+    showSuccess = true
+  ): Observable<any> {
+    let headers = new HttpHeaders();
+    Object.keys(headersIn).forEach((key) => {
+      if (headersIn[key] !== undefined) {
+        headers = headers.append(key, headersIn[key].toString());
+      }
+    });
+    return this.http.patch(this.baseUrl + path, body, { headers }).pipe(
       map((res) => this.displaySuccessMessage(res, showSuccess)),
       catchError((err) => this.handleError(err))
     );

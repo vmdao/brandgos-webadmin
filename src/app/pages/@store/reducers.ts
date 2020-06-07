@@ -10,6 +10,8 @@ import * as fromCart from './cart/reducer';
 import * as fromProduct from './product/reducer';
 
 import * as fromProject from './project/reducer';
+import * as fromItem from './item/reducer';
+import * as fromColletion from './collection/reducer';
 
 export interface AppState {
   users: formUsers.UserState;
@@ -22,6 +24,8 @@ export interface AppState {
   carts: fromCart.State;
 
   projects: fromProject.ProjectState;
+  items: fromItem.ItemState;
+  collections: fromColletion.CollectionState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
@@ -35,8 +39,8 @@ export const reducers: ActionReducerMap<AppState> = {
   carts: fromCart.reducer,
 
   projects: fromProject.reducer,
+  items: fromItem.reducer,
+  collections: fromColletion.reducer,
 };
 
-export const selectContainerState = createFeatureSelector<AppState>(
-  'storeApp'
-);
+export const selectContainerState = createFeatureSelector<AppState>('storeApp');

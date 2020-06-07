@@ -1,80 +1,127 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+
+import { ItemModel, ItemsActions } from '@app/pages/@store/item';
+import { Subject, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import * as fromApp from '@app/pages/@store';
+import {
+  CollectionModel,
+  CollectionsActions,
+} from '@app/pages/@store/collection';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tab-shape',
   templateUrl: './tab-shape.component.html',
   styleUrls: ['./tab-shape.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabShapeComponent {
   @Output()
   clickItem: EventEmitter<any> = new EventEmitter();
 
-  shapes = [
-    {
-      key: '1',
-      url: '/assets/resources/shapes/shape-01.svg',
-      name: 'shape 01',
-      width: 38,
-      height: 38,
-    },
-    {
-      key: '2',
-      url: '/assets/resources/shapes/shape-02.svg',
-      name: 'shape 01',
-      width: 38,
-      height: 38,
-    },
-    {
-      key: '3',
-      url: '/assets/resources/shapes/shape-03.svg',
-      name: 'shape 01',
-      width: 38,
-      height: 38,
-    },
-    {
-      key: '4',
-      url: '/assets/resources/shapes/shape-04.svg',
-      name: 'shape 01',
-      width: 38,
-      height: 38,
-    },
-    {
-      key: '5',
-      url: '/assets/resources/shapes/shape-05.svg',
-      name: 'shape 01',
-      width: 38,
-      height: 38,
-    },
-    {
-      key: '6',
-      url: '/assets/resources/shapes/shape-06.svg',
-      name: 'shape 01',
-      width: 38,
-      height: 38,
-    },
-  ];
+  private unsubscribe$: Subject<void> = new Subject();
+  items$: Observable<Array<ItemModel>>;
+  loading$: Observable<boolean>;
 
-  onClickSearch(event) {
-    console.log(event);
+  collections$: Observable<Array<CollectionModel>>;
+  collectionsLoading$: Observable<boolean>;
+
+  size = 10;
+  page = 1;
+  total = 0;
+
+  sortValue: string | null = 'DESC';
+  sortKey: string | null = 'id';
+
+  q = {
+    fulltext: '',
+  };
+
+  constructor(
+    private store$: Store<fromApp.AppState>,
+    private cd: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.items$ = this.store$.select(fromApp.getItems);
+    this.loading$ = this.store$.select(fromApp.getItemsLoading);
+    this.searchData();
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  searchData(reset = false): void {
+    if (reset) {
+      this.page = 1;
+    }
+    this.fetchData();
+  }
+
+  fetchData() {
+    const params: {
+      page?: number;
+      size?: number;
+      search?: string;
+      sort?: string;
+      join?: Array<string>;
+      filter?: Array<string>;
+    } = {
+      page: this.page - 1,
+      size: this.size,
+      sort: `${this.sortKey},${this.sortValue}`,
+      join: ['material', 'collections'],
+      filter: [`type||$eq||svg`, `collections.code||shape`],
+    };
+
+    if (this.q.fulltext !== '') {
+      params.search = this.q.fulltext;
+    }
+
+    this.store$.dispatch(ItemsActions.getItems({ payload: params }));
   }
 
   onClickItem(item) {
+    const itemStyle = item.style;
+    const workspaceWidth = 600;
+    const workspaceHeight = 360;
+
+    const maxWidth = 160;
+
+    const dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
+    const dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
+
+    const dataStyle = {
+      url: item.material.bucket + item.material.pathOrigin,
+      originUrl: item.material.bucket + item.material.pathOrigin,
+      thumbUrl: item.material.bucket + item.material.pathOrigin,
+      color1: '#000',
+    };
+
+    const dataLeft = (workspaceWidth - dataWidth) / 2;
+    const dataTop = (workspaceHeight - dataHeight) / 2;
+
     const data = {
       elementType: 'svg',
       userEdited: true,
       elementIndex: 1,
       transparency: 1,
       rotation: 0.0,
-      width: item.width,
-      height: item.height,
-      top: 200,
-      left: 250,
-      style: {
-        url: item.url,
-        originUrl: item.url,
-        thumbUrl: item.url,
-        color1: '#000',
-      },
+      width: dataWidth,
+      height: dataHeight,
+      top: dataTop,
+      left: dataLeft,
+      style: dataStyle,
     };
 
     this.clickItem.emit(data);

@@ -33,7 +33,7 @@ export class AuthenticationService {
   }
 
   login(username: string, password: string) {
-    return this.restService.post(`/login`, { username, password });
+    return this.restService.post(`/auth/login`, { username, password });
   }
 
   logout() {

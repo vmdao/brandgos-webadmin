@@ -8,6 +8,8 @@ import { ProductService } from './product';
 import { CartService } from './cart';
 
 import { ProjectService } from './project';
+import { ItemService } from './item';
+import { CollectionService } from './collection';
 
 export const services = [
   UserService,
@@ -17,4 +19,6 @@ export const services = [
   CartService,
   ProductService,
   ProjectService,
+  ItemService,
+  CollectionService,
 ];
