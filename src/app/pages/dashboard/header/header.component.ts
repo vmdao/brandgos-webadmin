@@ -11,7 +11,6 @@ import * as fromApp from '@app/pages/@store';
 import { interval } from 'rxjs';
 import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
-import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-header',
