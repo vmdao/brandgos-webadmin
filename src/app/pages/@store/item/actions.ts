@@ -3,78 +3,120 @@ import { createAction, props } from '@ngrx/store';
 import { ItemModel } from './model';
 import { ItemResultsModel, ItemResultModel } from './results.model';
 
-const getItems = createAction(
-  '[PRODUCT] Get Items',
-  props<{ payload: any }>()
-);
+const getItems = createAction('[ITEM] Get Items', props<{ payload: any }>());
 
 const getItemsSuccess = createAction(
-  '[PRODUCT] Get Items Success',
+  '[ITEM] Get Items Success',
   props<{ payload: ItemResultsModel }>()
 );
 
-export const getItemsFailure = createAction('[PRODUCT] Get Items Faild');
+export const getItemsFailure = createAction('[ITEM] Get Items Faild');
 
-const getItem = createAction(
-  '[PRODUCT] Get Item',
-  props<{ payload: any }>()
-);
+const getItem = createAction('[ITEM] Get Item', props<{ payload: any }>());
 
 const getItemSuccess = createAction(
-  '[PRODUCT] Get Item Success',
+  '[ITEM] Get Item Success',
   props<{ payload: ItemResultModel }>()
 );
 
-export const getItemFailure = createAction('[PRODUCT] Get Item Faild');
+export const getItemFailure = createAction('[ITEM] Get Item Faild');
 
 const createItem = createAction(
-  '[PRODUCT] Create Item',
+  '[ITEM] Create Item',
   props<{ payload: ItemModel }>()
 );
 
 const createItemSuccess = createAction(
-  '[PRODUCT] Create Item Success',
+  '[ITEM] Create Item Success',
   props<{ payload: ItemResultModel }>()
 );
 
 export const createItemFailure = createAction(
-  '[PRODUCT] Create Item Faild',
+  '[ITEM] Create Item Faild',
   props<{ payload: ItemResultModel }>()
 );
 
 const updateItem = createAction(
-  '[PRODUCT] Update Item',
+  '[ITEM] Update Item',
   props<{ payload: ItemModel }>()
 );
 
 const updateItemSuccess = createAction(
-  '[PRODUCT] Update Item Success',
+  '[ITEM] Update Item Success',
   props<{ payload: ItemResultModel }>()
 );
 
 export const updateItemFailure = createAction(
-  '[PRODUCT] Update Item Faild',
+  '[ITEM] Update Item Faild',
   props<{ payload: ItemResultModel }>()
 );
 
 const deleteItem = createAction(
-  '[PRODUCT] Delete Item',
+  '[ITEM] Delete Item',
   props<{ payload: number }>()
 );
 
 const deleteItemSuccess = createAction(
-  '[PRODUCT] Delete Item Success',
+  '[ITEM] Delete Item Success',
   props<{ payload: ItemResultModel }>()
 );
 
 export const deleteItemFailure = createAction(
-  '[PRODUCT] Delete Item Faild',
+  '[ITEM] Delete Item Faild',
   props<{ payload: ItemResultModel }>()
 );
-export const openItemView = createAction('[PRODUCT] Open Item View');
+export const openItemView = createAction('[ITEM] Open Item View');
+
+const getItemIcons = createAction(
+  '[ITEM] Get Items Icons',
+  props<{ payload: any }>()
+);
+
+const getItemIconsSuccess = createAction(
+  '[ITEM] Get Items Icons Success',
+  props<{ payload: ItemResultsModel }>()
+);
+
+export const getItemIconsFailure = createAction('[ITEM] Get Items Icons Faild');
+
+const getItemShapes = createAction(
+  '[ITEM] Get Items Shapes',
+  props<{ payload: any }>()
+);
+
+const getItemShapesSuccess = createAction(
+  '[ITEM] Get Items Shapes Success',
+  props<{ payload: ItemResultsModel }>()
+);
+
+export const getItemShapesFailure = createAction('[ITEM] Get Items Shapes Faild');
+
+const getItemElements = createAction(
+  '[ITEM] Get Items Elements',
+  props<{ payload: any }>()
+);
+
+const getItemElementsSuccess = createAction(
+  '[ITEM] Get Items Elements Success',
+  props<{ payload: ItemResultsModel }>()
+);
+
+export const getItemElementsFailure = createAction(
+  '[ITEM] Get Items Elements Faild'
+);
 
 export const ItemsActions = {
   openItemView,
+  getItemIcons,
+  getItemIconsSuccess,
+  getItemIconsFailure,
+  getItemShapes,
+  getItemShapesSuccess,
+  getItemShapesFailure,
+  getItemElements,
+  getItemElementsSuccess,
+  getItemElementsFailure,
+
   getItems,
   getItemsSuccess,
   getItemsFailure,

@@ -32,6 +32,15 @@ const {
   deleteItemFailure,
   deleteItemSuccess,
   openItemView,
+  getItemIcons,
+  getItemIconsSuccess,
+  getItemIconsFailure,
+  getItemShapes,
+  getItemShapesSuccess,
+  getItemShapesFailure,
+  getItemElements,
+  getItemElementsSuccess,
+  getItemElementsFailure,
 } = ItemsActions;
 export interface ItemState {
   list: Array<ItemModel>;
@@ -58,6 +67,13 @@ export interface ItemState {
     errors: Array<any>;
     status: ItemModalStatus;
   };
+
+  elements: Array<ItemModel>;
+  elementsLoading: boolean;
+  shapes: Array<ItemModel>;
+  shapesLoading: boolean;
+  icons: Array<ItemModel>;
+  iconsLoading: boolean;
 }
 
 export const initialState: ItemState = {
@@ -85,6 +101,13 @@ export const initialState: ItemState = {
     errors: [],
     status: ItemModalStatus.Init,
   },
+
+  elements: [],
+  elementsLoading: false,
+  shapes: [],
+  shapesLoading: false,
+  icons: [],
+  iconsLoading: false,
 };
 
 export const reducer = createReducer(
@@ -204,6 +227,54 @@ export const reducer = createReducer(
     return {
       ...state,
       modal,
+    };
+  }),
+  on(getItemIcons, (state) => {
+    return { ...state, iconsLoading: true };
+  }),
+  on(getItemIconsSuccess, (state, { payload }) => {
+    return {
+      ...state,
+      icons: [...payload.data],
+      iconsLoading: false,
+    };
+  }),
+  on(getItemIconsFailure, (state) => {
+    return {
+      ...state,
+      iconsLoading: false,
+    };
+  }),
+  on(getItemShapes, (state) => {
+    return { ...state, shapesLoading: true };
+  }),
+  on(getItemShapesSuccess, (state, { payload }) => {
+    return {
+      ...state,
+      shapes: [...payload.data],
+      shapesLoading: false,
+    };
+  }),
+  on(getItemShapesFailure, (state) => {
+    return {
+      ...state,
+      shapesLoading: false,
+    };
+  }),
+  on(getItemElements, (state) => {
+    return { ...state, elementsLoading: true };
+  }),
+  on(getItemElementsSuccess, (state, { payload }) => {
+    return {
+      ...state,
+      elements: [...payload.data],
+      elementsLoading: false,
+    };
+  }),
+  on(getItemElementsFailure, (state) => {
+    return {
+      ...state,
+      elementsLoading: false,
     };
   })
 );

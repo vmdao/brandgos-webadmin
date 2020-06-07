@@ -6,7 +6,7 @@ import {
   switchMap,
   catchError,
   withLatestFrom,
-  concatMap
+  concatMap,
 } from 'rxjs/operators';
 
 import { ItemService } from './service';
@@ -29,7 +29,16 @@ const {
   updateItemSuccess,
   deleteItem,
   deleteItemFailure,
-  deleteItemSuccess
+  deleteItemSuccess,
+  getItemIcons,
+  getItemIconsSuccess,
+  getItemIconsFailure,
+  getItemShapes,
+  getItemShapesSuccess,
+  getItemShapesFailure,
+  getItemElements,
+  getItemElementsSuccess,
+  getItemElementsFailure,
 } = ItemsActions;
 
 @Injectable()
@@ -43,10 +52,10 @@ export class ItemEffects {
   getList$ = createEffect(() =>
     this.actions.pipe(
       ofType(getItems),
-      switchMap(pramas => {
+      switchMap((pramas) => {
         return this.modelService.getAll(pramas.payload).pipe(
-          map(payload => getItemsSuccess({ payload })),
-          catchError(err => {
+          map((payload) => getItemsSuccess({ payload })),
+          catchError((err) => {
             console.error(err);
             return of(getItemsFailure());
           })
@@ -58,10 +67,10 @@ export class ItemEffects {
   getOne$ = createEffect(() =>
     this.actions.pipe(
       ofType(getItem),
-      switchMap(pramas => {
+      switchMap((pramas) => {
         return this.modelService.get(pramas.payload).pipe(
-          map(payload => getItemSuccess({ payload })),
-          catchError(err => {
+          map((payload) => getItemSuccess({ payload })),
+          catchError((err) => {
             console.error(err);
             return of(getItemFailure());
           })
@@ -73,10 +82,10 @@ export class ItemEffects {
   create$ = createEffect(() =>
     this.actions.pipe(
       ofType(createItem),
-      switchMap(pramas => {
+      switchMap((pramas) => {
         return this.modelService.create(pramas.payload).pipe(
-          map(payload => createItemSuccess({ payload })),
-          catchError(err => {
+          map((payload) => createItemSuccess({ payload })),
+          catchError((err) => {
             console.error(err);
             return of(createItemFailure({ payload: err }));
           })
@@ -88,10 +97,10 @@ export class ItemEffects {
   update$ = createEffect(() =>
     this.actions.pipe(
       ofType(updateItem),
-      switchMap(pramas => {
+      switchMap((pramas) => {
         return this.modelService.update(pramas.payload).pipe(
-          map(payload => updateItemSuccess({ payload })),
-          catchError(err => {
+          map((payload) => updateItemSuccess({ payload })),
+          catchError((err) => {
             console.error(err);
             return of(updateItemFailure({ payload: err }));
           })
@@ -103,10 +112,10 @@ export class ItemEffects {
   delete$ = createEffect(() =>
     this.actions.pipe(
       ofType(deleteItem),
-      switchMap(pramas => {
+      switchMap((pramas) => {
         return this.modelService.delete(pramas.payload).pipe(
-          map(payload => deleteItemSuccess({ payload })),
-          catchError(err => {
+          map((payload) => deleteItemSuccess({ payload })),
+          catchError((err) => {
             console.error(err);
             return of(deleteItemFailure({ payload: err }));
           })
@@ -118,7 +127,7 @@ export class ItemEffects {
   changeSuccess$ = createEffect(() =>
     this.actions.pipe(
       ofType(deleteItemSuccess, updateItemSuccess, createItemSuccess),
-      concatMap(action =>
+      concatMap((action) =>
         of(action).pipe(
           withLatestFrom(this.store$.select(fromBussiness.getItemsParams))
         )
@@ -126,6 +135,51 @@ export class ItemEffects {
       map(([action, params]) => {
         const payload = { ...params };
         return getItems({ payload });
+      })
+    )
+  );
+
+  getListIcons$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(getItemIcons),
+      switchMap((pramas) => {
+        return this.modelService.getAll(pramas.payload).pipe(
+          map((payload) => getItemIconsSuccess({ payload })),
+          catchError((err) => {
+            console.error(err);
+            return of(getItemIconsFailure());
+          })
+        );
+      })
+    )
+  );
+
+  getListShapes$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(getItemShapes),
+      switchMap((pramas) => {
+        return this.modelService.getAll(pramas.payload).pipe(
+          map((payload) => getItemShapesSuccess({ payload })),
+          catchError((err) => {
+            console.error(err);
+            return of(getItemShapesFailure());
+          })
+        );
+      })
+    )
+  );
+
+  getListElements$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(getItemElements),
+      switchMap((pramas) => {
+        return this.modelService.getAll(pramas.payload).pipe(
+          map((payload) => getItemElementsSuccess({ payload })),
+          catchError((err) => {
+            console.error(err);
+            return of(getItemElementsFailure());
+          })
+        );
       })
     )
   );

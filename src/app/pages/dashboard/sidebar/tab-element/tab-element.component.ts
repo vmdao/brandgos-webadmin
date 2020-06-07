@@ -5,6 +5,9 @@ import {
   OnDestroy,
   ChangeDetectorRef,
   ChangeDetectionStrategy,
+  OnInit,
+  AfterViewChecked,
+  AfterViewInit,
 } from '@angular/core';
 
 import { ItemModel, ItemsActions } from '@app/pages/@store/item';
@@ -23,7 +26,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./tab-element.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabElementComponent implements OnDestroy {
+export class TabElementComponent implements OnInit, OnDestroy {
   @Output()
   clickItem: EventEmitter<any> = new EventEmitter();
 
@@ -39,55 +42,11 @@ export class TabElementComponent implements OnDestroy {
   total = 0;
 
   sortValue: string | null = 'DESC';
-  sortKey: string | null = 'id';
+  sortKey: string | null = 'priority';
 
   q = {
     fulltext: '',
   };
-
-  elements = [
-    {
-      name: 'Triangle',
-      description: '',
-      type: 'shape',
-      url: '/assets/resources/elements/element-01.svg',
-      width: 177,
-      height: 129,
-    },
-
-    {
-      name: 'Circle',
-      description: '',
-      type: 'shape',
-      url: '/assets/resources/elements/element-03.svg',
-      width: 122,
-      height: 150,
-    },
-    {
-      name: 'Circle',
-      description: '',
-      type: 'shape',
-      url: '/assets/resources/elements/element-04.svg',
-      width: 87,
-      height: 97,
-    },
-    {
-      name: 'Circle',
-      description: '',
-      type: 'shape',
-      url: '/assets/resources/elements/element-05.svg',
-      width: 173,
-      height: 148,
-    },
-    {
-      name: 'Circle',
-      description: '',
-      type: 'shape',
-      url: '/assets/resources/elements/element-06.svg',
-      width: 177,
-      height: 118,
-    },
-  ];
 
   types = [
     { code: 'badge', label: 'Badge' },
@@ -104,8 +63,8 @@ export class TabElementComponent implements OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.items$ = this.store$.select(fromApp.getItems);
-    this.loading$ = this.store$.select(fromApp.getItemsLoading);
+    this.items$ = this.store$.select(fromApp.getItemElements);
+    this.loading$ = this.store$.select(fromApp.getItemElementsLoading);
 
     this.collections$ = this.store$.select(fromApp.getCollections);
     this.collectionsLoading$ = this.store$.select(
@@ -117,8 +76,8 @@ export class TabElementComponent implements OnDestroy {
       this.searchData();
       this.cd.detectChanges();
     });
-
     this.fetchCollections();
+    this.cd.detectChanges();
   }
 
   ngOnDestroy() {
@@ -162,7 +121,7 @@ export class TabElementComponent implements OnDestroy {
       params.filter.push(`collections.id||$eq||${this.collectionSelected.id}`);
     }
 
-    this.store$.dispatch(ItemsActions.getItems({ payload: params }));
+    this.store$.dispatch(ItemsActions.getItemElements({ payload: params }));
   }
 
   fetchCollections() {
@@ -174,8 +133,8 @@ export class TabElementComponent implements OnDestroy {
     } = {
       page: 1,
       size: 100,
-      sort: `${this.sortKey},${this.sortValue}`,
-      filter: `code||$in||badge,solid-shape,outlined-shape,flame`,
+      sort: `priority,DESC`,
+      filter: `code||$in||badge,solid-shape,outlined-sha,flame`,
     };
 
     this.store$.dispatch(

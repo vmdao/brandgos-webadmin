@@ -5,6 +5,7 @@ import {
   OnDestroy,
   ChangeDetectorRef,
   ChangeDetectionStrategy,
+  OnInit,
 } from '@angular/core';
 
 import { ItemModel, ItemsActions } from '@app/pages/@store/item';
@@ -23,7 +24,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./tab-shape.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabShapeComponent {
+export class TabShapeComponent implements OnInit {
   @Output()
   clickItem: EventEmitter<any> = new EventEmitter();
 
@@ -51,9 +52,10 @@ export class TabShapeComponent {
   ) {}
 
   ngOnInit(): void {
-    this.items$ = this.store$.select(fromApp.getItems);
-    this.loading$ = this.store$.select(fromApp.getItemsLoading);
+    this.items$ = this.store$.select(fromApp.getItemShapes);
+    this.loading$ = this.store$.select(fromApp.getItemShapesLoading);
     this.searchData();
+    this.cd.detectChanges();
   }
 
   ngOnDestroy() {
@@ -81,14 +83,14 @@ export class TabShapeComponent {
       size: this.size,
       sort: `${this.sortKey},${this.sortValue}`,
       join: ['material', 'collections'],
-      filter: [`type||$eq||svg`, `collections.code||shape`],
+      filter: [`type||$eq||svg`, `collections.code||$eq||shape`],
     };
 
     if (this.q.fulltext !== '') {
       params.search = this.q.fulltext;
     }
 
-    this.store$.dispatch(ItemsActions.getItems({ payload: params }));
+    this.store$.dispatch(ItemsActions.getItemShapes({ payload: params }));
   }
 
   onClickItem(item) {
