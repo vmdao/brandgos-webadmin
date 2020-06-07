@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Workspace, Border } from './tool2';
 
 import * as mock from './tool/mock/index.js';
@@ -11,7 +11,8 @@ const { localStorages } = mock.default;
 })
 export class DashboardComponent implements OnInit {
   workspace: Workspace;
-  constructor(private zone: NgZone) {}
+
+  constructor(private zone: NgZone, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
@@ -20,6 +21,7 @@ export class DashboardComponent implements OnInit {
       this.workspace.render('#areaWorkspace');
       this.workspace.createElements(localStorages.elements);
     });
+    this.cd.detectChanges();
   }
 
   onClickItem(item) {
@@ -27,5 +29,7 @@ export class DashboardComponent implements OnInit {
       console.log('onClickItem', item);
       this.workspace.createElement(item);
     }
+
+    this.cd.detectChanges();
   }
 }

@@ -40,7 +40,7 @@ export class TabShapeComponent implements OnInit {
   total = 0;
 
   sortValue: string | null = 'DESC';
-  sortKey: string | null = 'id';
+  sortKey: string | null = 'priority';
 
   q = {
     fulltext: '',
@@ -98,7 +98,7 @@ export class TabShapeComponent implements OnInit {
     const workspaceWidth = 600;
     const workspaceHeight = 360;
 
-    const maxWidth = 160;
+    const maxWidth = 140;
 
     const dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
     const dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;

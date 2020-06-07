@@ -19,6 +19,12 @@ export class TextSvgChild extends BaseTextChild {
     this.typeBehavior.changeTextTransform(value);
   }
 
+  performContent(value: any) {
+    this.html = value.content;
+    this.htmlSvg = this.getHtmlTransform();
+    this.typeBehavior.changeTextTransform(value);
+  }
+
   performFontFamily(value: any) {
     this.url = value.url;
     this.fontFamily = value.label;

@@ -6,8 +6,6 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
   OnInit,
-  AfterViewChecked,
-  AfterViewInit,
 } from '@angular/core';
 
 import { ItemModel, ItemsActions } from '@app/pages/@store/item';
@@ -55,7 +53,7 @@ export class TabElementComponent implements OnInit, OnDestroy {
     { code: 'flame', label: 'Flame' },
   ];
 
-  collectionSelected: CollectionModel;
+  collectionSelected: any;
 
   constructor(
     private store$: Store<fromApp.AppState>,
@@ -72,7 +70,6 @@ export class TabElementComponent implements OnInit, OnDestroy {
     );
 
     this.collections$.pipe(takeUntil(this.unsubscribe$)).subscribe((res) => {
-      this.collectionSelected = res[0] ? res[0] : null;
       this.searchData();
       this.cd.detectChanges();
     });
@@ -110,15 +107,18 @@ export class TabElementComponent implements OnInit, OnDestroy {
       size: this.size,
       sort: `${this.sortKey},${this.sortValue}`,
       join: ['material', 'collections'],
-      filter: [`type||$eq||svg`],
+      filter: [
+        `type||$eq||svg`,
+        `collections.code||$in||badge,solid-shape,outlined-sha,flame`,
+      ],
     };
 
     if (this.q.fulltext !== '') {
       params.search = this.q.fulltext;
     }
 
-    if (this.collectionSelected) {
-      params.filter.push(`collections.id||$eq||${this.collectionSelected.id}`);
+    if (typeof this.collectionSelected === 'number') {
+      params.filter.push(`collections.id||$eq||${this.collectionSelected}`);
     }
 
     this.store$.dispatch(ItemsActions.getItemElements({ payload: params }));
@@ -151,7 +151,7 @@ export class TabElementComponent implements OnInit, OnDestroy {
     const workspaceWidth = 600;
     const workspaceHeight = 360;
 
-    const maxWidth = 160;
+    const maxWidth = 140;
 
     const dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
     const dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;

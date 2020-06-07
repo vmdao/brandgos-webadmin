@@ -1,39 +1,27 @@
 <div class="tab-inner">
   <div class="search">
     <div class="search-inner">
-      <input />
-      <button (click)="onClickSearch($event)">
+      <input [(ngModel)]="q.fulltext" />
+      <button
+        nz-button
+        nzType="primary"
+        (click)="onClickSearch()"
+        [nzLoading]="loading$ | async"
+      >
         Search
       </button>
     </div>
     <div class="tag-search">
-      <a class="tag" href="#/">
-        Fashion
-      </a>
-      <a class="tag" href="#/">
-        Cafe
-      </a>
-      <a class="tag" href="#/">
-        Computer
-      </a>
-      <a class="tag" href="#/">
-        Creative
-      </a>
-      <a class="tag" href="#/">
-        Tech
-      </a>
-      <a class="tag" href="#/">
-        Hotel
-      </a>
-      <a class="tag" href="#/">
-        Oranic
-      </a>
-      <a class="tag" href="#/">
-        Education
+      <a class="tag" *ngFor="let item of tags" (click)="onClickTag(item)">
+        {{ item.label }}
       </a>
     </div>
   </div>
-  <div class="store">
+  <nz-skeleton
+    *ngIf="(loading$ | async) === true"
+    [nzActive]="true"
+  ></nz-skeleton>
+  <div class="store" *ngIf="(loading$ | async) === false">
     <div
       class="item"
       *ngFor="let item of items$ | async"
@@ -41,7 +29,7 @@
     >
       <div class="item-box">
         <img
-          [src]="item.material.bucket + item.material.pathNormal"
+          [src]="item.material.bucket + item.material.pathOrigin"
           [alt]="item.title"
         />
       </div>

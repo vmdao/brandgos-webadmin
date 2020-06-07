@@ -67,7 +67,10 @@ export class ButtonColorUI extends BaseMenuItemUI implements OnViewed {
     pickr.on('change', (color, instance) => {
       instance.applyColor();
       if (actionChangeColor) {
-        actionChangeColor.command.execute(color.toRGBA().toString());
+        actionChangeColor.command.execute({
+          color: color.toRGBA().toString(),
+          code: this.contentName,
+        });
       }
     });
   }

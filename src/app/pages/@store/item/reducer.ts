@@ -41,6 +41,12 @@ const {
   getItemElements,
   getItemElementsSuccess,
   getItemElementsFailure,
+  getItemIconsSearch,
+  getItemIconsSearchSuccess,
+  getItemIconsSearchFailure,
+  render,
+  renderSuccess,
+  renderFailure,
 } = ItemsActions;
 export interface ItemState {
   list: Array<ItemModel>;
@@ -74,6 +80,9 @@ export interface ItemState {
   shapesLoading: boolean;
   icons: Array<ItemModel>;
   iconsLoading: boolean;
+
+  renderData: any;
+  renderLoading: boolean;
 }
 
 export const initialState: ItemState = {
@@ -108,6 +117,9 @@ export const initialState: ItemState = {
   shapesLoading: false,
   icons: [],
   iconsLoading: false,
+
+  renderData: null,
+  renderLoading: false,
 };
 
 export const reducer = createReducer(
@@ -245,6 +257,22 @@ export const reducer = createReducer(
       iconsLoading: false,
     };
   }),
+  on(getItemIconsSearch, (state) => {
+    return { ...state, iconsLoading: true };
+  }),
+  on(getItemIconsSearchSuccess, (state, { payload }) => {
+    return {
+      ...state,
+      icons: [...payload.data],
+      iconsLoading: false,
+    };
+  }),
+  on(getItemIconsSearchFailure, (state) => {
+    return {
+      ...state,
+      iconsLoading: false,
+    };
+  }),
   on(getItemShapes, (state) => {
     return { ...state, shapesLoading: true };
   }),
@@ -275,6 +303,23 @@ export const reducer = createReducer(
     return {
       ...state,
       elementsLoading: false,
+    };
+  }),
+
+  on(render, (state) => {
+    return { ...state, renderLoading: true };
+  }),
+  on(renderSuccess, (state, { payload }) => {
+    return {
+      ...state,
+      renderData: payload,
+      renderLoading: false,
+    };
+  }),
+  on(renderFailure, (state) => {
+    return {
+      ...state,
+      renderLoading: false,
     };
   })
 );

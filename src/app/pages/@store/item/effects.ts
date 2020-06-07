@@ -8,7 +8,6 @@ import {
   withLatestFrom,
   concatMap,
 } from 'rxjs/operators';
-
 import { ItemService } from './service';
 import { ItemsActions } from './actions';
 
@@ -39,6 +38,12 @@ const {
   getItemElements,
   getItemElementsSuccess,
   getItemElementsFailure,
+  getItemIconsSearch,
+  getItemIconsSearchSuccess,
+  getItemIconsSearchFailure,
+  render,
+  renderSuccess,
+  renderFailure,
 } = ItemsActions;
 
 @Injectable()
@@ -178,6 +183,38 @@ export class ItemEffects {
           catchError((err) => {
             console.error(err);
             return of(getItemElementsFailure());
+          })
+        );
+      })
+    )
+  );
+
+  getSearch$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(getItemIconsSearch),
+      switchMap((pramas) => {
+        return this.modelService.search(pramas.payload).pipe(
+          map((payload) => getItemIconsSearchSuccess({ payload })),
+          catchError((err) => {
+            console.error(err);
+            return of(getItemIconsSearchFailure());
+          })
+        );
+      })
+    )
+  );
+
+  render$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(render),
+      switchMap((params) => {
+        return this.modelService.render(params.payload).pipe(
+          map((payload) => {
+            return renderSuccess({ payload });
+          }),
+          catchError((err) => {
+            console.error(err);
+            return of(renderFailure({ payload: err }));
           })
         );
       })

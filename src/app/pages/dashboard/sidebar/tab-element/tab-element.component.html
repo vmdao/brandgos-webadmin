@@ -1,11 +1,7 @@
 <div class="tab-inner">
   <div>
-    <nz-select
-      [ngModel]="
-        (collections$ | async)[0] ? (collections$ | async)[0].id : null
-      "
-      (ngModelChange)="collectionChange($event)"
-    >
+    <nz-select [ngModel]="'all'" (ngModelChange)="collectionChange($event)">
+      <nz-option nzValue="all" nzLabel="All Element"></nz-option>
       <nz-option
         *ngFor="let item of collections$ | async"
         [nzValue]="item.id"
@@ -13,7 +9,11 @@
       ></nz-option>
     </nz-select>
   </div>
-  <div class="store">
+  <nz-skeleton
+    *ngIf="(loading$ | async) === true"
+    [nzActive]="true"
+  ></nz-skeleton>
+  <div class="store" *ngIf="(loading$ | async) === false">
     <div
       class="item"
       *ngFor="let item of items$ | async"
@@ -21,7 +21,7 @@
     >
       <div class="item-box">
         <img
-          [src]="item.material.bucket + item.material.pathNormal"
+          [src]="item.material.bucket + item.material.pathOrigin"
           [alt]="item.title"
         />
       </div>

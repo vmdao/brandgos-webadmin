@@ -16,6 +16,7 @@ import {
   FontFamilyCommand,
   FontsizeCommand,
   TransparencyCommand,
+  InputCommand,
 } from '../toolkit/command';
 export class Workspace {
   $dom: any;
@@ -169,11 +170,11 @@ export class Workspace {
       throttleResize: 0,
       keepRatio: true,
       rotatable: true,
-      snapCenter: true,
-      snappable: true,
       snapThreshold: 0,
       throttleRotate: 0,
 
+      snapCenter: false,
+      snappable: false,
       verticalGuidelines: [100, 200, 300],
       horizontalGuidelines: [0, 100, 200],
     });
@@ -367,6 +368,7 @@ export class Workspace {
   }
 
   createMenu(dataElement) {
+    const inputCommand = new InputCommand(dataElement, this);
     const transparencyCommand = new TransparencyCommand(dataElement);
     const fontFamilyCommand = new FontFamilyCommand(dataElement, this);
     const fontsizeCommand = new FontsizeCommand(dataElement, this);
@@ -387,6 +389,16 @@ export class Workspace {
     switch (dataElement.elementType) {
       case 'svgtext': {
         items = [
+          {
+            type: 'input',
+            icon: '',
+            name: 'input',
+            actions: [{ event: 'keyup', command: inputCommand }],
+            children: [],
+            context: {
+              content: dataElement.text.html,
+            },
+          },
           {
             type: 'dropdown',
             icon: '',
@@ -549,7 +561,31 @@ export class Workspace {
           {
             type: 'button-color',
             icon: '',
-            name: 'color',
+            name: 'color1',
+            actions: [{ event: 'change', command: colorCommand }],
+            children: [],
+            context: {
+              color1: dataElement.svg.color1,
+              color2: dataElement.svg.color2,
+              color3: dataElement.svg.color3,
+            },
+          },
+          {
+            type: 'button-color',
+            icon: '',
+            name: 'color2',
+            actions: [{ event: 'change', command: colorCommand }],
+            children: [],
+            context: {
+              color1: dataElement.svg.color1,
+              color2: dataElement.svg.color2,
+              color3: dataElement.svg.color3,
+            },
+          },
+          {
+            type: 'button-color',
+            icon: '',
+            name: 'color3',
             actions: [{ event: 'change', command: colorCommand }],
             children: [],
             context: {

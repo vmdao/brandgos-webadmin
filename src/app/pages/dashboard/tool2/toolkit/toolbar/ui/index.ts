@@ -4,3 +4,4 @@ export * from './button-toggle.ui';
 export * from './slider-one.ui';
 export * from './dropdown.ui';
 export * from './drop-pad.ui';
+export * from './input.ui';

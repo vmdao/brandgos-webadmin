@@ -66,3 +66,13 @@ export const getItemElementsLoading = createSelector(
   getItemState,
   (state: fromItem.ItemState) => state.elementsLoading
 );
+
+export const getRenderData = createSelector(
+  getItemState,
+  (state: fromItem.ItemState) => state.renderData
+);
+
+export const getRenderLoading = createSelector(
+  getItemState,
+  (state: fromItem.ItemState) => state.renderLoading
+);

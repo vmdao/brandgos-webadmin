@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RestService } from '../../../@core/services/rest.service';
 
-import { ItemModel } from './model';
+import { ItemModel, ITEM_TYPE } from './model';
 import { ItemResultsModel, ItemResultModel } from './results.model';
 
 const API_CUSTOMERS_URL = '/items';
@@ -30,5 +30,30 @@ export class ItemService {
 
   delete(key): Observable<ItemResultModel> {
     return this.restService.delete(`${API_CUSTOMERS_URL}/${key}`);
+  }
+
+  search(query: {
+    tag?: string;
+    key?: string;
+    collectionCode?: string;
+    type?: ITEM_TYPE;
+  }) {
+    return this.restService.get(`${API_CUSTOMERS_URL}/search/all`, query);
+  }
+
+  searchNounProject(query: {
+    tag?: string;
+    key?: string;
+    collectionCode?: string;
+    type?: ITEM_TYPE;
+  }) {
+    return this.restService.get(
+      `${API_CUSTOMERS_URL}/search/nounproject`,
+      query
+    );
+  }
+
+  render(params) {
+    return this.restService.download(`/templates/render`, params);
   }
 }

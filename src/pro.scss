@@ -208,6 +208,11 @@ menu.menu.toolbar {
   opacity: 0.6;
 }
 
+.toolbar__button--input {
+  border: 1px solid #ecedee;
+  text-align: left;
+}
+
 .toolbar__item {
   position: relative;
   height: 46px;

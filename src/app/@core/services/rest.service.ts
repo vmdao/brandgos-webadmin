@@ -115,6 +115,16 @@ export class RestService {
     );
   }
 
+  download(path: string, body = {}, showSuccess = true): Observable<any> {
+    const headers = this.getHeaderDownload();
+    return this.http
+      .post(this.baseUrl + path, body, { headers, responseType: 'arraybuffer' })
+      .pipe(
+        map((res) => this.displaySuccessMessage(res, showSuccess)),
+        catchError((err) => this.handleError(err))
+      );
+  }
+
   form(path: string, body = {}, showSuccess = true): Observable<any> {
     const headers = this.getHeaderForm();
     return this.http
@@ -187,6 +197,13 @@ export class RestService {
     const headers = new HttpHeaders({
       // 'Content-Type':
       //   'multipart/form-data;boundary=--------------------------247697088228317249765921'
+    });
+    return headers;
+  }
+
+  private getHeaderDownload(): HttpHeaders {
+    const headers = new HttpHeaders({
+      Accept: 'application/pdf',
     });
     return headers;
   }

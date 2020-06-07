@@ -89,7 +89,9 @@ const getItemShapesSuccess = createAction(
   props<{ payload: ItemResultsModel }>()
 );
 
-export const getItemShapesFailure = createAction('[ITEM] Get Items Shapes Faild');
+export const getItemShapesFailure = createAction(
+  '[ITEM] Get Items Shapes Faild'
+);
 
 const getItemElements = createAction(
   '[ITEM] Get Items Elements',
@@ -105,7 +107,39 @@ export const getItemElementsFailure = createAction(
   '[ITEM] Get Items Elements Faild'
 );
 
+const getItemIconsSearch = createAction(
+  '[ITEM] Get Item Icons Search',
+  props<{ payload: any }>()
+);
+
+const getItemIconsSearchSuccess = createAction(
+  '[ITEM] Get Item Icons Search Success',
+  props<{ payload: ItemResultsModel }>()
+);
+
+export const getItemIconsSearchFailure = createAction(
+  '[ITEM] Get Item Icons Search Faild'
+);
+
+const render = createAction(
+  '[ITEM] Update Item Redner',
+  props<{ payload: { html: string } }>()
+);
+
+const renderSuccess = createAction(
+  '[ITEM] Update Item Redner Success',
+  props<{ payload: { data: any } }>()
+);
+
+export const renderFailure = createAction(
+  '[ITEM] Update Item Redner Faild',
+  props<{ payload: ItemResultModel }>()
+);
+
 export const ItemsActions = {
+  render,
+  renderSuccess,
+  renderFailure,
   openItemView,
   getItemIcons,
   getItemIconsSuccess,
@@ -116,7 +150,9 @@ export const ItemsActions = {
   getItemElements,
   getItemElementsSuccess,
   getItemElementsFailure,
-
+  getItemIconsSearch,
+  getItemIconsSearchSuccess,
+  getItemIconsSearchFailure,
   getItems,
   getItemsSuccess,
   getItemsFailure,

@@ -7,6 +7,7 @@ import {
   DropdownUI,
   SliderOneUI,
   DropPadUI,
+  InputUI,
 } from './ui';
 import { Command } from '../command';
 
@@ -56,6 +57,10 @@ export class ToolbarMenu extends BaseMenu {
       case 'button-toggle': {
         const options = { ...item, children: [] };
         return new ButtonToggleUI(options);
+      }
+      case 'input': {
+        const options = { ...item, children: [] };
+        return new InputUI(options);
       }
       case 'button-color': {
         const options = { ...item, children: [] };

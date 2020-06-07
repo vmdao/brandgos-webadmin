@@ -40,12 +40,23 @@ export class TabIconComponent {
   total = 0;
 
   sortValue: string | null = 'DESC';
-  sortKey: string | null = 'id';
+  sortKey: string | null = 'priority';
 
   q = {
-    fulltext: '',
+    fulltext: null,
+    tag: null,
   };
 
+  tags = [
+    { label: 'Fashion', value: 'Fashion' },
+    { label: 'Cafe', value: 'Cafe' },
+    { label: 'Computer', value: 'Computer' },
+    { label: 'Creative', value: 'Creative' },
+    { label: 'Tech', value: 'Tech' },
+    { label: 'Hotel', value: 'Hotel' },
+    { label: 'Oranic', value: 'Oranic' },
+    { label: 'Education', value: 'Education' },
+  ];
   constructor(
     private store$: Store<fromApp.AppState>,
     private cd: ChangeDetectorRef
@@ -93,12 +104,34 @@ export class TabIconComponent {
     this.store$.dispatch(ItemsActions.getItemIcons({ payload: params }));
   }
 
+  fetchSearch() {
+    const params: {
+      collectionCode?: string;
+      tag?: string;
+      type?: string;
+      key?: string;
+      sort?: string;
+    } = {
+      collectionCode: 'icon',
+      type: 'svg',
+    };
+
+    if (typeof this.q.fulltext === 'string') {
+      params.key = this.q.fulltext;
+    }
+
+    if (typeof this.q.tag === 'string') {
+      params.tag = this.q.tag;
+    }
+
+    this.store$.dispatch(ItemsActions.getItemIconsSearch({ payload: params }));
+  }
   onClickItem(item) {
     const itemStyle = item.style;
     const workspaceWidth = 600;
     const workspaceHeight = 360;
 
-    const maxWidth = 160;
+    const maxWidth = 140;
 
     const dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
     const dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
@@ -129,5 +162,14 @@ export class TabIconComponent {
     this.clickItem.emit(data);
   }
 
-  onClickSearch(value) {}
+  onClickSearch() {
+    this.q.tag = null;
+    this.fetchSearch();
+  }
+
+  onClickTag(value) {
+    this.q.tag = value.value;
+    this.q.fulltext = null;
+    this.fetchSearch();
+  }
 }
