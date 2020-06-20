@@ -2,7 +2,7 @@ import { BaseElement } from '../elements/base.abstract';
 import * as _ from 'lodash';
 import * as jQuery from 'jquery';
 import { Border } from './border';
-
+import { Frame } from 'scenejs';
 import { TextSvgElement, SvgElement, TextElement } from '../elements';
 import { ToolbarMenu } from '../toolkit/toolbar/menu';
 
@@ -152,6 +152,19 @@ export class Workspace {
   }
 
   event() {
+    const frame = new Frame({
+      left: '0px',
+      top: '0px',
+      width: '0',
+      height: '0',
+      transform: {
+        translateX: `0`,
+        translateY: `0`,
+        rotate: '0deg',
+        scaleX: 1,
+        scaleY: 1,
+      },
+    });
     const frameMap = new Map();
     let targets = [];
     this.managerSelector = new Selecto({
@@ -163,6 +176,11 @@ export class Workspace {
       selectFromInside: false,
       toggleContinueSelect: ['shift'],
     });
+
+    function move(translate: number[]) {
+      frame.set('transform', 'translateX', `${translate[0]}px`);
+      frame.set('transform', 'translateY', `${translate[1]}px`);
+    }
 
     this.managerMoveabler = new Moveable(this.$dom.get(0), {
       draggable: true,
@@ -179,6 +197,11 @@ export class Workspace {
       horizontalGuidelines: [0, 100, 200],
     });
 
+    this.managerMoveabler.on('render', ({ target }) => {
+      target.style.cssText += frame.toCSS();
+    });
+
+    this.managerMoveabler.on('renderEnd', ({ target }) => {});
     this.managerMoveabler
       .on('dragStart', ({ target, set }) => {
         const dataElement = jQuery(target).data('dataElement');
@@ -189,15 +212,14 @@ export class Workspace {
             translate: [position.left, position.top],
             rotate: angle,
           });
+          console.log('dragStart', position);
         }
-
         const frame = frameMap.get(target);
+        console.log(frame.translate);
         set(frame.translate);
       })
       .on('drag', ({ target, beforeTranslate }) => {
-        const frame = frameMap.get(target);
-        frame.translate = beforeTranslate;
-        target.style.transform = `translate(${frame.translate[0]}px, ${frame.translate[1]}px) rotate(${frame.rotate}deg)`;
+        move(beforeTranslate);
       })
       .on('dragEnd', ({ target }) => {
         const dataElement = jQuery(target).data('dataElement');
@@ -229,9 +251,15 @@ export class Workspace {
         dataElement.setAngle(frame.rotate);
       });
 
-    this.managerMoveabler.on('resize', ({ target, width, height, dist }) => {
-      target.style.width = width + 'px';
-      target.style.height = height + 'px';
+    this.managerMoveabler.on('resizeStart', ({ target }) => {
+      console.log('resizeStart');
+    });
+
+    this.managerMoveabler.on('resize', ({ width, drag, height }) => {
+      console.log('resize');
+      frame.set('width', `${width}px`);
+      frame.set('height', `${height}px`);
+      move(drag.beforeTranslate);
     });
 
     this.managerMoveabler.on('clickGroup', (e) => {
@@ -286,7 +314,6 @@ export class Workspace {
       .on('resizeGroup', ({ events }) => {
         events.forEach(({ target, width, height, drag }, i) => {
           const frame = frames[i];
-
           target.style.width = `${width}px`;
           target.style.height = `${height}px`;
           // get drag event
