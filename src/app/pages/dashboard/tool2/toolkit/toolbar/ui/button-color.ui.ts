@@ -54,8 +54,8 @@ export class ButtonColorUI extends BaseMenuItemUI implements OnViewed {
         interaction: {
           hex: true,
           rgba: true,
-          hsla: true,
-          hsva: true,
+          hsla: false,
+          hsva: false,
           cmyk: true,
           input: true,
           clear: false,

@@ -10,6 +10,7 @@ import Selecto from 'selecto';
 import Moveable from 'moveable';
 import {
   ColorCommand,
+  SvgColorCommand,
   CloneCommand,
   TransformCommand,
   DeleteCommand,
@@ -448,6 +449,7 @@ export class Workspace {
     const fontFamilyCommand = new FontFamilyCommand(dataElement, this);
     const fontsizeCommand = new FontsizeCommand(dataElement, this);
     const colorCommand = new ColorCommand(dataElement);
+    const svgColorCommand = new SvgColorCommand(dataElement);
     const transformCommand = new TransformCommand(dataElement, this);
     const cloneComand = new CloneCommand(dataElement, this);
     const deleteCommand = new DeleteCommand(dataElement, this);
@@ -637,7 +639,7 @@ export class Workspace {
             type: 'button-color',
             icon: '',
             name: 'color1',
-            actions: [{ event: 'change', command: colorCommand }],
+            actions: [{ event: 'change', command: svgColorCommand }],
             children: [],
             context: {
               color1: dataElement.svg.color1,
@@ -649,7 +651,7 @@ export class Workspace {
             type: 'button-color',
             icon: '',
             name: 'color2',
-            actions: [{ event: 'change', command: colorCommand }],
+            actions: [{ event: 'change', command: svgColorCommand }],
             children: [],
             context: {
               color1: dataElement.svg.color1,
@@ -661,7 +663,7 @@ export class Workspace {
             type: 'button-color',
             icon: '',
             name: 'color3',
-            actions: [{ event: 'change', command: colorCommand }],
+            actions: [{ event: 'change', command: svgColorCommand }],
             children: [],
             context: {
               color1: dataElement.svg.color1,

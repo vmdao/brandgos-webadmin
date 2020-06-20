@@ -2,7 +2,6 @@ import * as jQuery from 'jquery';
 
 import { MoveBehavior } from './interfaces/move.interface';
 import { RotateBehavior } from './interfaces/rotate.interface';
-import { TextChild } from './text.child';
 import { SvgChild } from './svg.child';
 import { BaseTextChild } from './base-text-child.abstract';
 
@@ -245,6 +244,7 @@ export abstract class BaseElement {
   }
 
   updateSizeByFontsize(size: { width: number; height: number }) {
+    console.log(size, 1234);
     this.setWidth(size.width);
     this.setHeight(size.height);
     this.$dom.css(size);

@@ -52,7 +52,7 @@ export class TypeSvgBehavior implements TypeBehavior {
       const path = text2svg.toPath(data['htmlSvg'], data);
       const width = path.width;
       const height = path.height;
-      const draw = SVG().size(width, height).viewbox(0, 0, width, height);
+      const draw = SVG().viewbox(0, 0, width, height);
 
       draw.path(path.pathData);
       draw.fill(data.color);
@@ -67,6 +67,6 @@ export class TypeSvgBehavior implements TypeBehavior {
   renderSvgDom(svgHtml) {
     this.$dom.empty();
     this.$dom.append(svgHtml);
-    this.$dom.css({ width: this.element.width, height: this.element.height });
+    this.$dom.css({ width: '100%', height: '100%' });
   }
 }
