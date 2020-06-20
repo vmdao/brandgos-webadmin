@@ -1084,8 +1084,12 @@ menu.menu.toolbar {
   background: transparent !important;
 }
 .moveable-control {
-  border: 3px solid #4a4a4a !important;
+  border: 2px solid #4a4a4a !important;
   background: #fff !important;
+  width: 10px !important;
+  height: 10px !important;
+  margin-left: -5px !important;
+  margin-top: -5px !important;
   &.moveable-n,
   &.moveable-s,
   &.moveable-e,
@@ -1095,6 +1099,10 @@ menu.menu.toolbar {
   &.moveable-origin {
     display: none;
   }
+}
+.moveable-rotation-line {
+  height: 32px !important;
+  top: -32px !important;
 }
 
 .slider-box {

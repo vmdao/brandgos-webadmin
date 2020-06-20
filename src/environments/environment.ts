@@ -5,7 +5,8 @@
 import * as workflow from './workflow.json';
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8088',
+  // apiUrl: 'http://localhost:8088',
+  apiUrl: 'http://api.devlazy.com',
   oneSignalKey: 'c4be7e7f-d265-4071-b6e8-5ba9ccb95829',
   workflow,
 };

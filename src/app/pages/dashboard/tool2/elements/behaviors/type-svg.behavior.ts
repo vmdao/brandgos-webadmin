@@ -5,6 +5,11 @@ import * as jQuery from 'jquery';
 import { SVG } from '@svgdotjs/svg.js';
 import { Text2Svg } from '../../utils/text2svg.js';
 import { BaseTextChild } from '../base-text-child.abstract';
+
+import * as makerjs from 'makerjs';
+import { paths, exporter } from 'makerjs';
+
+const { Circle } = paths;
 export class TypeSvgBehavior implements TypeBehavior {
   element: BaseElement;
   text: BaseTextChild;
@@ -47,7 +52,6 @@ export class TypeSvgBehavior implements TypeBehavior {
       const path = text2svg.toPath(data['htmlSvg'], data);
       const width = path.width;
       const height = path.height;
-
       const draw = SVG().size(width, height).viewbox(0, 0, width, height);
 
       draw.path(path.pathData);
@@ -62,7 +66,7 @@ export class TypeSvgBehavior implements TypeBehavior {
 
   renderSvgDom(svgHtml) {
     this.$dom.empty();
-    this.$dom.css({ width: this.element.width, height: this.element.height });
     this.$dom.append(svgHtml);
+    this.$dom.css({ width: this.element.width, height: this.element.height });
   }
 }

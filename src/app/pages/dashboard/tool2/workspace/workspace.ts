@@ -186,9 +186,10 @@ export class Workspace {
 
     function getFrame(target) {
       const dataElement = jQuery(target).data('dataElement');
+      const box = dataElement.getBox();
+      let frame = frameMap.get(target);
       if (!frameMap.has(target)) {
-        const box = dataElement.getBox();
-        const frame = new Frame({
+        frame = new Frame({
           left: '0px',
           top: '0px',
           width: `${box.width}px`,
@@ -201,10 +202,9 @@ export class Workspace {
             scaleY: 1,
           },
         });
-        frameMap.set(target, frame);
-        return frame;
       }
-      return frameMap.get(target);
+      frameMap.set(target, frame);
+      return frame;
     }
 
     function getFrameData(frame) {
@@ -298,8 +298,9 @@ export class Workspace {
       });
 
     this.managerMoveabler
-      .on('resizeStart', ({ target, dragStart }) => {
+      .on('resizeStart', ({ target, dragStart, setOrigin }) => {
         console.log('resizeStart');
+        setOrigin(['%', '%']);
         if (dragStart) {
           const frame = getFrame(target);
           dragStart.set([

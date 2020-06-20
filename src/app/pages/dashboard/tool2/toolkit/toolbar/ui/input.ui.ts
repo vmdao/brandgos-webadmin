@@ -10,7 +10,7 @@ export class InputUI extends BaseMenuItemUI {
 
   setCommand(action) {
     const keyup = fromEvent(this.$dom.get(0), action.event);
-    const result = keyup.pipe(debounce(() => interval(300)));
+    const result = keyup.pipe(debounce(() => interval(0)));
     result.subscribe((x) => {
       // tslint:disable-next-line: no-string-literal
       action.command.execute(x['target'].value);
