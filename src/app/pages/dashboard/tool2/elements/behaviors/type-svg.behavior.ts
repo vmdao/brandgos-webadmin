@@ -41,7 +41,9 @@ export class TypeSvgBehavior implements TypeBehavior {
 
   getHtmlSvg(value?: any) {
     const data = this.text.getData();
+    // tslint:disable-next-line: no-string-literal
     Text2Svg.load(data['url'], (text2svg) => {
+      // tslint:disable-next-line: no-string-literal
       const path = text2svg.toPath(data['htmlSvg'], data);
       const width = path.width;
       const height = path.height;

@@ -24,7 +24,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./tab-shape.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabShapeComponent implements OnInit {
+export class TabShapeComponent implements OnInit, OnDestroy {
   @Output()
   clickItem: EventEmitter<any> = new EventEmitter();
 

@@ -17,7 +17,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
       const border = new Border({ ...localStorages });
-      this.workspace = new Workspace({ ...localStorages, border: border });
+      this.workspace = new Workspace({ ...localStorages, border });
       this.workspace.render('#areaWorkspace');
       this.workspace.createElements(localStorages.elements);
     });

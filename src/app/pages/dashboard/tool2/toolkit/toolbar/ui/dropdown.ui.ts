@@ -97,6 +97,7 @@ export class DropdownUI extends BaseMenuItemUI {
     const wrapper = jQuery(
       `<menu class="menuList"><ul class="menuList__inner"></ul></menu>`
     );
+    // tslint:disable-next-line: no-string-literal
     this.addBatchItems(wrapper, this.context['list']);
     return wrapper;
   }

@@ -24,7 +24,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./tab-icon.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabIconComponent {
+export class TabIconComponent implements OnInit, OnDestroy {
   @Output()
   clickItem: EventEmitter<any> = new EventEmitter();
 

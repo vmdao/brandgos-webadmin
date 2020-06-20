@@ -3,8 +3,9 @@ import {
   ChangeDetectorRef,
   ElementRef,
   ViewChild,
+  OnInit,
 } from '@angular/core';
-import { ItemModel, ItemsActions } from '@app/pages/@store/item';
+import { ItemsActions } from '@app/pages/@store/item';
 import { Subject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromApp from '@app/pages/@store';
@@ -17,20 +18,21 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   @ViewChild('inputElement', { static: false }) inputElement?: ElementRef;
   renderData$: Observable<Blob>;
   renderLoading$: Observable<boolean>;
   isVisible = false;
   isVisible2 = false;
   data: any;
-  percent: number = 0;
+  percent = 0;
   renderLoading = true;
   private unsubscribe: Subject<void> = new Subject();
   constructor(
     private store$: Store<fromApp.AppState>,
     private cd: ChangeDetectorRef
   ) {}
+
   ngOnInit() {
     this.renderLoading$ = this.store$.select(fromApp.getRenderLoading);
     this.store$.select(fromApp.getRenderData).subscribe((res) => {
