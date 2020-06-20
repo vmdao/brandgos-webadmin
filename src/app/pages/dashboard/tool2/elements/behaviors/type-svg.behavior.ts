@@ -60,9 +60,9 @@ export class TypeSvgBehavior implements TypeBehavior {
     });
   }
 
-  renderSvgDom = function (svgHtml) {
+  renderSvgDom(svgHtml) {
     this.$dom.empty();
-    this.$dom.css({ width: this.width, height: this.height });
+    this.$dom.css({ width: this.element.width, height: this.element.height });
     this.$dom.append(svgHtml);
-  };
+  }
 }
