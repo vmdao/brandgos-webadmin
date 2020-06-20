@@ -21,6 +21,8 @@ import {
 export class Workspace {
   $dom: any;
   $domWrapper: any;
+  $toolbar;
+
   width: number;
   height: number;
 
@@ -28,10 +30,10 @@ export class Workspace {
   code: string;
   name: string;
   version: string;
+
   order: number;
   border: Border;
   elements: Array<BaseElement> = [];
-  $toolbar;
   managerSelector: Selecto;
   managerMoveabler: Moveable;
 
@@ -100,12 +102,12 @@ export class Workspace {
         }
       });
 
-    let dataMenu = dataElement.$dom.data('dataMenu');
-    if (!dataMenu) {
-      dataMenu = this.createMenu(dataElement);
-      dataElement.$dom.data('dataMenu', dataMenu);
+    let dataMenu2 = dataElement.$dom.data('dataMenu');
+    if (!dataMenu2) {
+      dataMenu2 = this.createMenu(dataElement);
+      dataElement.$dom.data('dataMenu', dataMenu2);
     }
-    dataMenu.appendTo('#designtool');
+    dataMenu2.appendTo('#designtool');
     this.$toolbar.addClass('menu--active');
   }
 
@@ -152,21 +154,9 @@ export class Workspace {
   }
 
   event() {
-    const frame = new Frame({
-      left: '0px',
-      top: '0px',
-      width: '0',
-      height: '0',
-      transform: {
-        translateX: `0`,
-        translateY: `0`,
-        rotate: '0deg',
-        scaleX: 1,
-        scaleY: 1,
-      },
-    });
     const frameMap = new Map();
-    let targets = [];
+    let targetsSelected = [];
+
     this.managerSelector = new Selecto({
       container: this.$dom.get(0),
       dragContainer: '#areaWorkspace',
@@ -177,9 +167,70 @@ export class Workspace {
       toggleContinueSelect: ['shift'],
     });
 
-    function move(translate: number[]) {
+    function move(target, translate: number[]) {
+      const frame = getFrame(target);
       frame.set('transform', 'translateX', `${translate[0]}px`);
       frame.set('transform', 'translateY', `${translate[1]}px`);
+    }
+
+    function rotate(target, angle) {
+      const frame = getFrame(target);
+      frame.set('transform', 'rotate', `${angle}deg`);
+    }
+
+    function resize(target, width, height) {
+      const frame = getFrame(target);
+      frame.set('width', `${width}px`);
+      frame.set('height', `${height}px`);
+    }
+
+    function getFrame(target) {
+      const dataElement = jQuery(target).data('dataElement');
+      if (!frameMap.has(target)) {
+        const box = dataElement.getBox();
+        const frame = new Frame({
+          left: '0px',
+          top: '0px',
+          width: `${box.width}px`,
+          height: `${box.height}px`,
+          transform: {
+            translateX: `${box.left}px`,
+            translateY: `${box.top}px`,
+            rotate: `${box.angle}deg`,
+            scaleX: 1,
+            scaleY: 1,
+          },
+        });
+        frameMap.set(target, frame);
+        return frame;
+      }
+      return frameMap.get(target);
+    }
+
+    function getFrameData(frame) {
+      if (!frame) {
+        return {
+          angle: 0,
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0,
+        };
+      }
+
+      const angle = frame.get('transform', 'rotate');
+      const top = frame.get('transform', 'translateY');
+      const left = frame.get('transform', 'translateX');
+      const width = frame.get('width');
+      const height = frame.get('height');
+
+      return {
+        angle: parseFloat(angle),
+        top: parseFloat(top),
+        left: parseFloat(left),
+        width: parseFloat(width),
+        height: parseFloat(height),
+      };
     }
 
     this.managerMoveabler = new Moveable(this.$dom.get(0), {
@@ -197,70 +248,89 @@ export class Workspace {
       horizontalGuidelines: [0, 100, 200],
     });
 
-    this.managerMoveabler.on('render', ({ target }) => {
-      target.style.cssText += frame.toCSS();
-    });
+    this.managerMoveabler
+      .on('renderStart', ({ target }) => {
+        console.log('renderStart');
+      })
+      .on('render', ({ target }) => {
+        const frame = getFrame(target);
+        target.style.cssText += frame.toCSS();
+      })
+      .on('renderEnd', ({ target }) => {
+        console.log('renderEnd');
+        const frame = getFrame(target);
+        const frameData = getFrameData(frame);
 
-    this.managerMoveabler.on('renderEnd', ({ target }) => {});
+        const dataElement = jQuery(target).data('dataElement');
+        dataElement.setAngle(frameData.angle);
+        dataElement.setLeft(frameData.left);
+        dataElement.setTop(frameData.top);
+        dataElement.setWidth(frameData.width);
+        dataElement.setHeight(frameData.height);
+      });
+
     this.managerMoveabler
       .on('dragStart', ({ target, set }) => {
-        const dataElement = jQuery(target).data('dataElement');
-        if (!frameMap.has(target)) {
-          const position = dataElement.getPosition();
-          const angle = dataElement.getAngle();
-          frameMap.set(target, {
-            translate: [position.left, position.top],
-            rotate: angle,
-          });
-          console.log('dragStart', position);
-        }
-        const frame = frameMap.get(target);
-        console.log(frame.translate);
-        set(frame.translate);
+        console.log('dragStart');
+        const frame = getFrame(target);
+        const frameData = getFrameData(frame);
+        set([frameData.left, frameData.top]);
       })
       .on('drag', ({ target, beforeTranslate }) => {
-        move(beforeTranslate);
+        move(target, beforeTranslate);
       })
       .on('dragEnd', ({ target }) => {
-        const dataElement = jQuery(target).data('dataElement');
-        const frame = frameMap.get(target);
-        dataElement.setLeft(frame.translate[0]);
-        dataElement.setTop(frame.translate[1]);
+        console.log('dragEnd');
       });
 
     this.managerMoveabler
       .on('rotateStart', ({ target, set }) => {
-        const dataElement = jQuery(target).data('dataElement');
-        if (!frameMap.has(target)) {
-          const position = dataElement.getPosition();
-          const angle = dataElement.getAngle();
-          frameMap.set(target, {
-            translate: [position.left, position.top],
-            rotate: angle,
-          });
-        }
+        console.log('rotateStart');
+        const frame = getFrame(target);
+        const frameData = getFrameData(frame);
+        set(frameData.angle);
       })
-      .on('rotate', ({ target, delta }) => {
-        const frame = frameMap.get(target);
-        frame.rotate += delta;
-        target.style.transform = `translate(${frame.translate[0]}px, ${frame.translate[1]}px) rotate(${frame.rotate}deg)`;
+      .on('rotate', ({ target, beforeRotate }) => {
+        rotate(target, beforeRotate);
       })
       .on('rotateEnd', ({ target }) => {
-        const dataElement = jQuery(target).data('dataElement');
-        const frame = frameMap.get(target);
-        dataElement.setAngle(frame.rotate);
+        console.log('rotateEnd');
       });
 
-    this.managerMoveabler.on('resizeStart', ({ target }) => {
-      console.log('resizeStart');
-    });
+    this.managerMoveabler
+      .on('resizeStart', ({ target, dragStart }) => {
+        console.log('resizeStart');
+        if (dragStart) {
+          const frame = getFrame(target);
+          dragStart.set([
+            parseFloat(frame.get('transform', 'translateX')),
+            parseFloat(frame.get('transform', 'translateY')),
+          ]);
+        }
+      })
+      .on('resize', ({ target, width, drag, height }) => {
+        console.log('resize');
+        resize(target, width, height);
+        move(target, drag.beforeTranslate);
+      })
+      .on('resizeEnd', () => {
+        console.log('resizeEnd');
+      });
 
-    this.managerMoveabler.on('resize', ({ width, drag, height }) => {
-      console.log('resize');
-      frame.set('width', `${width}px`);
-      frame.set('height', `${height}px`);
-      move(drag.beforeTranslate);
-    });
+    this.managerMoveabler
+      .on('renderGroupStart', ({ targets }) => {
+        console.log('renderGroupStart');
+      })
+      .on('renderGroup', ({ targets }) => {
+        console.log('renderGroup');
+        targets.forEach((target) => {
+          const frame = getFrame(target);
+          target.style.cssText += frame.toCSS();
+        });
+      })
+      .on('renderGroupEnd', ({ targets }) => {
+        console.log('renderGroupEnd');
+      });
 
     this.managerMoveabler.on('clickGroup', (e) => {
       this.managerSelector.clickTarget(e.inputEvent, e.inputTarget);
@@ -268,57 +338,39 @@ export class Workspace {
 
     this.managerMoveabler
       .on('dragGroupStart', ({ events }) => {
+        console.log('dragGroupStart');
         events.forEach(({ target, set }) => {
-          if (!frameMap.has(target)) {
-            const dataElement = jQuery(target).data('dataElement');
-            const position = dataElement.getPosition();
-            const angle = dataElement.getAngle();
-            frameMap.set(target, {
-              translate: [position.left, position.top],
-              rotate: angle,
-            });
-          }
-          const frame = frameMap.get(target);
-          set(frame.translate);
+          const frame = getFrame(target);
+          const frameData = getFrameData(frame);
+          set([frameData.left, frameData.top]);
         });
       })
       .on('dragGroup', ({ events }) => {
+        console.log('dragGroup');
         events.forEach(({ target, beforeTranslate }) => {
-          const dataElement = jQuery(target).data('dataElement');
-          const frame = frameMap.get(target);
-          frame.translate = beforeTranslate;
-          dataElement.setLeft(frame.translate[0]);
-          dataElement.setTop(frame.translate[1]);
-
-          target.style.transform = `translate(${frame.translate[0]}px, ${frame.translate[1]}px) rotate(${frame.rotate}deg)`;
+          move(target, beforeTranslate);
         });
       });
 
     this.managerMoveabler
       .on('resizeGroupStart', ({ events }) => {
-        events.forEach((ev, i) => {
-          const frame = frames[i];
-          // Set origin if transform-orgin use %.
-          ev.setOrigin(['%', '%']);
-
-          // If cssSize and offsetSize are different, set cssSize.
-          const style = window.getComputedStyle(ev.target);
-          const cssWidth = parseFloat(style.width);
-          const cssHeight = parseFloat(style.height);
-          ev.set([cssWidth, cssHeight]);
-
-          // // If a drag event has already occurred, there is no dragStart.
-          // ev.dragStart && ev.dragStart.set(frame.translate);
+        events.forEach(({ target, setOrigin, set, dragStart }, i) => {
+          setOrigin(['%', '%']);
+          const frame = getFrame(target);
+          const frameData = getFrameData(frame);
+          set([frameData.width, frameData.height]);
+          if (dragStart) {
+            dragStart.set([
+              parseFloat(frame.get('transform', 'translateX')),
+              parseFloat(frame.get('transform', 'translateY')),
+            ]);
+          }
         });
       })
       .on('resizeGroup', ({ events }) => {
         events.forEach(({ target, width, height, drag }, i) => {
-          const frame = frames[i];
-          target.style.width = `${width}px`;
-          target.style.height = `${height}px`;
-          // get drag event
-          // frame.translate = drag.beforeTranslate;
-          target.style.transform = `translate(${drag.beforeTranslate[0]}px, ${drag.beforeTranslate[1]}px)`;
+          resize(target, width, height);
+          move(target, drag.beforeTranslate);
         });
       })
       .on('resizeGroupEnd', ({ targets, isDrag, clientX, clientY }) => {
@@ -327,33 +379,23 @@ export class Workspace {
 
     this.managerMoveabler
       .on('rotateGroupStart', ({ events }) => {
-        events.forEach(({ target, set }) => {
-          if (!frameMap.has(target)) {
-            const dataElement = jQuery(target).data('dataElement');
-            const position = dataElement.getPosition();
-            const angle = dataElement.getAngle();
-            frameMap.set(target, {
-              translate: [position.left, position.top],
-              rotate: angle,
-            });
+        events.forEach(({ target, set, dragStart }) => {
+          const frame = getFrame(target);
+          const frameData = getFrameData(frame);
+          set(frameData.angle);
+          if (dragStart) {
+            dragStart.set([frameData.left, frameData.top]);
           }
-          const frame = frameMap.get(target);
-          set(frame.rotate);
         });
       })
       .on('rotateGroup', ({ events, delta }) => {
         events.forEach(({ target, beforeRotate, drag }) => {
-          const frame = frameMap.get(target);
-          frame.rotate = beforeRotate;
-          // get drag event
-          frame.translate = drag.beforeTranslate;
-          target.style.transform =
-            `translate(${drag.beforeTranslate[0]}px, ${drag.beforeTranslate[1]}px) ` +
-            `rotate(${beforeRotate}deg)`;
+          rotate(target, beforeRotate);
+          move(target, drag.beforeTranslate);
         });
       })
       .on('rotateGroupEnd', ({ targets, isDrag, clientX, clientY }) => {
-        console.log('onRotateGroupEnd', targets, isDrag);
+        console.log('onRotateGroupEnd');
       });
 
     this.managerSelector
@@ -361,28 +403,33 @@ export class Workspace {
         const target = e.inputEvent.target;
         if (
           this.managerMoveabler.isMoveableElement(target) ||
-          targets.some((t) => t === target || t.contains(target))
+          targetsSelected.some((t) => t === target || t.contains(target))
         ) {
           e.stop();
         }
       })
-      .on('selectStart', (e) => {})
+      .on('selectStart', ({ selected }) => {
+        console.log('selectStart', selected);
+      })
       .on('select', ({ selected }) => {
-        targets = selected;
-        this.managerMoveabler.target = targets;
+        targetsSelected = selected;
+        this.managerMoveabler.target = selected;
 
-        if (targets.length == 1) {
-          this.selectedElement(jQuery(targets[0]));
+        if (targetsSelected.length === 1) {
+          this.selectedElement(jQuery(targetsSelected[0]));
         } else {
           this.offMenuElements();
         }
       })
-      .on('selectEnd', (e) => {
-        if (e.isDragStart) {
-          e.inputEvent.preventDefault();
-
+      .on('selectEnd', ({ isDragStart, inputEvent, selected }) => {
+        console.log('selectEnd', selected);
+        selected.forEach((target) => {
+          getFrame(target);
+        });
+        if (isDragStart) {
+          inputEvent.preventDefault();
           setTimeout(() => {
-            this.managerMoveabler.dragStart(e.inputEvent);
+            this.managerMoveabler.dragStart(inputEvent);
           });
         }
       });

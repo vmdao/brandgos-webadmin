@@ -126,6 +126,7 @@ export abstract class BaseElement {
       width: this.getWidth(),
       left: this.getLeft(),
       top: this.getTop(),
+      angle: this.getAngle(),
     };
   }
 
