@@ -15,13 +15,15 @@ export class SliderOneUI extends BaseMenuItemUI {
     </li>`;
     const percent = this.getPercentByValue(this.context.valueDefault);
     const htmlSlider = `<div class="aant-slider">
-    <div class="aant-slider-rail"></div> 
+    <div class="aant-slider-rail"></div>
     <div class="aant-slider-track"></div>
     <div class="aant-slider-step"></div>
     <div class="aant-slider-handle" style="left: ${percent}%"></div>
     <div class="aant-slider-mark"></div>
     </div>`;
+    // tslint:disable-next-line: max-line-length
     const htmlInput = `<input class="toolbar__sliderValue toolbar__sliderValue--${this.code}" type="number" min="${this.context.min}" max="${this.context.max}" step="${this.context.step}" value="${this.context.valueDefault}" disabled>`;
+    // tslint:disable-next-line: max-line-length
     this.html = `<div class="toolbar__sliderWrapper slider-box"><label class="toolbar__label toolbar__label--letterSpacing">${this.contentName}</label>${htmlSlider}${htmlInput}</div>`;
   }
 
@@ -61,9 +63,11 @@ export class SliderOneUI extends BaseMenuItemUI {
   }
 
   handleMouseDown(e) {
-    const handleChange = (e) => {
+    const handleChange = (event) => {
       const container = this.$dom.find('.aant-slider-rail')[0];
-      const data = container ? this.calculateChange(e, true, container) : null;
+      const data = container
+        ? this.calculateChange(event, true, container)
+        : null;
       if (data) {
         this.onChangeCompete(data);
         this.updateSliderHandle(data);
@@ -102,17 +106,26 @@ export class SliderOneUI extends BaseMenuItemUI {
   }
 
   calculateChange(e, skip, container) {
-    !skip && e.preventDefault();
+    if (!skip) {
+      e.preventDefault();
+    }
 
     const containerWidth = container.clientWidth;
-    if (containerWidth <= 0) return;
+    if (containerWidth <= 0) {
+      return;
+    }
 
     const x = typeof e.pageX === 'number' ? e.pageX : e.touches[0].pageX;
 
     let left =
       x - (container.getBoundingClientRect().left + window.pageXOffset);
-    if (left >= containerWidth) left = containerWidth;
-    if (left <= 0) left = 0;
+    if (left >= containerWidth) {
+      left = containerWidth;
+    }
+
+    if (left <= 0) {
+      left = 0;
+    }
 
     const percent = left / containerWidth;
     const value = this.getValueByPercent(percent);

@@ -6,6 +6,7 @@ export class Border {
   width: number;
   height: number;
   html =
+    // tslint:disable-next-line: max-line-length
     '<div class="border"><div class="vertical align"></div><div class="vertical align"></div><div class="vertical align"></div><div class="horizontal align"></div><div class="horizontal align"></div><div class="horizontal align"></div></div>';
 
   constructor(option) {
