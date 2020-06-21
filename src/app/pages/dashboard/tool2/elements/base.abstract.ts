@@ -244,7 +244,6 @@ export abstract class BaseElement {
   }
 
   updateSizeByFontsize(size: { width: number; height: number }) {
-    console.log(size, 1234);
     this.setWidth(size.width);
     this.setHeight(size.height);
     this.$dom.css(size);

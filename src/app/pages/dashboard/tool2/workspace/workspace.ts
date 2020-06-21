@@ -186,10 +186,10 @@ export class Workspace {
     }
 
     function getFrame(target) {
-      const dataElement = jQuery(target).data('dataElement');
-      const box = dataElement.getBox();
       let frame = frameMap.get(target);
       if (!frameMap.has(target)) {
+        const dataElement = jQuery(target).data('dataElement');
+        const box = dataElement.getBox();
         frame = new Frame({
           left: '0px',
           top: '0px',
@@ -203,8 +203,9 @@ export class Workspace {
             scaleY: 1,
           },
         });
+        frameMap.set(target, frame);
       }
-      frameMap.set(target, frame);
+
       return frame;
     }
 
@@ -261,7 +262,6 @@ export class Workspace {
         console.log('renderEnd');
         const frame = getFrame(target);
         const frameData = getFrameData(frame);
-
         const dataElement = jQuery(target).data('dataElement');
         dataElement.setAngle(frameData.angle);
         dataElement.setLeft(frameData.left);
@@ -272,9 +272,11 @@ export class Workspace {
 
     this.managerMoveabler
       .on('dragStart', ({ target, set }) => {
-        console.log('dragStart');
         const frame = getFrame(target);
         const frameData = getFrameData(frame);
+        console.log('dragStart', frameData);
+        const dataElement = jQuery(target).data('dataElement');
+        resize(target, dataElement.width, dataElement.height);
         set([frameData.left, frameData.top]);
       })
       .on('drag', ({ target, beforeTranslate }) => {
@@ -289,6 +291,8 @@ export class Workspace {
         console.log('rotateStart');
         const frame = getFrame(target);
         const frameData = getFrameData(frame);
+        const dataElement = jQuery(target).data('dataElement');
+        resize(target, dataElement.width, dataElement.height);
         set(frameData.angle);
       })
       .on('rotate', ({ target, beforeRotate }) => {
@@ -344,6 +348,8 @@ export class Workspace {
         events.forEach(({ target, set }) => {
           const frame = getFrame(target);
           const frameData = getFrameData(frame);
+          const dataElement = jQuery(target).data('dataElement');
+          resize(target, dataElement.width, dataElement.height);
           set([frameData.left, frameData.top]);
         });
       })
@@ -360,6 +366,8 @@ export class Workspace {
           setOrigin(['%', '%']);
           const frame = getFrame(target);
           const frameData = getFrameData(frame);
+          const dataElement = jQuery(target).data('dataElement');
+          resize(target, dataElement.width, dataElement.height);
           set([frameData.width, frameData.height]);
           if (dragStart) {
             dragStart.set([
@@ -384,6 +392,8 @@ export class Workspace {
         events.forEach(({ target, set, dragStart }) => {
           const frame = getFrame(target);
           const frameData = getFrameData(frame);
+          const dataElement = jQuery(target).data('dataElement');
+          resize(target, dataElement.width, dataElement.height);
           set(frameData.angle);
           if (dragStart) {
             dragStart.set([frameData.left, frameData.top]);
