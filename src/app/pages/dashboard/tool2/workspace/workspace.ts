@@ -72,7 +72,6 @@ export class Workspace {
   }
 
   createElement(dataElement) {
-    console.log('data', dataElement);
     const element = this.factoryCreateElement(dataElement);
     this.addElement(element);
   }
@@ -168,86 +167,28 @@ export class Workspace {
       toggleContinueSelect: ['shift'],
     });
 
-    function move(target, translate: number[]) {
-      const frame = getFrame(target);
-      frame.set('transform', 'translateX', `${translate[0]}px`);
-      frame.set('transform', 'translateY', `${translate[1]}px`);
-    }
-
-    function rotate(target, angle) {
-      const frame = getFrame(target);
-      frame.set('transform', 'rotate', `${angle}deg`);
-    }
-
-    function resize(target, width, height) {
-      const frame = getFrame(target);
-      frame.set('width', `${width}px`);
-      frame.set('height', `${height}px`);
-    }
-
-    function getFrame(target) {
-      let frame = frameMap.get(target);
-      if (!frameMap.has(target)) {
-        const dataElement = jQuery(target).data('dataElement');
-        const box = dataElement.getBox();
-        frame = new Frame({
-          left: '0px',
-          top: '0px',
-          width: `${box.width}px`,
-          height: `${box.height}px`,
-          transform: {
-            translateX: `${box.left}px`,
-            translateY: `${box.top}px`,
-            rotate: `${box.angle}deg`,
-            scaleX: 1,
-            scaleY: 1,
-          },
-        });
-        frameMap.set(target, frame);
-      }
-
-      return frame;
-    }
-
-    function getFrameData(frame) {
-      if (!frame) {
-        return {
-          angle: 0,
-          top: 0,
-          left: 0,
-          width: 0,
-          height: 0,
-        };
-      }
-
-      const angle = frame.get('transform', 'rotate');
-      const top = frame.get('transform', 'translateY');
-      const left = frame.get('transform', 'translateX');
-      const width = frame.get('width');
-      const height = frame.get('height');
-
-      return {
-        angle: parseFloat(angle),
-        top: parseFloat(top),
-        left: parseFloat(left),
-        width: parseFloat(width),
-        height: parseFloat(height),
-      };
-    }
-
     this.managerMoveabler = new Moveable(this.$dom.get(0), {
+      zoom: 1,
+      edge: false,
+      keepRatio: true,
+
       draggable: true,
       resizable: true,
-      throttleResize: 0,
-      keepRatio: true,
       rotatable: true,
-      snapThreshold: 0,
+
+      throttleDrag: 0,
+      throttleResize: 0,
       throttleRotate: 0,
 
-      snapCenter: false,
-      snappable: false,
-      verticalGuidelines: [100, 200, 300],
-      horizontalGuidelines: [0, 100, 200],
+      pinchable: true,
+
+      snapCenter: true,
+      snappable: true,
+      snapHorizontal: true,
+      snapVertical: true,
+      snapElement: true,
+      snapThreshold: 1,
+      elementGuidelines: [],
     });
 
     this.managerMoveabler
@@ -260,21 +201,13 @@ export class Workspace {
       })
       .on('renderEnd', ({ target }) => {
         console.log('renderEnd');
-        const frame = getFrame(target);
-        const frameData = getFrameData(frame);
-        const dataElement = jQuery(target).data('dataElement');
-        dataElement.setAngle(frameData.angle);
-        dataElement.setLeft(frameData.left);
-        dataElement.setTop(frameData.top);
-        dataElement.setWidth(frameData.width);
-        dataElement.setHeight(frameData.height);
+        updateElement(target);
       });
 
     this.managerMoveabler
       .on('dragStart', ({ target, set }) => {
         const frame = getFrame(target);
         const frameData = getFrameData(frame);
-        console.log('dragStart', frameData);
         const dataElement = jQuery(target).data('dataElement');
         resize(target, dataElement.width, dataElement.height);
         set([frameData.left, frameData.top]);
@@ -283,12 +216,12 @@ export class Workspace {
         move(target, beforeTranslate);
       })
       .on('dragEnd', ({ target }) => {
-        console.log('dragEnd');
+        // console.log('dragEnd');
       });
 
     this.managerMoveabler
       .on('rotateStart', ({ target, set }) => {
-        console.log('rotateStart');
+        // console.log('rotateStart');
         const frame = getFrame(target);
         const frameData = getFrameData(frame);
         const dataElement = jQuery(target).data('dataElement');
@@ -299,12 +232,12 @@ export class Workspace {
         rotate(target, beforeRotate);
       })
       .on('rotateEnd', ({ target }) => {
-        console.log('rotateEnd');
+        // console.log('rotateEnd');
       });
 
     this.managerMoveabler
       .on('resizeStart', ({ target, dragStart, setOrigin }) => {
-        console.log('resizeStart');
+        // console.log('resizeStart');
         setOrigin(['%', '%']);
         if (dragStart) {
           const frame = getFrame(target);
@@ -315,27 +248,30 @@ export class Workspace {
         }
       })
       .on('resize', ({ target, width, drag, height }) => {
-        console.log('resize');
+        // console.log('resize');
         resize(target, width, height);
         move(target, drag.beforeTranslate);
       })
       .on('resizeEnd', () => {
-        console.log('resizeEnd');
+        // console.log('resizeEnd');
       });
 
     this.managerMoveabler
       .on('renderGroupStart', ({ targets }) => {
-        console.log('renderGroupStart');
+        // console.log('renderGroupStart');
       })
       .on('renderGroup', ({ targets }) => {
-        console.log('renderGroup');
+        // console.log('renderGroup');
         targets.forEach((target) => {
           const frame = getFrame(target);
           target.style.cssText += frame.toCSS();
         });
       })
       .on('renderGroupEnd', ({ targets }) => {
-        console.log('renderGroupEnd');
+        // console.log('renderGroupEnd');
+        targets.forEach((target) => {
+          updateElement(target);
+        });
       });
 
     this.managerMoveabler.on('clickGroup', (e) => {
@@ -344,7 +280,7 @@ export class Workspace {
 
     this.managerMoveabler
       .on('dragGroupStart', ({ events }) => {
-        console.log('dragGroupStart');
+        // console.log('dragGroupStart');
         events.forEach(({ target, set }) => {
           const frame = getFrame(target);
           const frameData = getFrameData(frame);
@@ -354,7 +290,7 @@ export class Workspace {
         });
       })
       .on('dragGroup', ({ events }) => {
-        console.log('dragGroup');
+        // console.log('dragGroup');
         events.forEach(({ target, beforeTranslate }) => {
           move(target, beforeTranslate);
         });
@@ -421,7 +357,7 @@ export class Workspace {
         }
       })
       .on('selectStart', ({ selected }) => {
-        console.log('selectStart', selected);
+        // console.log('selectStart', selected);
       })
       .on('select', ({ selected }) => {
         targetsSelected = selected;
@@ -434,7 +370,10 @@ export class Workspace {
         }
       })
       .on('selectEnd', ({ isDragStart, inputEvent, selected }) => {
-        console.log('selectEnd', selected);
+        const elementsGuidelines = Array.from(
+          document.querySelectorAll('.elements .element')
+        );
+        this.managerMoveabler.elementGuidelines = elementsGuidelines;
         selected.forEach((target) => {
           getFrame(target);
         });
@@ -445,6 +384,84 @@ export class Workspace {
           });
         }
       });
+
+    function updateElement(dom) {
+      const frame = getFrame(dom);
+      const frameData = getFrameData(frame);
+      const dataElement = jQuery(dom).data('dataElement');
+      dataElement.setAngle(frameData.angle);
+      dataElement.setLeft(frameData.left);
+      dataElement.setTop(frameData.top);
+      dataElement.setWidth(frameData.width);
+      dataElement.setHeight(frameData.height);
+    }
+
+    function move(target, translate: number[]) {
+      const frame = getFrame(target);
+      frame.set('transform', 'translateX', `${translate[0]}px`);
+      frame.set('transform', 'translateY', `${translate[1]}px`);
+    }
+
+    function rotate(target, angle) {
+      const frame = getFrame(target);
+      frame.set('transform', 'rotate', `${angle}deg`);
+    }
+
+    function resize(target, width, height) {
+      const frame = getFrame(target);
+      frame.set('width', `${width}px`);
+      frame.set('height', `${height}px`);
+    }
+
+    function getFrame(target) {
+      let frame = frameMap.get(target);
+      if (!frameMap.has(target)) {
+        const dataElement = jQuery(target).data('dataElement');
+        const box = dataElement.getBox();
+        frame = new Frame({
+          left: '0px',
+          top: '0px',
+          width: `${box.width}px`,
+          height: `${box.height}px`,
+          transform: {
+            translateX: `${box.left}px`,
+            translateY: `${box.top}px`,
+            rotate: `${box.angle}deg`,
+            scaleX: 1,
+            scaleY: 1,
+          },
+        });
+        frameMap.set(target, frame);
+      }
+
+      return frame;
+    }
+
+    function getFrameData(frame) {
+      if (!frame) {
+        return {
+          angle: 0,
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0,
+        };
+      }
+
+      const angle = frame.get('transform', 'rotate');
+      const top = frame.get('transform', 'translateY');
+      const left = frame.get('transform', 'translateX');
+      const width = frame.get('width');
+      const height = frame.get('height');
+
+      return {
+        angle: parseFloat(angle),
+        top: parseFloat(top),
+        left: parseFloat(left),
+        width: parseFloat(width),
+        height: parseFloat(height),
+      };
+    }
   }
 
   selectedElement(elementSelected) {

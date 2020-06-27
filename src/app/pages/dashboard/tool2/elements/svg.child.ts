@@ -76,7 +76,6 @@ export class SvgChild {
       });
       colorCouter++;
     });
-    console.log(colors);
   }
 
   getData() {

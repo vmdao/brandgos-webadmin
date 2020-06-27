@@ -58,7 +58,6 @@ export class TypeSvgBehavior implements TypeBehavior {
       draw.path(path.pathData);
       draw.fill(data.color);
       this.element.updateSizeByFontsize({ width, height });
-      console.log('getHtmlSvg', { width, height });
       this.renderSvgDom(draw.svg());
       if (value && typeof value.callback === 'function') {
         value.callback();

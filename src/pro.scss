@@ -1090,12 +1090,7 @@ menu.menu.toolbar {
   height: 10px !important;
   margin-left: -5px !important;
   margin-top: -5px !important;
-  &.moveable-n,
-  &.moveable-s,
-  &.moveable-e,
-  &.moveable-w {
-    display: none;
-  }
+
   &.moveable-origin {
     display: none;
   }
