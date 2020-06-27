@@ -183,7 +183,7 @@ export class Workspace {
       pinchable: true,
 
       snapCenter: true,
-      snappable: true,
+      snappable: false,
       snapHorizontal: true,
       snapVertical: true,
       snapElement: true,

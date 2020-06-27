@@ -1080,19 +1080,44 @@ menu.menu.toolbar {
   pointer-events: none;
 }
 .moveable-line {
-  border: 1px dashed #4a4a4a !important;
+  border: 1px dashed rgb(104, 106, 201) !important;
   background: transparent !important;
 }
 .moveable-control {
-  border: 2px solid #4a4a4a !important;
-  background: #fff !important;
-  width: 10px !important;
-  height: 10px !important;
-  margin-left: -5px !important;
-  margin-top: -5px !important;
-
+  border: 1px solid #ffffff !important;
+  background: rgb(104, 106, 201) !important;
+  width: 12px !important;
+  height: 12px !important;
+  margin-left: -6px !important;
+  margin-top: -6px !important;
+  box-shadow: 0 0 5px 1px rgba(14, 19, 24, 0.15),
+    0 0 0 1px rgba(14, 19, 24, 0.2);
   &.moveable-origin {
-    display: none;
+    background: #ffffff !important;
+    width: 14px !important;
+    height: 14px !important;
+    margin-left: -7px !important;
+    margin-top: -7px !important;
+    opacity: 0.6;
+  }
+  &.moveable-n,
+  &.moveable-s {
+    border-radius: 1px !important;
+    width: 16px !important;
+    height: 6px !important;
+    margin-left: -8px !important;
+    margin-top: -3px !important;
+    // background: #ffffff !important;
+  }
+
+  &.moveable-w,
+  &.moveable-e {
+    border-radius: 1px !important;
+    width: 6px !important;
+    height: 16px !important;
+    margin-left: -3px !important;
+    margin-top: -8px !important;
+    // background: #ffffff !important;
   }
 }
 .moveable-rotation-line {
