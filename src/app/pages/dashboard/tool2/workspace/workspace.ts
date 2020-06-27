@@ -3,11 +3,17 @@ import * as _ from 'lodash';
 import * as jQuery from 'jquery';
 import { Border } from './border';
 import { Frame } from 'scenejs';
-import { TextSvgElement, SvgElement, TextElement } from '../elements';
+import {
+  TextSvgElement,
+  SvgElement,
+  SvgDrawElement,
+  TextElement,
+} from '../elements';
 import { ToolbarMenu } from '../toolkit/toolbar/menu';
 
 import Selecto from 'selecto';
 import Moveable from 'moveable';
+
 import {
   ColorCommand,
   SvgColorCommand,
@@ -19,6 +25,7 @@ import {
   TransparencyCommand,
   InputCommand,
 } from '../toolkit/command';
+
 export class Workspace {
   $dom: any;
   $domWrapper: any;
@@ -119,6 +126,8 @@ export class Workspace {
         return new TextElement(dataElement);
       case 'svgtext':
         return new TextSvgElement(dataElement);
+      case 'svgdraw':
+        return new SvgDrawElement(dataElement);
       case 'svg':
         return new SvgElement(dataElement);
     }
@@ -171,6 +180,7 @@ export class Workspace {
       zoom: 1,
       edge: false,
       keepRatio: true,
+      pinchable: true,
 
       draggable: true,
       resizable: true,
@@ -180,27 +190,25 @@ export class Workspace {
       throttleResize: 0,
       throttleRotate: 0,
 
-      pinchable: true,
-
+      snappable: true,
       snapCenter: true,
-      snappable: false,
       snapHorizontal: true,
       snapVertical: true,
       snapElement: true,
-      snapThreshold: 1,
+      snapThreshold: 0,
       elementGuidelines: [],
     });
 
     this.managerMoveabler
       .on('renderStart', ({ target }) => {
-        console.log('renderStart');
+        // console.log('renderStart');
       })
       .on('render', ({ target }) => {
         const frame = getFrame(target);
         target.style.cssText += frame.toCSS();
       })
       .on('renderEnd', ({ target }) => {
-        console.log('renderEnd');
+        // console.log('renderEnd');
         updateElement(target);
       });
 
@@ -235,9 +243,16 @@ export class Workspace {
         // console.log('rotateEnd');
       });
 
+    const directionScale = { '-10': true, '10': true, '0-1': true, '01': true };
+
     this.managerMoveabler
-      .on('resizeStart', ({ target, dragStart, setOrigin }) => {
+      .on('resizeStart', ({ target, dragStart, setOrigin, direction }) => {
         // console.log('resizeStart');
+        if (directionScale[`${direction[0]}${direction[1]}`]) {
+          this.managerMoveabler.keepRatio = false;
+        } else {
+          this.managerMoveabler.keepRatio = true;
+        }
         setOrigin(['%', '%']);
         if (dragStart) {
           const frame = getFrame(target);
@@ -247,9 +262,13 @@ export class Workspace {
           ]);
         }
       })
-      .on('resize', ({ target, width, drag, height }) => {
+      .on('resize', ({ target, width, drag, height, direction }) => {
         // console.log('resize');
-        resize(target, width, height);
+        if (directionScale[`${direction[0]}${direction[1]}`]) {
+          scale(target, width, height);
+        } else {
+          resize(target, width, height);
+        }
         move(target, drag.beforeTranslate);
       })
       .on('resizeEnd', () => {
@@ -411,6 +430,16 @@ export class Workspace {
       const frame = getFrame(target);
       frame.set('width', `${width}px`);
       frame.set('height', `${height}px`);
+    }
+
+    function scale(target, width, height) {
+      const frame = getFrame(target);
+      frame.set('width', `${width}px`);
+      frame.set('height', `${height}px`);
+      const dataElement = jQuery(target).data('dataElement');
+      dataElement.setWidth(width);
+      dataElement.setHeight(height);
+      dataElement.updateSvg();
     }
 
     function getFrame(target) {

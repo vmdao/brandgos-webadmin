@@ -97,24 +97,34 @@ export class TabShapeComponent implements OnInit, OnDestroy {
     const itemStyle = item.style;
     const workspaceWidth = 600;
     const workspaceHeight = 360;
+    const shapess = ['line', 'rect', 'circle'];
+    const shapeRandom = shapess[Math.floor(Math.random() * 2)];
 
     const maxWidth = 140;
 
-    const dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
-    const dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
-
+    let dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
+    let dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
+    if (shapeRandom === 'line') {
+      dataWidth = 139;
+      dataHeight = 10;
+    }
     const dataStyle = {
-      url: item.material.bucket + item.material.pathOrigin,
-      originUrl: item.material.bucket + item.material.pathOrigin,
-      thumbUrl: item.material.bucket + item.material.pathOrigin,
+      url: '',
+      originUrl: '',
+      thumbUrl: '',
       color1: '#000',
+
+      shape: shapeRandom,
+      stroke: '#000',
+      strokeWidth: 1,
+      radius: 0,
     };
 
     const dataLeft = (workspaceWidth - dataWidth) / 2;
     const dataTop = (workspaceHeight - dataHeight) / 2;
 
     const data = {
-      elementType: 'svg',
+      elementType: 'svgdraw',
       userEdited: true,
       elementIndex: 1,
       transparency: 1,
