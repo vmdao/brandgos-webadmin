@@ -736,6 +736,33 @@ export class Workspace {
             },
           },
           {
+            type: 'drop-pad',
+            icon: '',
+            code: 'Layer',
+            name: 'Layer',
+            actions: [],
+            children: [
+              {
+                type: 'button',
+                icon: 'clone',
+                name: 'Clone',
+                actions: [{ event: 'click', command: cloneComand }],
+                children: [],
+                context: {},
+              },
+              {
+                type: 'button',
+                icon: 'clone',
+                name: 'Clone',
+                actions: [{ event: 'click', command: cloneComand }],
+                children: [],
+                context: {},
+              },
+            ],
+            context: {},
+          },
+
+          {
             type: 'button',
             icon: 'clone',
             name: 'Clone',
@@ -743,6 +770,7 @@ export class Workspace {
             children: [],
             context: {},
           },
+
           {
             type: 'button',
             icon: 'delete',

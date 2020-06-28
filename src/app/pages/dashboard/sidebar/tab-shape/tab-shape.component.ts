@@ -112,11 +112,11 @@ export class TabShapeComponent implements OnInit, OnDestroy {
       url: '',
       originUrl: '',
       thumbUrl: '',
-      color1: '#000',
+      color1: '',
 
       shape: shapeRandom,
-      stroke: '#000',
-      strokeWidth: 1,
+      stroke: '#c6c6c6',
+      strokeWidth: 2\,
       radius: 0,
     };
 
