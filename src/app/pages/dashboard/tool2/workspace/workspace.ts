@@ -381,10 +381,11 @@ export class Workspace {
       .on('select', ({ selected }) => {
         targetsSelected = selected;
         this.managerMoveabler.target = selected;
-
         if (targetsSelected.length === 1) {
           this.selectedElement(jQuery(targetsSelected[0]));
         } else {
+          const renderDirections = ['nw', 'ne', 'sw', 'se'];
+          this.managerMoveabler.renderDirections = renderDirections;
           this.offMenuElements();
         }
       })
@@ -496,6 +497,12 @@ export class Workspace {
   selectedElement(elementSelected) {
     const $elementSelected = jQuery(elementSelected);
     const dataElement = $elementSelected.data('dataElement');
+    const renderDirections =
+      dataElement.elementType === 'svgdraw'
+        ? ['n', 'nw', 'ne', 's', 'se', 'sw', 'e', 'w']
+        : ['nw', 'ne', 'sw', 'se'];
+
+    this.managerMoveabler.renderDirections = renderDirections;
     this.offMenuElementsWithout(dataElement);
   }
 
@@ -650,7 +657,7 @@ export class Workspace {
           },
           {
             type: 'button',
-            icon: '',
+            icon: 'clone',
             name: 'Clone',
             actions: [{ event: 'click', command: cloneComand }],
             children: [],
@@ -729,7 +736,7 @@ export class Workspace {
           },
           {
             type: 'button',
-            icon: '',
+            icon: 'clone',
             name: 'Clone',
             actions: [{ event: 'click', command: cloneComand }],
             children: [],

@@ -222,6 +222,15 @@ menu.menu.toolbar {
   vertical-align: top;
   opacity: 1;
 }
+.toolbar__button--deleteMenu,
+.toolbar__button--delete {
+  background-image: url(/assets/images/icons/trash.svg);
+}
+
+.toolbar__button--cloneMenu,
+.toolbar__button--clone {
+  background-image: url(/assets/images/icons/clone.svg);
+}
 
 .toolbar__item {
   display: inline-block;

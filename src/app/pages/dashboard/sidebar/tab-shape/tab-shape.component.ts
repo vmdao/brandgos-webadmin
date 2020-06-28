@@ -45,7 +45,7 @@ export class TabShapeComponent implements OnInit, OnDestroy {
   q = {
     fulltext: '',
   };
-
+  counter = 0;
   constructor(
     private store$: Store<fromApp.AppState>,
     private cd: ChangeDetectorRef
@@ -97,9 +97,9 @@ export class TabShapeComponent implements OnInit, OnDestroy {
     const itemStyle = item.style;
     const workspaceWidth = 600;
     const workspaceHeight = 360;
-    const shapess = ['line', 'rect', 'circle'];
-    const shapeRandom = shapess[Math.floor(Math.random() * 2)];
-
+    const shapess = ['line', 'rect', 'circle', 'triangle'];
+    const shapeRandom = shapess[this.counter % 4];
+    this.counter++;
     const maxWidth = 140;
 
     let dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;

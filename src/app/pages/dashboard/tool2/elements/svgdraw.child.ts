@@ -24,7 +24,17 @@ export class SvgDrawChild extends BaseSvgChild {
 
   updateSvg() {
     let shapeModel;
+    const { width, height } = this.parent;
     switch (this.shape) {
+      case 'triangle':
+        const haftWidth = width / 2;
+        const haftHeight = height / 2;
+        shapeModel = new models.ConnectTheDots(true, [
+          [haftWidth * -1, haftHeight * -1],
+          [haftWidth, haftHeight * -1],
+          [0, haftHeight],
+        ]);
+        break;
       case 'line':
         shapeModel = new models.RoundRectangle(
           this.parent.width,
@@ -40,7 +50,7 @@ export class SvgDrawChild extends BaseSvgChild {
         );
         break;
       case 'circle':
-        shapeModel = new models.Oval(this.parent.width, this.parent.height);
+        shapeModel = new models.Ellipse(this.parent.width, this.parent.height);
         break;
     }
 
