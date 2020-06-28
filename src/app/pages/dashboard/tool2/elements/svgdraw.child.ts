@@ -36,21 +36,17 @@ export class SvgDrawChild extends BaseSvgChild {
         ]);
         break;
       case 'line':
-        shapeModel = new models.RoundRectangle(
-          this.parent.width,
-          this.parent.height,
-          this.radius
-        );
+        shapeModel = new models.RoundRectangle(width, height, this.radius);
         break;
       case 'rect':
-        shapeModel = new models.RoundRectangle(
-          this.parent.width,
-          this.parent.height,
-          this.radius
-        );
+        shapeModel = new models.RoundRectangle(width, height, this.radius);
         break;
       case 'circle':
-        shapeModel = new models.Ellipse(this.parent.width, this.parent.height);
+        if (width === height) {
+          shapeModel = new models.Oval(width, height);
+        } else {
+          shapeModel = new models.Ellipse(width, height);
+        }
         break;
     }
 

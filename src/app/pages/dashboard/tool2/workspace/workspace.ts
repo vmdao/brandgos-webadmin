@@ -187,7 +187,7 @@ export class Workspace {
       rotatable: true,
 
       throttleDrag: 0,
-      throttleResize: 0,
+      throttleResize: 10,
       throttleRotate: 0,
 
       snappable: true,
@@ -386,6 +386,7 @@ export class Workspace {
         } else {
           const renderDirections = ['nw', 'ne', 'sw', 'se'];
           this.managerMoveabler.renderDirections = renderDirections;
+          this.managerMoveabler.keepRatio = true;
           this.offMenuElements();
         }
       })
