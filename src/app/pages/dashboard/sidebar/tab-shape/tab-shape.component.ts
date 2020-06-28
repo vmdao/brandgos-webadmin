@@ -97,7 +97,7 @@ export class TabShapeComponent implements OnInit, OnDestroy {
     const itemStyle = item.style;
     const workspaceWidth = 600;
     const workspaceHeight = 360;
-    const shapess = ['line', 'rect', 'circle', 'triangle'];
+    const shapess = ['rect', 'circle', 'line', 'triangle'];
     const shapeRandom = shapess[this.counter % 4];
     this.counter++;
     const maxWidth = 140;
@@ -112,14 +112,13 @@ export class TabShapeComponent implements OnInit, OnDestroy {
       url: '',
       originUrl: '',
       thumbUrl: '',
-      color1: '',
+      color1: this.counter % 3 > 1 ? '#000000' : '',
 
       shape: shapeRandom,
-      stroke: '#c6c6c6',
-      strokeWidth: 2\,
-      radius: 0,
+      stroke: 'red',
+      strokeWidth: this.counter,
+      radius: this.counter,
     };
-
     const dataLeft = (workspaceWidth - dataWidth) / 2;
     const dataTop = (workspaceHeight - dataHeight) / 2;
 

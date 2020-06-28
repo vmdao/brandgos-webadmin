@@ -675,6 +675,7 @@ export class Workspace {
         ];
         break;
       }
+      case 'svgdraw':
       case 'svg': {
         items = [
           {

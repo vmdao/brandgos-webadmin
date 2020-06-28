@@ -24,9 +24,8 @@ export class SvgChild extends BaseSvgChild {
     loadsvg(this.originUrl, (err, svgPath) => {
       this.$dom.html(svgPath);
       this.elementAppendTo(this.parent.$dom);
+      this.setColorName();
     });
-
-    this.setColorName();
   }
 
   getData() {

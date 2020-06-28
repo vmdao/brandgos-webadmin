@@ -10,9 +10,11 @@ export abstract class BaseSvgChild {
 
   constructor(options: any, parent) {
     this.parent = parent;
+
     this.color1 = options.style.color1;
     this.color2 = options.style.color2;
     this.color3 = options.style.color3;
+
     this.$dom = jQuery(`<div class="element-inner"></div>`);
   }
 

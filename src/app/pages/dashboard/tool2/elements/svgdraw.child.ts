@@ -1,4 +1,3 @@
-import * as jQuery from 'jquery';
 import { models, exporter } from 'makerjs';
 import { BaseSvgChild } from './base-svg-child.abstract';
 
@@ -50,12 +49,24 @@ export class SvgDrawChild extends BaseSvgChild {
         break;
     }
 
+    const fill =
+      typeof this.color1 === 'string' && this.color1 !== ''
+        ? this.color1
+        : null;
+
+    console.log(fill, 1234);
+
+    const options: { fill?: string; stroke?: string; strokeWidth?: string } = {
+      stroke: this.stroke,
+      strokeWidth: `${this.strokeWidth}px`,
+    };
+
+    if (fill) {
+      options.fill = fill;
+    }
+
     const svgPath = exporter
-      .toSVG(shapeModel, {
-        fill: '#000',
-        stroke: this.stroke,
-        strokeWidth: `${this.strokeWidth}px`,
-      })
+      .toSVG(shapeModel, options)
       .replace('width=', '')
       .replace('height=', '');
 
