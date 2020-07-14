@@ -1,11 +1,12 @@
 import { BaseElement } from './base.abstract';
-import { SvgChild } from './svg.child';
-export class SvgElement extends BaseElement {
+import { SvgDrawChild } from './svgdraw.child';
+export class SvgDrawElement extends BaseElement {
   background: false;
+
   constructor(options: any) {
     super(options);
     this.background = options.background || false;
-    this.setSvg(new SvgChild(options, this));
+    this.setSvg(new SvgDrawChild(options, this));
   }
 
   updateSvg() {

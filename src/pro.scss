@@ -222,6 +222,15 @@ menu.menu.toolbar {
   vertical-align: top;
   opacity: 1;
 }
+.toolbar__button--deleteMenu,
+.toolbar__button--delete {
+  background-image: url(/assets/images/icons/trash.svg);
+}
+
+.toolbar__button--cloneMenu,
+.toolbar__button--clone {
+  background-image: url(/assets/images/icons/clone.svg);
+}
 
 .toolbar__item {
   display: inline-block;
@@ -1080,24 +1089,66 @@ menu.menu.toolbar {
   pointer-events: none;
 }
 .moveable-line {
-  border: 1px dashed #4a4a4a !important;
-  background: transparent !important;
+  // border: 0.5px dashed #fff !important;
+  // background: transparent !important;
 }
+
 .moveable-control {
-  border: 2px solid #4a4a4a !important;
-  background: #fff !important;
-  width: 10px !important;
-  height: 10px !important;
-  margin-left: -5px !important;
-  margin-top: -5px !important;
-  &.moveable-n,
-  &.moveable-s,
-  &.moveable-e,
-  &.moveable-w {
-    display: none;
+  background: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  width: 12px !important;
+  height: 12px !important;
+  margin-left: -6px !important;
+  margin-top: -6px !important;
+  box-shadow: 0 0 5px 1px rgba(14, 19, 24, 0.15),
+    0 0 0 1px rgba(14, 19, 24, 0.2);
+  &.moveable-rotation {
+    width: 18px !important;
+    height: 18px !important;
+    position: relative;
+    margin-left: -9px !important;
+    margin-top: -9px !important;
+    &:after {
+      content: '';
+      top: -1px;
+      left: 1px;
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff 0px no-repeat;
+      background-size: 14px;
+      background-size: 14px;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='currentColor' d='M15.25 18.48V15a.75.75 0 1 0-1.5 0v4c0 .97.78 1.75 1.75 1.75h4a.75.75 0 1 0 0-1.5h-2.6a8.75 8.75 0 0 0-2.07-15.53.75.75 0 1 0-.49 1.42 7.25 7.25 0 0 1 .91 13.34zM8.75 5.52V9a.75.75 0 0 0 1.5 0V5c0-.97-.78-1.75-1.75-1.75h-4a.75.75 0 0 0 0 1.5h2.6a8.75 8.75 0 0 0 2.18 15.57.75.75 0 0 0 .47-1.43 7.25 7.25 0 0 1-1-13.37z'/%3E%3C/svg%3E");
+    }
   }
+
   &.moveable-origin {
-    display: none;
+    background: #ffffff !important;
+    width: 14px !important;
+    height: 14px !important;
+    margin-left: -7px !important;
+    margin-top: -7px !important;
+    opacity: 0.6;
+  }
+  &.moveable-n,
+  &.moveable-s {
+    border-radius: 6px !important;
+    width: 18px !important;
+    height: 6px !important;
+    margin-left: -9px !important;
+    margin-top: -3px !important;
+    // background: #ffffff !important;
+  }
+
+  &.moveable-w,
+  &.moveable-e {
+    border-radius: 6px !important;
+    width: 6px !important;
+    height: 18px !important;
+    margin-left: -3px !important;
+    margin-top: -9px !important;
+    // background: #ffffff !important;
   }
 }
 .moveable-rotation-line {
