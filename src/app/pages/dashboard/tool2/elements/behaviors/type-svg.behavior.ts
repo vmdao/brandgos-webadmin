@@ -52,8 +52,7 @@ export class TypeSvgBehavior implements TypeBehavior {
       const path = text2svg.toPath(data['htmlSvg'], data);
       const width = path.width;
       const height = path.height;
-      const draw = SVG().viewbox(0, 0, width, height);
-
+      const draw = SVG().size('100%', '100%').viewbox(0, 0, width, height);
       draw.path(path.pathData);
       draw.fill(data.color);
       this.element.updateSizeByFontsize({ width, height });
