@@ -16,7 +16,7 @@ body {
   height: 100%;
 
   .ant-tabs-bar {
-    background-color: #363e48;
+    background-color: #20242d;
   }
   .ant-tabs-left-bar {
     border: none;
@@ -24,7 +24,7 @@ body {
   .ant-tabs-left-content {
     padding-left: 0 !important;
     height: 100%;
-    background-color: #ededed;
+    background-color: #363e4b;
   }
   .ant-tabs-content {
     padding: 24px 20px !important;
@@ -38,11 +38,12 @@ body {
     text-align: center !important;
   }
   .ant-tabs-tab-active {
-    background-color: #60717a;
+    background-color: #363e4b;
   }
   .ant-tabs-ink-bar {
     background-color: white;
     border-right-width: 2px;
+    display: none !important;
   }
 }
 

@@ -53,8 +53,10 @@ export class Workspace {
     this.version = option.version;
     this.order = option.order;
     this.border = option.border;
+
     this.$domWrapper = jQuery(`<div class="workspace" id="workspace"></div>`);
     this.$dom = jQuery(`<div class="elements"></div>`);
+
     this.$toolbar = jQuery(`#designtool`);
   }
 
@@ -530,6 +532,17 @@ export class Workspace {
     switch (dataElement.elementType) {
       case 'svgtext': {
         items = [
+          {
+            type: 'button-input',
+            icon: '',
+            name: 'input',
+            actions: [{ event: 'keyup', command: inputCommand }],
+            children: [],
+            context: {
+              content: dataElement.text.html,
+            },
+          },
+
           {
             type: 'input',
             icon: '',

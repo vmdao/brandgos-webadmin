@@ -8,7 +8,7 @@ import { environment } from '@env/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'Á Đông - Admin';
+  title = 'Brandgos - Admin';
   constructor(
     angulartics2Mixpanel: Angulartics2Mixpanel,
     settingService: SettingService

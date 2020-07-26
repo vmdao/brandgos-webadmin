@@ -587,6 +587,39 @@ menu.menu.toolbar {
   box-sizing: border-box;
 }
 
+.button-input {
+  overflow: hidden;
+  border-radius: 4px;
+  -webkit-transition: all 0.15s ease-in-out;
+  transition: all 0.15s ease-in-out;
+  display: flex;
+  button {
+    border: none;
+    border-radius: 0 4px 4px 0;
+    width: 30px;
+    height: 30px;
+    padding: 4px 12px;
+    background-color: #f2f2f2;
+    color: #aaa;
+    cursor: pointer;
+    -webkit-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+  }
+  input {
+    border-radius: 4px 0 0 4px;
+    box-sizing: border-box;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    border: none;
+    color: #00024f;
+    background: #f2f2f2;
+    -webkit-transition: all 0.15s ease-in-out;
+    transition: all 0.15s ease-in-out;
+    padding: 0px;
+    text-align: center;
+  }
+}
 #areaWorkspace {
   position: absolute;
   top: 0;
@@ -596,7 +629,7 @@ menu.menu.toolbar {
   right: 0;
   justify-content: center;
   align-items: center;
-  background-color: rgb(54, 62, 72);
+  background-color: #eeedf3;
 }
 
 #workspace-expand {
