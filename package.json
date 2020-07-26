@@ -25,7 +25,7 @@
     "@angular/platform-browser-dynamic": "~10.0.5",
     "@angular/router": "~10.0.5",
     "@delon/abc": "^9.5.5",
-    "@delon/acl": "^8.9.0",
+    "@delon/acl": "^9.5.5",
     "@delon/theme": "^9.5.5",
     "@delon/util": "^8.9.0",
     "@ngrx/effects": "^9.0.0",
