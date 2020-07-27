@@ -183,6 +183,7 @@ export class Workspace {
       edge: false,
       keepRatio: true,
       pinchable: true,
+      roundable: true,
 
       draggable: true,
       resizable: true,
@@ -228,6 +229,10 @@ export class Workspace {
       .on('dragEnd', ({ target }) => {
         // console.log('dragEnd');
       });
+
+    this.managerMoveabler.on('round', () => {
+      console.log(123);
+    });
 
     this.managerMoveabler
       .on('rotateStart', ({ target, set }) => {

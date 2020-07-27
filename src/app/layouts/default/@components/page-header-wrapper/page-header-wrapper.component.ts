@@ -2,10 +2,10 @@ import {
   Component,
   Input,
   TemplateRef,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
 } from '@angular/core';
-import { InputBoolean } from '@delon/util';
-import { PageHeaderConfig } from '@delon/abc';
+
+import { InputBoolean, AlainConfigService } from '@delon/util';
 import { BrandService } from '@app/layouts/layout.service';
 
 @Component({
@@ -14,9 +14,9 @@ import { BrandService } from '@app/layouts/layout.service';
   templateUrl: './page-header-wrapper.component.html',
   // tslint:disable-next-line: no-host-metadata-property
   host: {
-    '[class.alain-pro__page-header-wrapper]': 'true'
+    '[class.alain-pro__page-header-wrapper]': 'true',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProPageHeaderWrapperComponent {
   // #region page-header fields
@@ -44,7 +44,7 @@ export class ProPageHeaderWrapperComponent {
   @Input() @InputBoolean() noSpacing = false;
   @Input() style: {};
 
-  constructor(public pro: BrandService, cog: PageHeaderConfig) {
-    Object.assign(this, cog, { syncTitle: true });
+  constructor(public pro: BrandService, cog: AlainConfigService) {
+    cog.attach(this, 'pageHeader', { syncTitle: true });
   }
 }

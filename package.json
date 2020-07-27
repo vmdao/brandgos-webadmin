@@ -24,10 +24,12 @@
     "@angular/platform-browser": "~10.0.5",
     "@angular/platform-browser-dynamic": "~10.0.5",
     "@angular/router": "~10.0.5",
+    "@ant-design/icons-angular": "^9.0.1",
+    "@date-fns/upgrade": "^1.0.3",
     "@delon/abc": "^9.5.5",
     "@delon/acl": "^9.5.5",
     "@delon/theme": "^9.5.5",
-    "@delon/util": "^8.9.0",
+    "@delon/util": "^9.5.5",
     "@ngrx/effects": "^9.0.0",
     "@ngrx/router-store": "^9.0.0",
     "@ngrx/store": "^9.0.0",
@@ -50,7 +52,7 @@
     "rxjs": "~6.6.0",
     "scenejs": "^1.1.7",
     "selecto": "^1.5.2",
-    "tslib": "^1.10.0",
+    "tslib": "^2.0.0",
     "webfontloader": "^1.6.28",
     "zone.js": "~0.10.2"
   },
@@ -72,8 +74,8 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
     "protractor": "~5.4.3",
-    "ts-node": "~8.3.0",
-    "tslint": "~5.18.0",
+    "ts-node": "^8.10.2",
+    "tslint": "^6.1.2",
     "typescript": "~3.9.7"
   },
   "husky": {
