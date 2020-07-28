@@ -6,7 +6,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from '@angular/core';
-import { UploadXHRArgs, UploadFile } from 'ng-zorro-antd';
+import { UploadFile, NzUploadXHRArgs } from 'ng-zorro-antd';
 import { RestService } from '@app/@core/services/rest.service';
 import { Observer, Observable } from 'rxjs';
 
@@ -45,10 +45,7 @@ export class UploadFileComponent {
     hidePreviewIconInNonImage: true,
   };
 
-  constructor(
-    private restService: RestService,
-    private cd: ChangeDetectorRef
-  ) {}
+  constructor(private restService: RestService) {}
 
   handlePreview = (file: UploadFile) => {
     this.previewImage = file.url || file.thumbUrl;
@@ -56,7 +53,7 @@ export class UploadFileComponent {
     // tslint:disable-next-line: semicolon
   };
 
-  customReq = (item: UploadXHRArgs) => {
+  customReq = (item: NzUploadXHRArgs) => {
     const formData = new FormData();
     formData.append('image', item.file as any);
     return this.restService.upload(this.path, formData).subscribe(
