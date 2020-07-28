@@ -5,14 +5,14 @@ export class SvgDrawChild extends BaseSvgChild {
   shape: string;
   stroke: string;
   strokeWidth: number;
-  radius: number;
+  borderRadius: number;
 
   constructor(options: any, parent) {
     super(options, parent);
     this.shape = options.style.shape;
     this.stroke = options.style.stroke;
     this.strokeWidth = options.style.strokeWidth;
-    this.radius = options.style.radius;
+    this.borderRadius = options.style.borderRadius;
     this.render();
   }
 
@@ -23,7 +23,7 @@ export class SvgDrawChild extends BaseSvgChild {
 
   updateSvg() {
     let shapeModel;
-    const { width, height } = this.parent;
+    const { width, height, borderRadius } = this.parent;
     switch (this.shape) {
       case 'triangle':
         const haftWidth = width / 2;
@@ -35,10 +35,10 @@ export class SvgDrawChild extends BaseSvgChild {
         ]);
         break;
       case 'line':
-        shapeModel = new models.RoundRectangle(width, height, this.radius);
+        shapeModel = new models.RoundRectangle(width, height, borderRadius);
         break;
       case 'rect':
-        shapeModel = new models.RoundRectangle(width, height, this.radius);
+        shapeModel = new models.RoundRectangle(width, height, borderRadius);
         break;
       case 'circle':
         if (width === height) {
@@ -53,8 +53,6 @@ export class SvgDrawChild extends BaseSvgChild {
       typeof this.color1 === 'string' && this.color1 !== ''
         ? this.color1
         : null;
-
-    console.log(fill, 1234);
 
     const options: { fill?: string; stroke?: string; strokeWidth?: string } = {
       stroke: this.stroke,

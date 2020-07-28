@@ -14,6 +14,16 @@ import { ToolbarMenu } from '../toolkit/toolbar/menu';
 import Selecto from 'selecto';
 import Moveable from 'moveable';
 
+class CusMoveable extends Moveable {
+  public keepRatio: boolean;
+  public target:
+    | SVGElement
+    | HTMLElement
+    | Array<SVGElement | HTMLElement>
+    | null;
+  public renderDirections: string[];
+  public elementGuidelines: Element[];
+}
 import {
   ColorCommand,
   SvgColorCommand,
@@ -43,7 +53,7 @@ export class Workspace {
   border: Border;
   elements: Array<BaseElement> = [];
   managerSelector: Selecto;
-  managerMoveabler: Moveable;
+  managerMoveabler: CusMoveable;
 
   constructor(option) {
     this.documentId = option.documentId;
@@ -211,7 +221,6 @@ export class Workspace {
         target.style.cssText += frame.toCSS();
       })
       .on('renderEnd', ({ target }) => {
-        // console.log('renderEnd');
         updateElement(target);
       });
 
@@ -230,8 +239,9 @@ export class Workspace {
         // console.log('dragEnd');
       });
 
-    this.managerMoveabler.on('round', () => {
-      console.log(123);
+    this.managerMoveabler.on('round', ({ target, borderRadius, ...e }) => {
+      const numberborderRadius = Number(borderRadius.replace('px', ''));
+      round(target, numberborderRadius);
     });
 
     this.managerMoveabler
@@ -246,15 +256,12 @@ export class Workspace {
       .on('rotate', ({ target, beforeRotate }) => {
         rotate(target, beforeRotate);
       })
-      .on('rotateEnd', ({ target }) => {
-        // console.log('rotateEnd');
-      });
+      .on('rotateEnd', ({ target }) => {});
 
     const directionScale = { '-10': true, '10': true, '0-1': true, '01': true };
 
     this.managerMoveabler
       .on('resizeStart', ({ target, dragStart, setOrigin, direction }) => {
-        // console.log('resizeStart');
         if (directionScale[`${direction[0]}${direction[1]}`]) {
           this.managerMoveabler.keepRatio = false;
         } else {
@@ -278,16 +285,11 @@ export class Workspace {
         }
         move(target, drag.beforeTranslate);
       })
-      .on('resizeEnd', () => {
-        // console.log('resizeEnd');
-      });
+      .on('resizeEnd', () => {});
 
     this.managerMoveabler
-      .on('renderGroupStart', ({ targets }) => {
-        // console.log('renderGroupStart');
-      })
+      .on('renderGroupStart', ({ targets }) => {})
       .on('renderGroup', ({ targets }) => {
-        // console.log('renderGroup');
         targets.forEach((target) => {
           const frame = getFrame(target);
           target.style.cssText += frame.toCSS();
@@ -433,6 +435,14 @@ export class Workspace {
     function rotate(target, angle) {
       const frame = getFrame(target);
       frame.set('transform', 'rotate', `${angle}deg`);
+    }
+
+    function round(target, borderRadius) {
+      const frame = getFrame(target);
+      frame.set('border-radius', `${borderRadius}px`);
+      const dataElement = jQuery(target).data('dataElement');
+      dataElement.setBorderRadius(borderRadius);
+      dataElement.updateSvg();
     }
 
     function resize(target, width, height) {

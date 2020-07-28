@@ -117,7 +117,7 @@ export class TabShapeComponent implements OnInit, OnDestroy {
       shape: shapeRandom,
       stroke: 'red',
       strokeWidth: this.counter,
-      radius: this.counter,
+      borderRadius: this.counter * 2,
     };
     const dataLeft = (workspaceWidth - dataWidth) / 2;
     const dataTop = (workspaceHeight - dataHeight) / 2;

@@ -24,6 +24,8 @@ export abstract class BaseElement {
   scale = 1;
   background = false;
 
+  borderRadius?: number;
+
   selected = false;
 
   text: BaseTextChild;
