@@ -1,7 +1,6 @@
 import { Component, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Workspace, Border } from './tool2';
-
-import * as mock from './tool2/mock';
+import { Workspace, Border } from './tool';
+import * as mock from './tool/mock';
 const { localStorages } = mock.default;
 
 @Component({

@@ -137,7 +137,7 @@ export default {
     name: 'Chrismast',
     active: 1,
     versionIndex: 1,
-    width: 600,
+    width: 680,
     height: 360,
     elements: [
       {

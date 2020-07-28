@@ -25,7 +25,7 @@ export abstract class BaseMenuItemUI implements OnViewed {
   children: Array<{ BaseMenuItemUI }>;
   actions: Array<MenuItemActionDto>;
   options: MenuItemDto;
-
+  position: string;
   $dom;
   $domWrapper;
 
@@ -44,7 +44,9 @@ export abstract class BaseMenuItemUI implements OnViewed {
   constructor(options: MenuItemDto) {
     this.configOption(options);
     this.htmlWrapper = `<li class="toolbar__item
-    ${this.code ? 'toolbar__item--' + this.code : ''}"></li>`;
+    ${this.code ? 'toolbar__item--' + this.code : ''} ${
+      this.position ? 'toolbar__item--' + this.position : ''
+    }""></li>`;
   }
 
   configOption(options) {
@@ -56,6 +58,7 @@ export abstract class BaseMenuItemUI implements OnViewed {
     this.children = options.children || [];
     this.actions = options.actions || [];
     this.options = options;
+    this.position = options.position || '';
   }
 
   render() {

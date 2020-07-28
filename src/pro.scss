@@ -217,10 +217,17 @@ menu.menu.toolbar {
   position: relative;
   height: 46px;
   width: auto;
-  display: inline-block;
+  align-items: center;
   box-sizing: border-box;
   vertical-align: top;
   opacity: 1;
+  &--left {
+    float: left;
+  }
+
+  &--right {
+    float: right;
+  }
 }
 .toolbar__button--deleteMenu,
 .toolbar__button--delete {
@@ -254,15 +261,25 @@ menu.menu.toolbar {
   border: none;
   box-shadow: 0 0 0 2px rgba(63, 70, 82, 0.15);
 }
-
-.toolbar__item--submenuExpanded .toolbar,
-.toolbar__item--submenuExpanded .menuList {
-  visibility: visible;
-  pointer-events: all;
-  animation: toolbar--fadeIn 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-  opacity: 1;
-  transition: visibility 0s linear 0s;
-  height: auto;
+.toolbar__item--submenuExpanded {
+  .toolbar,
+  .menuList {
+    visibility: visible;
+    pointer-events: all;
+    animation: toolbar--fadeIn 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    opacity: 1;
+    transition: visibility 0s linear 0s;
+    height: auto;
+  }
+  .submenu-cover {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
 }
 
 .toolbar__item--active .toolbar__button {
@@ -593,9 +610,26 @@ menu.menu.toolbar {
   -webkit-transition: all 0.15s ease-in-out;
   transition: all 0.15s ease-in-out;
   display: flex;
+  align-items: center;
+  margin: 8px 4px;
   button {
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+    }
+
+    &:hover {
+      color: #000;
+    }
+
+    &:focus {
+      border: none;
+      outline: none;
+    }
     border: none;
-    border-radius: 0 4px 4px 0;
     width: 30px;
     height: 30px;
     padding: 4px 12px;
@@ -606,7 +640,7 @@ menu.menu.toolbar {
     transition: all 0.1s ease-in-out;
   }
   input {
-    border-radius: 4px 0 0 4px;
+    border-radius: 0;
     box-sizing: border-box;
     flex-grow: 1;
     flex-shrink: 1;
@@ -618,6 +652,12 @@ menu.menu.toolbar {
     transition: all 0.15s ease-in-out;
     padding: 0px;
     text-align: center;
+    line-height: 30px;
+    max-width: 40px;
+    &:focus {
+      border: none;
+      outline: none;
+    }
   }
 }
 #areaWorkspace {
@@ -634,7 +674,7 @@ menu.menu.toolbar {
 
 #workspace-expand {
   display: block;
-  width: 800px;
+  width: 740px;
   height: 400px;
   position: absolute;
   background-color: white;

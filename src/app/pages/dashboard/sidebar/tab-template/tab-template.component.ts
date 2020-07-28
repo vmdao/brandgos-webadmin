@@ -12,19 +12,15 @@ import { ItemModel, ItemsActions } from '@app/pages/@store/item';
 import { Subject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromApp from '@app/pages/@store';
-import {
-  CollectionModel,
-  CollectionsActions,
-} from '@app/pages/@store/collection';
-import { takeUntil } from 'rxjs/operators';
+import { CollectionModel } from '@app/pages/@store/collection';
 
 @Component({
-  selector: 'app-tab-shape',
-  templateUrl: './tab-shape.component.html',
-  styleUrls: ['./tab-shape.component.scss'],
+  selector: 'app-tab-template',
+  templateUrl: './tab-template.component.html',
+  styleUrls: ['./tab-template.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TabShapeComponent implements OnInit, OnDestroy {
+export class TabTemplateComponent implements OnInit, OnDestroy {
   @Output()
   clickItem: EventEmitter<any> = new EventEmitter();
 
@@ -43,17 +39,28 @@ export class TabShapeComponent implements OnInit, OnDestroy {
   sortKey: string | null = 'priority';
 
   q = {
-    fulltext: '',
+    fulltext: null,
+    tag: null,
   };
-  counter = 0;
+
+  tags = [
+    { label: 'Fashion', value: 'Fashion' },
+    { label: 'Cafe', value: 'Cafe' },
+    { label: 'Computer', value: 'Computer' },
+    { label: 'Creative', value: 'Creative' },
+    { label: 'Tech', value: 'Tech' },
+    { label: 'Hotel', value: 'Hotel' },
+    { label: 'Oranic', value: 'Oranic' },
+    { label: 'Education', value: 'Education' },
+  ];
   constructor(
     private store$: Store<fromApp.AppState>,
     private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.items$ = this.store$.select(fromApp.getItemShapes);
-    this.loading$ = this.store$.select(fromApp.getItemShapesLoading);
+    this.items$ = this.store$.select(fromApp.getItemIcons);
+    this.loading$ = this.store$.select(fromApp.getItemIconsLoading);
     this.searchData();
     this.cd.detectChanges();
   }
@@ -83,47 +90,60 @@ export class TabShapeComponent implements OnInit, OnDestroy {
       size: this.size,
       sort: `${this.sortKey},${this.sortValue}`,
       join: ['material', 'collections'],
-      filter: [`type||$eq||svg`, `collections.code||$eq||shape`],
+      filter: [`type||$eq||svg`, `collections.code||$eq||icon`],
     };
 
     if (this.q.fulltext !== '') {
       params.search = this.q.fulltext;
     }
 
-    this.store$.dispatch(ItemsActions.getItemShapes({ payload: params }));
+    this.store$.dispatch(ItemsActions.getItemIcons({ payload: params }));
   }
 
+  fetchSearch() {
+    const params: {
+      collectionCode?: string;
+      tag?: string;
+      type?: string;
+      key?: string;
+      sort?: string;
+    } = {
+      collectionCode: 'icon',
+      type: 'svg',
+    };
+
+    if (typeof this.q.fulltext === 'string') {
+      params.key = this.q.fulltext;
+    }
+
+    if (typeof this.q.tag === 'string') {
+      params.tag = this.q.tag;
+    }
+
+    this.store$.dispatch(ItemsActions.getItemIconsSearch({ payload: params }));
+  }
   onClickItem(item) {
     const itemStyle = item.style;
     const workspaceWidth = 680;
     const workspaceHeight = 360;
-    const shapess = ['rect', 'circle', 'line', 'triangle'];
-    const shapeRandom = shapess[this.counter % 4];
-    this.counter++;
+
     const maxWidth = 140;
 
-    let dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
-    let dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
-    if (shapeRandom === 'line') {
-      dataWidth = 139;
-      dataHeight = 10;
-    }
-    const dataStyle = {
-      url: '',
-      originUrl: '',
-      thumbUrl: '',
-      color1: this.counter % 3 > 1 ? '#000000' : '',
+    const dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
+    const dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
 
-      shape: shapeRandom,
-      stroke: 'red',
-      strokeWidth: this.counter,
-      borderRadius: this.counter * 2,
+    const dataStyle = {
+      url: item.material.bucket + item.material.pathOrigin,
+      originUrl: item.material.bucket + item.material.pathOrigin,
+      thumbUrl: item.material.bucket + item.material.pathOrigin,
+      color1: '#000',
     };
+
     const dataLeft = (workspaceWidth - dataWidth) / 2;
     const dataTop = (workspaceHeight - dataHeight) / 2;
 
     const data = {
-      elementType: 'svgdraw',
+      elementType: 'svg',
       userEdited: true,
       elementIndex: 1,
       transparency: 1,
@@ -136,5 +156,16 @@ export class TabShapeComponent implements OnInit, OnDestroy {
     };
 
     this.clickItem.emit(data);
+  }
+
+  onClickSearch() {
+    this.q.tag = null;
+    this.fetchSearch();
+  }
+
+  onClickTag(value) {
+    this.q.tag = value.value;
+    this.q.fulltext = null;
+    this.fetchSearch();
   }
 }

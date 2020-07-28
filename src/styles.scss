@@ -179,35 +179,58 @@ nz-content {
 
 .search {
   width: 100%;
-  &-inner {
-    width: 100%;
-    background-color: #fff;
-    border-radius: 6px;
+  .ant-input-affix-wrapper {
+    padding: 0px 2px 0 8px;
+  }
+  &-more {
+    margin-top: 16px;
     display: flex;
-  }
-  input {
-    border: none;
-    width: 100%;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-    padding: 0 8px;
-  }
-  button {
-    background-color: #0348fc;
-    color: #fff;
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-    padding: 6px 16px;
-    font-size: 12px;
-    outline: none;
-    border: none;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    cursor: pointer;
-    &:hover {
-      background-color: #1e5af0;
+    justify-content: space-between;
+    nz-select {
+      width: 46%;
+      .ant-select-selection-item {
+        line-height: 28px !important;
+      }
+      .ant-select-selector {
+        height: 28px !important;
+      }
     }
   }
+  .ant-btn-link {
+    color: #c6c6c6;
+    &:hover {
+      color: #262222;
+    }
+  }
+  // &-inner {
+  //   width: 100%;
+  //   background-color: #fff;
+  //   border-radius: 6px;
+  //   display: flex;
+  // }
+  // input {
+  //   border: none;
+  //   width: 100%;
+  //   border-top-left-radius: 6px;
+  //   border-bottom-left-radius: 6px;
+  //   padding: 0 8px;
+  // }
+  // button {
+  //   background-color: #0348fc;
+  //   color: #fff;
+  //   border-top-right-radius: 6px;
+  //   border-bottom-right-radius: 6px;
+  //   padding: 6px 16px;
+  //   font-size: 12px;
+  //   outline: none;
+  //   border: none;
+  //   text-transform: uppercase;
+  //   letter-spacing: 2px;
+  //   cursor: pointer;
+  //   &:hover {
+  //     background-color: #1e5af0;
+  //   }
+  // }
 }
 
 .tag-search {

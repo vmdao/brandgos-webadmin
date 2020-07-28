@@ -148,7 +148,7 @@ export class TabElementComponent implements OnInit, OnDestroy {
 
   onClickItem(item) {
     const itemStyle = item.style;
-    const workspaceWidth = 600;
+    const workspaceWidth = 680;
     const workspaceHeight = 360;
 
     const maxWidth = 140;

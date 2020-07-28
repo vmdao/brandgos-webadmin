@@ -672,6 +672,7 @@ export class Workspace {
               },
             ],
             context: {},
+            position: 'right',
           },
 
           {
@@ -684,14 +685,7 @@ export class Workspace {
               color: dataElement.text.color,
             },
           },
-          {
-            type: 'button',
-            icon: 'clone',
-            name: 'Clone',
-            actions: [{ event: 'click', command: cloneComand }],
-            children: [],
-            context: {},
-          },
+
           {
             type: 'button',
             icon: 'delete',
@@ -699,6 +693,16 @@ export class Workspace {
             actions: [{ event: 'click', command: deleteCommand }],
             children: [],
             context: {},
+            position: 'right',
+          },
+          {
+            type: 'button',
+            icon: 'clone',
+            name: 'Clone',
+            actions: [{ event: 'click', command: cloneComand }],
+            children: [],
+            context: {},
+            position: 'right',
           },
         ];
         break;
@@ -764,6 +768,26 @@ export class Workspace {
               color3: dataElement.svg.color3,
             },
           },
+
+          {
+            type: 'button',
+            icon: 'delete',
+            name: 'Delete',
+            actions: [{ event: 'click', command: deleteCommand }],
+            children: [],
+            context: {},
+            position: 'right',
+          },
+          {
+            type: 'button',
+            icon: 'clone',
+            name: 'Clone',
+            actions: [{ event: 'click', command: cloneComand }],
+            children: [],
+            context: {},
+            position: 'right',
+          },
+
           {
             type: 'drop-pad',
             icon: '',
@@ -789,24 +813,7 @@ export class Workspace {
               },
             ],
             context: {},
-          },
-
-          {
-            type: 'button',
-            icon: 'clone',
-            name: 'Clone',
-            actions: [{ event: 'click', command: cloneComand }],
-            children: [],
-            context: {},
-          },
-
-          {
-            type: 'button',
-            icon: 'delete',
-            name: 'Delete',
-            actions: [{ event: 'click', command: deleteCommand }],
-            children: [],
-            context: {},
+            position: 'right',
           },
         ];
         break;

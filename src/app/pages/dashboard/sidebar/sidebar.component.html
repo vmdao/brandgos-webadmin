@@ -1,8 +1,13 @@
 <div id="zone-right">
   <nz-tabset nzTabPosition="left" nzType="line">
-    <nz-tab nzTitle="Layer"
-      ><app-tab-icon (clickItem)="onClickItem($event)"> </app-tab-icon>
+    <nz-tab nzTitle="Template">
+      <app-tab-template (clickItem)="onClickItem($event)"> </app-tab-template>
     </nz-tab>
+
+    <nz-tab nzTitle="Layer">
+      <app-tab-icon (clickItem)="onClickItem($event)"> </app-tab-icon>
+    </nz-tab>
+
     <nz-tab nzTitle="Text"
       ><app-tab-text (clickItem)="onClickItem($event)" t> </app-tab-text>
     </nz-tab>

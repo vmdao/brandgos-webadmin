@@ -1,0 +1,56 @@
+<div class="tab-inner">
+  <div class="search">
+    <div class="search-inner">
+      <nz-input-group nzSearch [nzSuffix]="suffixIconSearch">
+        <input
+          type="text"
+          nz-input
+          placeholder="Find in 1.000.000 templates"
+          [(ngModel)]="q.fulltext"
+        />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <button
+          nz-button
+          nzType="link"
+          (click)="onClickSearch()"
+          [nzLoading]="loading$ | async"
+        >
+          <i nz-icon nzType="search"></i>
+        </button>
+      </ng-template>
+    </div>
+    <div class="search-more">
+      <nz-select ngModel="lucy" nzSize="small">
+        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+      </nz-select>
+      <nz-select ngModel="lucy" nzSize="small">
+        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+      </nz-select>
+    </div>
+  </div>
+  <app-collection-list></app-collection-list>
+
+  <nz-skeleton
+    *ngIf="(loading$ | async) === true"
+    [nzActive]="true"
+  ></nz-skeleton>
+  <div class="store" *ngIf="(loading$ | async) === false">
+    <div
+      class="item"
+      *ngFor="let item of items$ | async"
+      (click)="onClickItem(item)"
+    >
+      <div class="item-box">
+        <img
+          [src]="item.material.bucket + item.material.pathOrigin"
+          [alt]="item.title"
+        />
+      </div>
+    </div>
+  </div>
+</div>

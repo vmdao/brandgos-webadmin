@@ -74,47 +74,48 @@ h2.611c0.008,0.001,0.015,0,0.02,0c0.69,0,1.25-0.56,1.25-1.25C21.083,12.795,20.88
     nzText="U"
     style="color: #f56a00; background-color: #fde3cf;"
   ></nz-avatar>
-</div>
-<nz-modal
-  [(nzVisible)]="isVisible2"
-  nzTitle="Downloading your logo"
-  (nzOnCancel)="handleCancel2()"
-  (nzOnOk)="handleOk2()"
-  nzOkText="Close"
-  nzCancelDisabled
->
-  <div *ngIf="renderLoading" style="text-align: center;">
-    Waiting some mins ...
-  </div>
-  <nz-progress
-    *ngIf="renderLoading"
-    [nzPercent]="percent"
-    [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
-  ></nz-progress>
-  <div *ngIf="renderLoading === false" style="text-align: center;">
-    <h2>Create your Logo Successful</h2>
-    <a (click)="onClickDownloadFile2()">Download your logo Click here</a>
-  </div>
-</nz-modal>
 
-<nz-modal
-  [(nzVisible)]="isVisible"
-  nzTitle="Downloading your logo"
-  (nzOnCancel)="handleCancel()"
-  (nzOnOk)="handleOk()"
-  nzOkText="Close"
-  nzCancelDisabled
->
-  <div *ngIf="renderLoading$ | async" style="text-align: center;">
-    Waiting some mins ...
-  </div>
-  <nz-progress
-    *ngIf="renderLoading$ | async"
-    [nzPercent]="percent"
-    [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
-  ></nz-progress>
-  <div *ngIf="(renderLoading$ | async) === false" style="text-align: center;">
-    <h2>Create your Logo Successful</h2>
-    <a (click)="onClickDownloadFile()">Download your logo Click here</a>
-  </div>
-</nz-modal>
+  <nz-modal
+    [(nzVisible)]="isVisible2"
+    nzTitle="Downloading your logo"
+    (nzOnCancel)="handleCancel2()"
+    (nzOnOk)="handleOk2()"
+    nzOkText="Close"
+    nzCancelDisabled
+  >
+    <div *ngIf="renderLoading" style="text-align: center;">
+      Waiting some mins ...
+    </div>
+    <nz-progress
+      *ngIf="renderLoading"
+      [nzPercent]="percent"
+      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
+    ></nz-progress>
+    <div *ngIf="renderLoading === false" style="text-align: center;">
+      <h2>Create your Logo Successful</h2>
+      <a (click)="onClickDownloadFile2()">Download your logo Click here</a>
+    </div>
+  </nz-modal>
+
+  <nz-modal
+    [(nzVisible)]="isVisible"
+    nzTitle="Downloading your logo"
+    (nzOnCancel)="handleCancel()"
+    (nzOnOk)="handleOk()"
+    nzOkText="Close"
+    nzCancelDisabled
+  >
+    <div *ngIf="renderLoading$ | async" style="text-align: center;">
+      Waiting some mins ...
+    </div>
+    <nz-progress
+      *ngIf="renderLoading$ | async"
+      [nzPercent]="percent"
+      [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
+    ></nz-progress>
+    <div *ngIf="(renderLoading$ | async) === false" style="text-align: center;">
+      <h2>Create your Logo Successful</h2>
+      <a (click)="onClickDownloadFile()">Download your logo Click here</a>
+    </div>
+  </nz-modal>
+</div>

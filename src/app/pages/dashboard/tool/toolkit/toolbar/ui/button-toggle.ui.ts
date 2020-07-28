@@ -5,7 +5,7 @@ export class ButtonToggleUI extends BaseMenuItemUI {
     super(options);
     this.htmlWrapper = `<li class="toolbar__item
     ${this.code ? ' toolbar__item--' + this.code : ''}
-    ${this.context.isActive ? ' toolbar__item--active' : ''}">
+    ${this.context.isActive ? ' toolbar__item--active' : ''} ${this.position ? 'toolbar__item--' + this.position : ''}">
     </li>`;
 
     this.html = `<button class="toolbar__button

@@ -1,0 +1,31 @@
+<div class="collection">
+  <div class="collection__wrapper">
+    <div class="collection__header">
+      <div class="collection__title">
+        Hello
+      </div>
+      <div class="collection__more">:</div>
+    </div>
+    <div class="collection__body">
+      <nz-skeleton
+        *ngIf="(loading$ | async) === true"
+        [nzActive]="true"
+      ></nz-skeleton>
+      <div class="store" *ngIf="(loading$ | async) === false">
+        <div
+          class="item"
+          *ngFor="let item of items$ | async"
+          (click)="onClickItem(item)"
+        >
+          <div class="item-box">
+            <img
+              [src]="item.material.bucket + item.material.pathOrigin"
+              [alt]="item.title"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="collection__item">Hello</div>
+    </div>
+  </div>
+</div>

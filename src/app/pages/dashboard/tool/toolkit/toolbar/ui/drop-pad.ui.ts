@@ -5,12 +5,12 @@ export class DropPadUI extends BaseMenuItemUI {
   htmlListItems = '';
   items: Array<any> = [];
   $domList;
-  $document;
+  $domCover;
   constructor(options) {
     super(options);
     this.htmlWrapper = `<li class="toolbar__item toolbar__item--submenu ${
       this.contentIcon ? 'toolbar__item--' + this.contentIcon : ''
-    } "></li>`;
+    } ${this.position ? 'toolbar__item--' + this.position : ''}"></li>`;
     this.html = `<button class="toolbar__button  ${
       this.contentIcon ? 'toolbar__button--' + this.contentIcon : ''
     }  ${this.contentIcon ? 'toolbar__button--icon' : ''}">
@@ -24,9 +24,10 @@ export class DropPadUI extends BaseMenuItemUI {
     this.$dom = jQuery(this.html);
     this.$domWrapper = jQuery(this.htmlWrapper);
     this.$domList = this.buildDomList();
+    this.$domCover = jQuery('<div class="submenu-cover"></div>');
     this.$domWrapper.append(this.$dom);
+    this.$domWrapper.append(this.$domCover);
     this.$domWrapper.append(this.$domList);
-    this.$document = jQuery(window.document);
     this.setEvent();
     this.renderItems();
     return this;
@@ -41,9 +42,8 @@ export class DropPadUI extends BaseMenuItemUI {
   setEvent() {
     this.$domWrapper.find('> .toolbar__button').on('click', (event) => {
       this.$domWrapper.addClass('toolbar__item--submenuExpanded');
-      this.$document.find('#workspace').one('click', eventClickOff.bind(this));
     });
-
+    this.$domCover.on('click', eventClickOff.bind(this));
     function eventClickOff(event) {
       this.$domWrapper.removeClass('toolbar__item--submenuExpanded');
     }
@@ -66,9 +66,8 @@ export class DropPadUI extends BaseMenuItemUI {
   }
 
   buildDomList() {
-    const wrapper = jQuery(
+    return jQuery(
       `<menu class="menuList"><ul class="menuList__inner"></ul></menu>`
     );
-    return wrapper;
   }
 }
