@@ -4,7 +4,7 @@ import {
   Output,
   EventEmitter,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from '@angular/core';
 import { UploadXHRArgs, UploadFile } from 'ng-zorro-antd';
 import { RestService } from '@app/@core/services/rest.service';
@@ -14,7 +14,7 @@ import { Observer, Observable } from 'rxjs';
   selector: 'app-upload',
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadFileComponent {
   @Input()
@@ -42,7 +42,7 @@ export class UploadFileComponent {
   showUploadList = {
     showPreviewIcon: true,
     showRemoveIcon: true,
-    hidePreviewIconInNonImage: true
+    hidePreviewIconInNonImage: true,
   };
 
   constructor(
@@ -60,11 +60,11 @@ export class UploadFileComponent {
     const formData = new FormData();
     formData.append('image', item.file as any);
     return this.restService.upload(this.path, formData).subscribe(
-      res => {
+      (res) => {
         item.onSuccess(res, item.file, null);
         this.emitFileListValue();
       },
-      err => {
+      (err) => {
         item.onError(err, item.file);
         this.showError(err.message);
       }
@@ -110,8 +110,8 @@ export class UploadFileComponent {
     this.fileListChange.emit(this.fileList);
   }
 
-  handleRemove = item => {
-    this.fileList = this.fileList.filter(f => {
+  handleRemove = (item) => {
+    this.fileList = this.fileList.filter((f) => {
       return f.status !== 'removed';
     });
     this.emitFileListValue();

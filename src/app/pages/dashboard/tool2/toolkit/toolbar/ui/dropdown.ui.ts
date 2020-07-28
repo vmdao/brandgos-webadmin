@@ -13,7 +13,7 @@ export class DropdownUI extends BaseMenuItemUI {
     this.htmlWrapper = `<li class="toolbar__item toolbar__item--submenu ${
       this.code ? 'toolbar__item--' + this.code : ''
     }"></li>`;
-    
+
     this.html = `<button class="toolbar__button  ${
       this.code ? 'toolbar__button--' + this.code : ''
     }">
