@@ -4,9 +4,8 @@ import {
   Output,
   EventEmitter,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
 } from '@angular/core';
-import { UploadFile, NzUploadXHRArgs } from 'ng-zorro-antd';
+import { NzUploadXHRArgs, NzUploadFile } from 'ng-zorro-antd';
 import { RestService } from '@app/@core/services/rest.service';
 import { Observer, Observable } from 'rxjs';
 
@@ -47,7 +46,7 @@ export class UploadFileComponent {
 
   constructor(private restService: RestService) {}
 
-  handlePreview = (file: UploadFile) => {
+  handlePreview = (file: NzUploadFile) => {
     this.previewImage = file.url || file.thumbUrl;
     this.previewVisible = true;
     // tslint:disable-next-line: semicolon

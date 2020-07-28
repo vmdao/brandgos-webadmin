@@ -258,7 +258,7 @@ export class Workspace {
       })
       .on('rotateEnd', ({ target }) => {});
 
-    const directionScale = { '-10': true, '10': true, '0-1': true, '01': true };
+    const directionScale = { '-10': true, 10: true, '0-1': true, '01': true };
 
     this.managerMoveabler
       .on('resizeStart', ({ target, dragStart, setOrigin, direction }) => {
