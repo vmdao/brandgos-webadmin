@@ -54,8 +54,8 @@ export class TabTemplateComponent implements OnInit, OnDestroy {
     { label: 'Vintage', value: 'Vintage' },
   ];
 
-  category: string = 'Cafe';
-  style: string = 'Colorful';
+  category = 'Cafe';
+  style = 'Colorful';
 
   constructor(
     private store$: Store<fromApp.AppState>,
