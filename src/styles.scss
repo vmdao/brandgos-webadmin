@@ -142,13 +142,18 @@ nz-content {
 .store {
   display: flex;
   flex-wrap: wrap;
-  margin-left: -4px;
-  margin-right: -4px;
+  justify-content: space-between;
+  height: 92px;
+  overflow: hidden;
+  &--expand {
+    height: auto;
+  }
 }
+
 .item {
-  height: 94px;
-  width: 94px;
-  padding: 4px;
+  height: 92px;
+  width: 92px;
+  margin-bottom: 8px;
   .item-box {
     height: 100%;
     width: 100%;

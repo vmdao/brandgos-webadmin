@@ -4,16 +4,28 @@
       <div class="collection__title">
         Hello
       </div>
-      <div class="collection__more">:</div>
+      <div class="collection__more">
+        <a (click)="onClickMore()" nzSize="small" nz-button nzType="link">
+          <i
+            nz-icon
+            [nzType]="isExpand ? 'down' : 'right'"
+            nzTheme="outline"
+          ></i>
+        </a>
+      </div>
     </div>
     <div class="collection__body">
       <nz-skeleton
         *ngIf="(loading$ | async) === true"
         [nzActive]="true"
       ></nz-skeleton>
-      <div class="store" *ngIf="(loading$ | async) === false">
+      <div
+        class="store"
+        *ngIf="(loading$ | async) === false"
+        [ngClass]="{ 'store--expand': isExpand }"
+      >
         <div
-          class="item"
+          class="item collection__item"
           *ngFor="let item of items$ | async"
           (click)="onClickItem(item)"
         >
@@ -25,7 +37,6 @@
           </div>
         </div>
       </div>
-      <div class="collection__item">Hello</div>
     </div>
   </div>
 </div>

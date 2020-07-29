@@ -1,0 +1,22 @@
+.collection {
+  margin-top: 24px;
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    color: #fff;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+
+  &__more a {
+    color: #ababab;
+    font-weight: 700;
+    &:hover {
+      color: #fff;
+    }
+  }
+}
