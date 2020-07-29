@@ -1,22 +1,33 @@
 <div id="zone-right">
   <nz-tabset nzTabPosition="left" nzType="line">
     <nz-tab nzTitle="Template">
-      <app-tab-template (clickItem)="onClickItem($event)"> </app-tab-template>
+      <ng-template nz-tab>
+        <app-tab-template (clickItem)="onClickItem($event)"> </app-tab-template>
+      </ng-template>
     </nz-tab>
 
-    <nz-tab nzTitle="Layer">
-      <app-tab-icon (clickItem)="onClickItem($event)"> </app-tab-icon>
+    <nz-tab nzTitle="Symbol">
+      <ng-template nz-tab>
+        <app-tab-icon (clickItem)="onClickItem($event)"> </app-tab-icon>
+      </ng-template>
+    </nz-tab>
+    <!-- <nz-tab nzTitle="Layer">
+      <ng-template nz-tab>
+        <app-tab-icon (clickItem)="onClickItem($event)"> </app-tab-icon>
+      </ng-template>
     </nz-tab>
 
-    <nz-tab nzTitle="Text"
-      ><app-tab-text (clickItem)="onClickItem($event)" t> </app-tab-text>
+    <nz-tab nzTitle="Text">
+      <ng-template nz-tab>
+        <app-tab-text (clickItem)="onClickItem($event)"> </app-tab-text>
+      </ng-template>
+    </nz-tab> -->
+
+    <nz-tab nzTitle="Elements">
+      <ng-template nz-tab>
+        <app-tab-element (clickItem)="onClickItem($event)"> </app-tab-element>
+      </ng-template>
     </nz-tab>
-    <nz-tab nzTitle="Shape"
-      ><app-tab-shape (clickItem)="onClickItem($event)"> </app-tab-shape>
-    </nz-tab>
-    <nz-tab nzTitle="Element"
-      ><app-tab-element (clickItem)="onClickItem($event)"> </app-tab-element>
-    </nz-tab>
-    <nz-tab nzTitle="Designer"><app-tab-designer> </app-tab-designer> </nz-tab>
+    <!-- <nz-tab nzTitle="Designer"><app-tab-designer> </app-tab-designer> </nz-tab> -->
   </nz-tabset>
 </div>

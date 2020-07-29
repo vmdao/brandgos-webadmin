@@ -1,30 +1,23 @@
 <div class="tab-inner">
-  <div>
-    <nz-select [ngModel]="'all'" (ngModelChange)="collectionChange($event)">
-      <nz-option nzValue="all" nzLabel="All Element"></nz-option>
-      <nz-option
-        *ngFor="let item of collections$ | async"
-        [nzValue]="item.id"
-        [nzLabel]="item.title"
-      ></nz-option>
-    </nz-select>
-  </div>
-  <nz-skeleton
-    *ngIf="(loading$ | async) === true"
-    [nzActive]="true"
-  ></nz-skeleton>
-  <div class="store" *ngIf="(loading$ | async) === false">
-    <div
-      class="item"
-      *ngFor="let item of items$ | async"
-      (click)="onClickItem(item)"
-    >
-      <div class="item-box">
-        <img
-          [src]="item.material.bucket + item.material.pathOrigin"
-          [alt]="item.title"
-        />
-      </div>
-    </div>
-  </div>
+  <app-collection-list
+    [collectionName]="'Shape'"
+    [isQuery]="true"
+    [collectionJoin]="getCollectionJoinShape()"
+    [collectionFilter]="getCollectionFilterShape()"
+    (clickItem)="onClickItem($event)"
+  ></app-collection-list>
+
+  <ng-container *ngFor="let item of collections$ | async">
+    <nz-skeleton
+      *ngIf="(collectionsLoading$ | async) === true"
+      [nzActive]="true"
+    ></nz-skeleton>
+    <app-collection-list
+      [collectionName]="item.title + ' collection'"
+      [isQuery]="true"
+      [collectionJoin]="getCollectionJoinItem(item)"
+      [collectionFilter]="getCollectionFilterItem(item)"
+      (clickItem)="onClickItem($event)"
+    ></app-collection-list>
+  </ng-container>
 </div>

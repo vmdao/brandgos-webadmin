@@ -25,7 +25,6 @@ export class DashboardComponent implements OnInit {
 
   onClickItem(item) {
     if (this.workspace) {
-      console.log('onClickItem', item);
       this.workspace.createElement(item);
     }
 

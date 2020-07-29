@@ -6,9 +6,17 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
   OnInit,
+  Input,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 
-import { ItemModel, ItemsActions } from '@app/pages/@store/item';
+import {
+  ItemModel,
+  ItemsActions,
+  ItemService,
+  ITEM_TYPE,
+} from '@app/pages/@store/item';
 import { Subject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromApp from '@app/pages/@store';
@@ -20,9 +28,24 @@ import { CollectionModel } from '@app/pages/@store/collection';
   styleUrls: ['./collection.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ColectionListComponent implements OnInit, OnDestroy {
+export class ColectionListComponent implements OnInit, OnDestroy, OnChanges {
   @Output()
   clickItem: EventEmitter<any> = new EventEmitter();
+
+  @Input()
+  isQuery = false;
+
+  @Input()
+  collectionJoin: Array<string> = [];
+
+  @Input()
+  collectionFilter: Array<string> = [];
+
+  @Input()
+  collectionSearch: string;
+
+  @Input()
+  collectionName = '';
 
   private unsubscribe$: Subject<void> = new Subject();
   items$: Observable<Array<ItemModel>>;
@@ -45,16 +68,30 @@ export class ColectionListComponent implements OnInit, OnDestroy {
 
   isExpand = false;
 
+  items: Array<ItemModel> = [];
+
   constructor(
     private store$: Store<fromApp.AppState>,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private itemService: ItemService
   ) {}
 
   ngOnInit(): void {
-    this.items$ = this.store$.select(fromApp.getItemIcons);
     this.loading$ = this.store$.select(fromApp.getItemIconsLoading);
-    this.searchData();
+    if (this.collectionSearch) {
+      this.fetchSearch();
+    } else {
+      this.searchData();
+    }
     this.cd.detectChanges();
+  }
+
+  ngOnChanges(change: SimpleChanges) {
+    if (this.collectionSearch) {
+      this.fetchSearch();
+    } else {
+      this.searchData();
+    }
   }
 
   ngOnDestroy() {
@@ -77,7 +114,7 @@ export class ColectionListComponent implements OnInit, OnDestroy {
     const params: {
       page?: number;
       size?: number;
-      search?: string;
+      key?: string;
       sort?: string;
       join?: Array<string>;
       filter?: Array<string>;
@@ -85,41 +122,48 @@ export class ColectionListComponent implements OnInit, OnDestroy {
       page: this.page - 1,
       size: this.size,
       sort: `${this.sortKey},${this.sortValue}`,
-      join: ['material', 'collections'],
-      filter: [`type||$eq||svg`, `collections.code||$eq||icon`],
+      join: this.collectionJoin,
+      filter: this.collectionFilter,
     };
 
-    if (this.q.fulltext !== '') {
-      params.search = this.q.fulltext;
+    if (typeof this.collectionSearch === 'string') {
+      params.key = this.collectionSearch;
     }
 
-    this.store$.dispatch(ItemsActions.getItemIcons({ payload: params }));
+    this.itemService.getAll(params).subscribe((res) => {
+      this.items = [...res.data];
+      this.cd.detectChanges();
+    });
+    // this.store$.dispatch(ItemsActions.getItemIcons({ payload: params }));
   }
 
   fetchSearch() {
     const params: {
       collectionCode?: string;
       tag?: string;
-      type?: string;
+      type?: ITEM_TYPE;
       key?: string;
-      sort?: string;
     } = {
       collectionCode: 'icon',
-      type: 'svg',
+      type: ITEM_TYPE.SVG,
     };
 
-    if (typeof this.q.fulltext === 'string') {
-      params.key = this.q.fulltext;
+    if (typeof this.collectionSearch === 'string') {
+      params.key = this.collectionSearch;
     }
 
-    if (typeof this.q.tag === 'string') {
-      params.tag = this.q.tag;
-    }
-
-    this.store$.dispatch(ItemsActions.getItemIconsSearch({ payload: params }));
+    this.itemService.search(params).subscribe((res) => {
+      this.items = [...res.data];
+      this.cd.detectChanges();
+    });
   }
 
   onClickItem(item) {
+    const dataShape = this.getShape(item);
+    if (dataShape) {
+      this.clickItem.emit(dataShape);
+      return;
+    }
     const itemStyle = item.style;
     const workspaceWidth = 680;
     const workspaceHeight = 360;
@@ -155,8 +199,79 @@ export class ColectionListComponent implements OnInit, OnDestroy {
     this.clickItem.emit(data);
   }
 
-  onClickSearch() {
-    this.q.tag = null;
-    this.fetchSearch();
+  getShape(item) {
+    switch (item.id) {
+      case 14: {
+        return this.getDataShape(item, { id: 3, border: 0, radius: 0 });
+      }
+      case 15: {
+        return this.getDataShape(item, { id: 1, border: 4, radius: 0 });
+      }
+      case 16: {
+        return this.getDataShape(item, { id: 1, border: 0, radius: 0 });
+      }
+      case 17: {
+        return this.getDataShape(item, { id: 0, border: 0, radius: 0 });
+      }
+      case 18: {
+        return this.getDataShape(item, { id: 0, border: 4, radius: 0 });
+      }
+      case 19: {
+        return this.getDataShape(item, { id: 0, border: 0, radius: 20 });
+      }
+      case 20: {
+        return this.getDataShape(item, { id: 0, border: 4, radius: 20 });
+      }
+      default: {
+        return null;
+      }
+    }
+  }
+
+  getDataShape(item, style: { id: number; border: number; radius: number }) {
+    const itemStyle = item.style;
+    const workspaceWidth = 680;
+    const workspaceHeight = 360;
+
+    const shapes = ['rect', 'circle', 'line', 'triangle'];
+    const shape = shapes[style.id];
+    const maxWidth = 140;
+
+    let dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
+    let dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
+
+    if (shape === 'line') {
+      dataWidth = 139;
+      dataHeight = 10;
+    }
+
+    const dataStyle = {
+      url: '',
+      originUrl: '',
+      thumbUrl: '',
+      color1: style.border > 0 ? '#fff' : '#000',
+      shape,
+      stroke: style.border > 0 ? '#000' : '',
+      strokeWidth: style.border,
+      borderRadius: style.radius,
+    };
+
+    const dataLeft = (workspaceWidth - dataWidth) / 2;
+    const dataTop = (workspaceHeight - dataHeight) / 2;
+
+    const data = {
+      elementType: 'svgdraw',
+      userEdited: true,
+      elementIndex: 1,
+      transparency: 1,
+      rotation: 0.0,
+      width: dataWidth,
+      height: dataHeight,
+      top: dataTop,
+      left: dataLeft,
+      style: dataStyle,
+    };
+
+    return data;
   }
 }

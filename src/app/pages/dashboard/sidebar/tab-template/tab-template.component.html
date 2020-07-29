@@ -21,21 +21,48 @@
       </ng-template>
     </div>
     <div class="search-more">
-      <nz-select ngModel="lucy" nzSize="small">
-        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+      <nz-select nzSize="small" [ngModel]="category">
+        <nz-option
+          *ngFor="let item of categories"
+          [nzValue]="item.value"
+          [nzLabel]="item.label"
+        ></nz-option>
       </nz-select>
-      <nz-select ngModel="lucy" nzSize="small">
-        <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-        <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-        <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+      <nz-select nzSize="small" [ngModel]="style">
+        <nz-option
+          *ngFor="let item of styles"
+          [nzValue]="item.value"
+          [nzLabel]="item.label"
+        ></nz-option>
       </nz-select>
     </div>
   </div>
-  <nz-skeleton
-    *ngIf="(loading$ | async) === true"
-    [nzActive]="true"
-  ></nz-skeleton>
-  <app-collection-list></app-collection-list>
+
+  <ng-container *ngIf="fulltext">
+    <nz-skeleton
+      *ngIf="(loading$ | async) === true"
+      [nzActive]="true"
+    ></nz-skeleton>
+    <app-collection-list
+      [isQuery]="true"
+      [collectionName]="'Result ' + fulltext"
+      [collectionSearch]="fulltext"
+      (clickItem)="onClickItem($event)"
+    ></app-collection-list>
+  </ng-container>
+  <ng-container *ngIf="!fulltext">
+    <ng-container *ngFor="let item of categories">
+      <nz-skeleton
+        *ngIf="(loading$ | async) === true"
+        [nzActive]="true"
+      ></nz-skeleton>
+      <app-collection-list
+        [isQuery]="true"
+        [collectionName]="item.label"
+        [collectionJoin]="getCollectionJoinItem(item)"
+        [collectionFilter]="getCollectionFilterItem(item)"
+        (clickItem)="onClickItem($event)"
+      ></app-collection-list>
+    </ng-container>
+  </ng-container>
 </div>

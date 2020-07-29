@@ -142,8 +142,7 @@ nz-content {
 .store {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  height: 92px;
+  height: 98px;
   overflow: hidden;
   &--expand {
     height: auto;
@@ -151,9 +150,13 @@ nz-content {
 }
 
 .item {
-  height: 92px;
-  width: 92px;
+  height: 90px;
+  width: 90px;
   margin-bottom: 8px;
+  margin-right: 8px;
+  &:nth-child(3n + 0) {
+    margin-right: 0px;
+  }
   .item-box {
     height: 100%;
     width: 100%;
@@ -259,4 +262,7 @@ nz-content {
 
 .moveable-area {
   cursor: move;
+}
+.cdk-overlay-container {
+  z-index: 10000000;
 }

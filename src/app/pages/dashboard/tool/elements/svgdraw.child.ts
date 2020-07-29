@@ -24,6 +24,7 @@ export class SvgDrawChild extends BaseSvgChild {
   updateSvg() {
     let shapeModel;
     const { width, height, borderRadius } = this.parent;
+    const strokeWidth = (this.strokeWidth || 0) * 2;
     switch (this.shape) {
       case 'triangle':
         const haftWidth = width / 2;
@@ -54,19 +55,33 @@ export class SvgDrawChild extends BaseSvgChild {
         ? this.color1
         : null;
 
-    const options: { fill?: string; stroke?: string; strokeWidth?: string } = {
+    const options: {
+      svgAttrs?: any;
+      fill?: string;
+      stroke?: string;
+      strokeWidth?: string;
+      accuracy?: number;
+      annotate?: boolean;
+      viewBox?: boolean;
+      scalingStroke?: boolean;
+    } = {
+      svgAttrs: {
+        width: '100%',
+        height: '100%',
+      },
       stroke: this.stroke,
       strokeWidth: `${this.strokeWidth}px`,
+      accuracy: 0.001,
+      annotate: false,
+      viewBox: true,
+      scalingStroke: true,
     };
 
     if (fill) {
       options.fill = fill;
     }
 
-    const svgPath = exporter
-      .toSVG(shapeModel, options)
-      .replace('width=', '')
-      .replace('height=', '');
+    const svgPath = exporter.toSVG(shapeModel, { ...options, units: 'px' });
 
     this.$dom.html(svgPath);
     this.setColorName();

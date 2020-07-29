@@ -1,38 +1,68 @@
 <div class="tab-inner">
   <div class="search">
     <div class="search-inner">
-      <input [(ngModel)]="q.fulltext" />
-      <button
-        nz-button
-        nzType="primary"
-        (click)="onClickSearch()"
-        [nzLoading]="loading$ | async"
-      >
-        Search
-      </button>
-    </div>
-    <div class="tag-search">
-      <a class="tag" *ngFor="let item of tags" (click)="onClickTag(item)">
-        {{ item.label }}
-      </a>
-    </div>
-  </div>
-  <nz-skeleton
-    *ngIf="(loading$ | async) === true"
-    [nzActive]="true"
-  ></nz-skeleton>
-  <div class="store" *ngIf="(loading$ | async) === false">
-    <div
-      class="item"
-      *ngFor="let item of items$ | async"
-      (click)="onClickItem(item)"
-    >
-      <div class="item-box">
-        <img
-          [src]="item.material.bucket + item.material.pathOrigin"
-          [alt]="item.title"
+      <nz-input-group nzSearch [nzSuffix]="suffixIconSearch">
+        <input
+          type="text"
+          nz-input
+          placeholder="Find in 1.000.000 templates"
+          [(ngModel)]="q.fulltext"
         />
-      </div>
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <button
+          nz-button
+          nzType="link"
+          (click)="onClickSearch()"
+          [nzLoading]="loading$ | async"
+        >
+          <i nz-icon nzType="search"></i>
+        </button>
+      </ng-template>
     </div>
   </div>
+
+  <ng-container *ngIf="fulltext">
+    <nz-skeleton
+      *ngIf="(loading$ | async) === true"
+      [nzActive]="true"
+    ></nz-skeleton>
+    <app-collection-list
+      [isQuery]="true"
+      [collectionName]="'Result ' + fulltext"
+      [collectionSearch]="fulltext"
+      (clickItem)="onClickItem($event)"
+    ></app-collection-list>
+  </ng-container>
+  <ng-container *ngIf="!fulltext">
+    <ng-container *ngFor="let item of most">
+      <nz-skeleton
+        *ngIf="(loading$ | async) === true"
+        [nzActive]="true"
+      ></nz-skeleton>
+      <app-collection-list
+        [isQuery]="true"
+        [collectionName]="item.label"
+        [collectionJoin]="getCollectionJoinItem(item)"
+        [collectionFilter]="getCollectionFilterItem(item)"
+        (clickItem)="onClickItem($event)"
+      ></app-collection-list>
+    </ng-container>
+
+    <div class="section-heading">Categories</div>
+    <ng-container *ngFor="let item of categories">
+      <nz-skeleton
+        *ngIf="(loading$ | async) === true"
+        [nzActive]="true"
+      ></nz-skeleton>
+      <app-collection-list
+        [isQuery]="true"
+        [collectionName]="item.label"
+        [collectionSearch]="item.label"
+        [collectionJoin]="getCollectionJoinItem(item)"
+        [collectionFilter]="getCollectionFilterItem(item)"
+        (clickItem)="onClickItem($event)"
+      ></app-collection-list>
+    </ng-container>
+  </ng-container>
 </div>

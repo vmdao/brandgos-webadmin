@@ -8,7 +8,6 @@ import {
   OnInit,
 } from '@angular/core';
 
-import { ItemModel, ItemsActions } from '@app/pages/@store/item';
 import { Subject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromApp from '@app/pages/@store';
@@ -16,7 +15,6 @@ import {
   CollectionModel,
   CollectionsActions,
 } from '@app/pages/@store/collection';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tab-element',
@@ -29,8 +27,6 @@ export class TabElementComponent implements OnInit, OnDestroy {
   clickItem: EventEmitter<any> = new EventEmitter();
 
   private unsubscribe$: Subject<void> = new Subject();
-  items$: Observable<Array<ItemModel>>;
-  loading$: Observable<boolean>;
 
   collections$: Observable<Array<CollectionModel>>;
   collectionsLoading$: Observable<boolean>;
@@ -61,18 +57,11 @@ export class TabElementComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.items$ = this.store$.select(fromApp.getItemElements);
-    this.loading$ = this.store$.select(fromApp.getItemElementsLoading);
-
     this.collections$ = this.store$.select(fromApp.getCollections);
     this.collectionsLoading$ = this.store$.select(
       fromApp.getCollectionsLoading
     );
 
-    this.collections$.pipe(takeUntil(this.unsubscribe$)).subscribe((res) => {
-      this.searchData();
-      this.cd.detectChanges();
-    });
     this.fetchCollections();
     this.cd.detectChanges();
   }
@@ -80,48 +69,6 @@ export class TabElementComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-  }
-
-  collectionChange($event) {
-    this.collectionSelected = $event;
-    this.searchData();
-  }
-
-  searchData(reset = false): void {
-    if (reset) {
-      this.page = 1;
-    }
-    this.fetchData();
-  }
-
-  fetchData() {
-    const params: {
-      page?: number;
-      size?: number;
-      search?: string;
-      sort?: string;
-      join?: Array<string>;
-      filter?: Array<string>;
-    } = {
-      page: this.page - 1,
-      size: this.size,
-      sort: `${this.sortKey},${this.sortValue}`,
-      join: ['material', 'collections'],
-      filter: [
-        `type||$eq||svg`,
-        `collections.code||$in||badge,solid-shape,outlined-sha,flame`,
-      ],
-    };
-
-    if (this.q.fulltext !== '') {
-      params.search = this.q.fulltext;
-    }
-
-    if (typeof this.collectionSelected === 'number') {
-      params.filter.push(`collections.id||$eq||${this.collectionSelected}`);
-    }
-
-    this.store$.dispatch(ItemsActions.getItemElements({ payload: params }));
   }
 
   fetchCollections() {
@@ -142,43 +89,27 @@ export class TabElementComponent implements OnInit, OnDestroy {
     );
   }
 
-  onClickSearch(event) {
-    console.log(event);
+  onClickItem(item) {
+    this.clickItem.emit(item);
   }
 
-  onClickItem(item) {
-    const itemStyle = item.style;
-    const workspaceWidth = 680;
-    const workspaceHeight = 360;
+  getCollectionJoinItem(item) {
+    return ['material', 'collections'];
+  }
 
-    const maxWidth = 140;
+  getCollectionFilterItem(item) {
+    return [
+      `type||$eq||svg`,
+      `collections.code||$in||badge,solid-shape,outlined-sha,flame`,
+      `collections.id||$eq||${item.id}`,
+    ];
+  }
 
-    const dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
-    const dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
+  getCollectionJoinShape() {
+    return ['material', 'collections'];
+  }
 
-    const dataStyle = {
-      url: item.material.bucket + item.material.pathOrigin,
-      originUrl: item.material.bucket + item.material.pathOrigin,
-      thumbUrl: item.material.bucket + item.material.pathOrigin,
-      color1: '#000',
-    };
-
-    const dataLeft = (workspaceWidth - dataWidth) / 2;
-    const dataTop = (workspaceHeight - dataHeight) / 2;
-
-    const data = {
-      elementType: 'svg',
-      userEdited: true,
-      elementIndex: 1,
-      transparency: 1,
-      rotation: 0.0,
-      width: dataWidth,
-      height: dataHeight,
-      top: dataTop,
-      left: dataLeft,
-      style: dataStyle,
-    };
-
-    this.clickItem.emit(data);
+  getCollectionFilterShape() {
+    return [`type||$eq||svg`, `collections.code||$eq||shape`];
   }
 }

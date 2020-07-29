@@ -2,7 +2,7 @@
   <div class="collection__wrapper">
     <div class="collection__header">
       <div class="collection__title">
-        Hello
+        {{ collectionName }} ({{ items.length }})
       </div>
       <div class="collection__more">
         <a (click)="onClickMore()" nzSize="small" nz-button nzType="link">
@@ -26,7 +26,7 @@
       >
         <div
           class="item collection__item"
-          *ngFor="let item of items$ | async"
+          *ngFor="let item of items"
           (click)="onClickItem(item)"
         >
           <div class="item-box">

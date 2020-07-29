@@ -42,17 +42,14 @@ export class TabIconComponent implements OnInit, OnDestroy {
     fulltext: null,
     tag: null,
   };
+  fulltext: string;
 
-  tags = [
-    { label: 'Fashion', value: 'Fashion' },
-    { label: 'Cafe', value: 'Cafe' },
-    { label: 'Computer', value: 'Computer' },
-    { label: 'Creative', value: 'Creative' },
-    { label: 'Tech', value: 'Tech' },
-    { label: 'Hotel', value: 'Hotel' },
-    { label: 'Oranic', value: 'Oranic' },
-    { label: 'Education', value: 'Education' },
+  most = [
+    { label: 'Popular', value: 'Fashion' },
+    { label: 'Premium', value: 'Cafe' },
   ];
+
+  categories = [{ label: 'Accounting', value: 'Computer' }];
   constructor(
     private store$: Store<fromApp.AppState>,
     private cd: ChangeDetectorRef
@@ -122,50 +119,21 @@ export class TabIconComponent implements OnInit, OnDestroy {
 
     this.store$.dispatch(ItemsActions.getItemIconsSearch({ payload: params }));
   }
+
   onClickItem(item) {
-    const itemStyle = item.style;
-    const workspaceWidth = 680;
-    const workspaceHeight = 360;
-
-    const maxWidth = 140;
-
-    const dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
-    const dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
-
-    const dataStyle = {
-      url: item.material.bucket + item.material.pathOrigin,
-      originUrl: item.material.bucket + item.material.pathOrigin,
-      thumbUrl: item.material.bucket + item.material.pathOrigin,
-      color1: '#000',
-    };
-
-    const dataLeft = (workspaceWidth - dataWidth) / 2;
-    const dataTop = (workspaceHeight - dataHeight) / 2;
-
-    const data = {
-      elementType: 'svg',
-      userEdited: true,
-      elementIndex: 1,
-      transparency: 1,
-      rotation: 0.0,
-      width: dataWidth,
-      height: dataHeight,
-      top: dataTop,
-      left: dataLeft,
-      style: dataStyle,
-    };
-
-    this.clickItem.emit(data);
+    this.clickItem.emit(item);
   }
 
   onClickSearch() {
     this.q.tag = null;
-    this.fetchSearch();
+    this.fulltext = this.q.fulltext;
   }
 
-  onClickTag(value) {
-    this.q.tag = value.value;
-    this.q.fulltext = null;
-    this.fetchSearch();
+  getCollectionJoinItem(item) {
+    return ['material', 'collections'];
+  }
+
+  getCollectionFilterItem(item) {
+    return [`type||$eq||svg`, `collections.code||$eq||icon`];
   }
 }

@@ -40,7 +40,10 @@ export abstract class BaseSvgChild {
   }
 
   setColorName() {
-    const elementFill = this.$dom.find('[fill]');
+    let elementFill = this.$dom.find('[fill]');
+    if (elementFill.length === 0) {
+      elementFill = this.$dom.find('svg > path');
+    }
     const colors = {};
 
     if (elementFill.length > 0) {
@@ -52,6 +55,7 @@ export abstract class BaseSvgChild {
         colors[color].push(e);
       });
     }
+
     let colorCouter = 1;
     Object.keys(colors).forEach((color, index) => {
       colors[color].map((e) => {

@@ -7,6 +7,7 @@ import {
   catchError,
   withLatestFrom,
   concatMap,
+  mergeMap,
 } from 'rxjs/operators';
 import { ItemService } from './service';
 import { ItemsActions } from './actions';
@@ -147,7 +148,7 @@ export class ItemEffects {
   getListIcons$ = createEffect(() =>
     this.actions.pipe(
       ofType(getItemIcons),
-      switchMap((pramas) => {
+      mergeMap((pramas) => {
         return this.modelService.getAll(pramas.payload).pipe(
           map((payload) => getItemIconsSuccess({ payload })),
           catchError((err) => {
