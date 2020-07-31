@@ -449,6 +449,13 @@ export class Workspace {
       const frame = getFrame(target);
       frame.set('width', `${width}px`);
       frame.set('height', `${height}px`);
+
+      const dataElement = jQuery(target).data('dataElement');
+      if (dataElement.elementType === 'svgdraw') {
+        dataElement.setWidth(width);
+        dataElement.setHeight(height);
+        dataElement.updateSvg();
+      }
     }
 
     function scale(target, width, height) {

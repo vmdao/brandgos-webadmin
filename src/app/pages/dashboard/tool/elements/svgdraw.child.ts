@@ -1,6 +1,6 @@
 import { models, exporter } from 'makerjs';
 import { BaseSvgChild } from './base-svg-child.abstract';
-
+import { SVG } from '@svgdotjs/svg.js';
 export class SvgDrawChild extends BaseSvgChild {
   shape: string;
   stroke: string;
@@ -21,10 +21,83 @@ export class SvgDrawChild extends BaseSvgChild {
     this.elementAppendTo(this.parent.$dom);
   }
 
-  updateSvg() {
+  updateSvg2() {
     let shapeModel;
     const { width, height, borderRadius } = this.parent;
-    const strokeWidth = (this.strokeWidth || 0) * 2;
+    const strokeWidth = this.strokeWidth || 0;
+    const draw = SVG().size(width, height);
+    const group = draw.group();
+
+    group.stroke({
+      color: 'red',
+      width: strokeWidth,
+    });
+
+    switch (this.shape) {
+      case 'rect':
+        shapeModel = draw.rect(width - strokeWidth, height - strokeWidth);
+        break;
+      case 'circle':
+        shapeModel = draw
+          .ellipse(width - strokeWidth, height - strokeWidth)
+          .stroke({
+            color: 'red',
+            width: strokeWidth,
+          });
+        break;
+    }
+
+    shapeModel.radius(borderRadius, borderRadius);
+    group.add(shapeModel);
+
+    const svgHtml = draw.svg();
+    let widthViewbox = width;
+    let heightViewbox = height;
+
+    if (this.shape === 'circle' && width !== height) {
+      const viewBoxData = getViewBoxData(svgHtml);
+      if (viewBoxData) {
+        widthViewbox = viewBoxData.width;
+        heightViewbox = viewBoxData.height;
+      }
+    }
+
+    const svgHtmlWithViewBox = fixViewBoxWithsStrokeWidth(
+      svgHtml,
+      widthViewbox,
+      heightViewbox,
+      this.strokeWidth
+    );
+    this.$dom.html(svgHtmlWithViewBox);
+    this.setColorName();
+  }
+
+  updateSvg() {
+    let svgHtml = '';
+    switch (this.shape) {
+      case 'triangle':
+        svgHtml = this.genarateSvgByMakerJs();
+        break;
+      case 'line':
+        svgHtml = this.genarateSvgByHtml();
+        break;
+      case 'rect':
+        svgHtml = this.genarateSvgByHtml();
+        break;
+      case 'circle':
+        svgHtml = this.genarateSvgByHtml();
+        break;
+    }
+    this.$dom.html(svgHtml);
+    this.setColorName();
+  }
+
+  genarateSvgByMakerJs() {
+    let shapeModel;
+
+    const { width, height, borderRadius } = this.parent;
+    const strokeWidth = this.strokeWidth || 0;
+
     switch (this.shape) {
       case 'triangle':
         const haftWidth = width / 2;
@@ -34,19 +107,6 @@ export class SvgDrawChild extends BaseSvgChild {
           [haftWidth, haftHeight * -1],
           [0, haftHeight],
         ]);
-        break;
-      case 'line':
-        shapeModel = new models.RoundRectangle(width, height, borderRadius);
-        break;
-      case 'rect':
-        shapeModel = new models.RoundRectangle(width, height, borderRadius);
-        break;
-      case 'circle':
-        if (width === height) {
-          shapeModel = new models.Oval(width, height);
-        } else {
-          shapeModel = new models.Ellipse(width, height);
-        }
         break;
     }
 
@@ -64,14 +124,18 @@ export class SvgDrawChild extends BaseSvgChild {
       annotate?: boolean;
       viewBox?: boolean;
       scalingStroke?: boolean;
+      useSvgPathOnly?: boolean;
+      fontSize: string;
     } = {
       svgAttrs: {
         width: '100%',
         height: '100%',
       },
+      fontSize: '14px',
+      useSvgPathOnly: true,
       stroke: this.stroke,
       strokeWidth: `${this.strokeWidth}px`,
-      accuracy: 0.001,
+      accuracy: 0.0001,
       annotate: false,
       viewBox: true,
       scalingStroke: true,
@@ -81,10 +145,87 @@ export class SvgDrawChild extends BaseSvgChild {
       options.fill = fill;
     }
 
-    const svgPath = exporter.toSVG(shapeModel, { ...options, units: 'px' });
+    const svgHtml = exporter.toSVG(shapeModel, { ...options, units: 'px' });
 
-    this.$dom.html(svgPath);
-    this.setColorName();
+    let widthViewbox = width;
+    let heightViewbox = height;
+
+    if (this.shape === 'circle' && width !== height) {
+      const viewBoxData = getViewBoxData(svgHtml);
+      if (viewBoxData) {
+        widthViewbox = viewBoxData.width;
+        heightViewbox = viewBoxData.height;
+      }
+    }
+
+    const svgHtmlWithViewBox = fixViewBoxWithsStrokeWidth(
+      svgHtml,
+      widthViewbox,
+      heightViewbox,
+      this.strokeWidth
+    );
+
+    return svgHtmlWithViewBox;
+  }
+
+  genarateSvgBySvgJs() {
+    let shapeModel;
+    const { width, height, borderRadius } = this.parent;
+    const strokeWidth = this.strokeWidth || 0;
+    const draw = SVG()
+      .viewbox(-strokeWidth / 2, -strokeWidth / 2, width, height)
+      .size('100%', '100%');
+    const group = draw.group();
+
+    switch (this.shape) {
+      case 'rect':
+        shapeModel = draw.rect(width - strokeWidth, height - strokeWidth);
+        shapeModel.radius(borderRadius, borderRadius);
+
+        break;
+      case 'circle':
+        shapeModel = draw.ellipse(width - strokeWidth, height - strokeWidth);
+        break;
+    }
+
+    group.add(shapeModel);
+
+    group.stroke({
+      color: 'red',
+      width: strokeWidth,
+    });
+
+    const svgHtml = draw.svg();
+    return svgHtml;
+  }
+
+  genarateSvgByHtml() {
+    const { width, height, borderRadius } = this.parent;
+    const strokeWidth = this.strokeWidth || 0;
+    const draw = document.createElement('div');
+
+    draw.style.width = `${width}px`;
+    draw.style.height = `${height}px`;
+    draw.style.boxSizing = 'border-box';
+    draw.className = 'color1';
+
+    switch (this.shape) {
+      case 'rect':
+        draw.style.borderRadius = `${borderRadius}px`;
+
+        break;
+      case 'circle':
+        draw.style.borderRadius = `50%`;
+        break;
+    }
+
+    draw.style.border = `${strokeWidth}px solid #000000`;
+    if (strokeWidth === 0) {
+      draw.style.backgroundColor = `#000000`;
+    }
+
+    const svgHtml = draw.outerHTML;
+    return svgHtml;
   }
 
   getData() {
@@ -94,4 +235,30 @@ export class SvgDrawChild extends BaseSvgChild {
       color3: this.color3,
     };
   }
+}
+
+function fixViewBoxWithsStrokeWidth(svgHtml, width, height, strokeWidth) {
+  return `<svg viewBox="${(strokeWidth / 2) * -1} ${
+    (strokeWidth / 2) * -1
+  } ${width} ${height}">${svgHtml}</svg>`;
+}
+
+function getViewBoxData(svgHtml) {
+  const viewBoxString = (/viewBox="([^"]+)"/.exec(svgHtml) || '')[1];
+  if (typeof viewBoxString !== 'string') {
+    return null;
+  }
+
+  const data = viewBoxString.split(' ');
+
+  if (data.length === 0) {
+    return null;
+  }
+
+  return {
+    top: data[0],
+    left: data[1],
+    width: Number(data[2]),
+    height: Number(data[3]),
+  };
 }
