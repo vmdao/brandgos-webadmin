@@ -29,6 +29,7 @@ export abstract class BaseTextChild {
     this.transform = options.transform || 'none';
     this.color = options.style.color;
     this.html = options.html;
+
     this.$dom = jQuery(`<div class="element-inner"></div>`);
     this.setTypeBehavior(new TypeNothingBehavior(this.parent));
     this.render();
