@@ -48,9 +48,12 @@ export class TypeSvgBehavior implements TypeBehavior {
 
     // tslint:disable-next-line: no-string-literal
     const urlFont = data['url'];
+    // tslint:disable-next-line: no-string-literal
     const htmlSvg = data['htmlSvg'];
+    // tslint:disable-next-line: no-string-literal
     const fill = data['color'];
     const curve = -350;
+    // tslint:disable-next-line: no-string-literal
     const fontSize = data['fontSize'];
     const optionsText = {
       // tracking: curve > 0 || curve < 0 ? fontSize * -3 : 0,
@@ -67,23 +70,21 @@ export class TypeSvgBehavior implements TypeBehavior {
         0,
         optionsText
       );
+      const size = measure.modelExtents(textModel);
+      const width = size.width;
+      const height = size.height;
 
       if (curve > 0) {
-        const size = measure.modelExtents(textModel);
-        const radius = (size.width * 180) / curve / Math.PI;
+        const radius = (width * 180) / curve / Math.PI;
         const arc = new Arc([0, 0], radius, 270 - curve / 2, 270 + curve / 2);
         layout.childrenOnPath(textModel, arc, 0, false, true, true);
       } else if (curve < 0) {
-        const size = measure.modelExtents(textModel);
-        const radius = (size.width * 180) / curve / Math.PI;
         const _curve = Math.abs(curve);
+        const radius = (width * 180) / curve / Math.PI;
         const arc = new Arc([0, 0], radius, 90 - _curve / 2, 90 + _curve / 2);
         layout.childrenOnPath(textModel, arc, 0, true);
       }
 
-      const size = measure.modelExtents(textModel);
-      const width = size.width;
-      const height = size.height;
       const optionsExport: {
         svgAttrs?: any;
         fill?: string;
