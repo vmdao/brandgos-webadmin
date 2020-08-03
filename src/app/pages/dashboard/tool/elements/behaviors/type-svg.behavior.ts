@@ -49,10 +49,10 @@ export class TypeSvgBehavior implements TypeBehavior {
     // tslint:disable-next-line: no-string-literal
     const urlFont = data['url'];
     const htmlSvg = data['htmlSvg'];
-    const curve = 60
-    ;
+    const fill = data['color'];
+    const curve = -350;
     const fontSize = data['fontSize'];
-    const options = {
+    const optionsText = {
       // tracking: curve > 0 || curve < 0 ? fontSize * -3 : 0,
       letterSpacing: 0,
     } as RenderOptions;
@@ -65,54 +65,57 @@ export class TypeSvgBehavior implements TypeBehavior {
         false,
         true,
         0,
-        options
+        optionsText
       );
-      // r = (S * 180) / Math.PI * 359
 
       if (curve > 0) {
         const size = measure.modelExtents(textModel);
         const radius = (size.width * 180) / curve / Math.PI;
-        console.log('radius', radius);
-
-        const arc = new Arc(
-          [0, 0],
-          radius - fontSize,
-          270 - curve / 2,
-          270 + curve / 2
-        );
-        layout.childrenOnPath(textModel, arc);
+        const arc = new Arc([0, 0], radius, 270 - curve / 2, 270 + curve / 2);
+        layout.childrenOnPath(textModel, arc, 0, false, true, true);
       } else if (curve < 0) {
-        const _curve = Math.abs(curve);
         const size = measure.modelExtents(textModel);
-        const arc = new Arc(
-          [0, 0],
-          size.width / Math.tan(Math.PI / (180 / _curve)),
-          90 - _curve / 2,
-          90 + _curve / 2
-        );
+        const radius = (size.width * 180) / curve / Math.PI;
+        const _curve = Math.abs(curve);
+        const arc = new Arc([0, 0], radius, 90 - _curve / 2, 90 + _curve / 2);
         layout.childrenOnPath(textModel, arc, 0, true);
       }
 
       const size = measure.modelExtents(textModel);
-
-      const path = text2svg.toPath(htmlSvg, data);
       const width = size.width;
       const height = size.height;
-
-      const draw = SVG().viewbox(0, 0, width, height);
-      draw.path(path.pathData);
-      draw.fill(data.color);
-
-      // const svgString = draw.svg();
-      const svgString = exporter.toSVG(textModel, {
-        fill: '#000',
-        useSvgPathOnly: false,
+      const optionsExport: {
+        svgAttrs?: any;
+        fill?: string;
+        stroke?: string;
+        strokeWidth?: string;
+        accuracy?: number;
+        annotate?: boolean;
+        viewBox?: boolean;
+        scalingStroke?: boolean;
+        useSvgPathOnly?: boolean;
+        fontSize: string;
+      } = {
+        svgAttrs: {
+          width: '100%',
+          height: '100%',
+        },
         fontSize: '12px',
-      });
-      this.renderSvgDom(svgString);
+        useSvgPathOnly: true,
+        strokeWidth: `${0}px`,
+        accuracy: 0.0001,
+        annotate: false,
+        viewBox: true,
+        scalingStroke: true,
+      };
+      if (fill) {
+        optionsExport.fill = fill;
+      }
 
+      const svgHtml = exporter.toSVG(textModel, optionsExport);
+
+      this.renderSvgDom(svgHtml);
       this.element.updateSizeByFontsize({ width, height });
-
       if (value && typeof value.callback === 'function') {
         value.callback();
       }
@@ -124,4 +127,9 @@ export class TypeSvgBehavior implements TypeBehavior {
     this.$dom.append(svgHtml);
     this.$dom.css({ width: '100%', height: '100%' });
   }
+}
+function fixViewBoxWithsStrokeWidth(svgHtml, width, height, strokeWidth) {
+  return `<svg viewBox="${(strokeWidth / 2) * -1} ${
+    (strokeWidth / 2) * -1
+  } ${width} ${height}">${svgHtml}</svg>`;
 }
