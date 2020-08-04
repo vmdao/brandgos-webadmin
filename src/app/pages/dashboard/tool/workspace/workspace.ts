@@ -34,6 +34,7 @@ import {
   FontsizeCommand,
   TransparencyCommand,
   InputCommand,
+  CurveCommand,
 } from '../toolkit/command';
 
 export class Workspace {
@@ -533,6 +534,7 @@ export class Workspace {
 
   createMenu(dataElement) {
     const inputCommand = new InputCommand(dataElement, this);
+    const curveCommand = new CurveCommand(dataElement, this);
     const transparencyCommand = new TransparencyCommand(dataElement);
     const fontFamilyCommand = new FontFamilyCommand(dataElement, this);
     const fontsizeCommand = new FontsizeCommand(dataElement, this);
@@ -557,11 +559,11 @@ export class Workspace {
           {
             type: 'button-input',
             icon: '',
-            name: 'input',
-            actions: [{ event: 'keyup', command: inputCommand }],
+            name: 'button-input',
+            actions: [{ event: 'click', command: curveCommand }],
             children: [],
             context: {
-              content: dataElement.text.html,
+              content: dataElement.text.curve,
             },
           },
 

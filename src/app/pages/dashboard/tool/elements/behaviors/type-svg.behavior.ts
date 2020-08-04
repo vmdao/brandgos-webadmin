@@ -33,7 +33,10 @@ export class TypeSvgBehavior implements TypeBehavior {
   changeFontfamily(value: any) {
     this.getHtmlSvg(value);
   }
-  changeCurve(value: any) {}
+
+  changeCurve(value: any) {
+    this.getHtmlSvg()
+  }
   changeContent(value: any) {}
   changeTextTransform(value: any) {
     this.getHtmlSvg(value);
@@ -52,11 +55,12 @@ export class TypeSvgBehavior implements TypeBehavior {
     const htmlSvg = data['htmlSvg'];
     // tslint:disable-next-line: no-string-literal
     const fill = data['color'];
-    const curve = -360;
+    // tslint:disable-next-line: no-string-literal
+    const curve = data['curve'];
     // tslint:disable-next-line: no-string-literal
     const fontSize = data['fontSize'];
+    
     const optionsText = {
-      // tracking: curve > 0 || curve < 0 ? fontSize * -3 : 0,
       letterSpacing: 0,
     } as RenderOptions;
 

@@ -13,6 +13,11 @@ export class TextSvgChild extends BaseTextChild {
     this.elementAppendTo(this.parent.$dom);
   }
 
+  performCurve(value: any) {
+    this.curve = value.content;
+    this.typeBehavior.changeCurve(value);
+  }
+
   perforTextTransform(value: any) {
     this.transform = value.value;
     this.htmlSvg = this.getHtmlTransform();
