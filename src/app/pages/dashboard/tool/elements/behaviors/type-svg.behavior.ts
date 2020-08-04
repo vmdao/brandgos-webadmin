@@ -52,7 +52,7 @@ export class TypeSvgBehavior implements TypeBehavior {
     const htmlSvg = data['htmlSvg'];
     // tslint:disable-next-line: no-string-literal
     const fill = data['color'];
-    const curve = -350;
+    const curve = -360;
     // tslint:disable-next-line: no-string-literal
     const fontSize = data['fontSize'];
     const optionsText = {
@@ -72,16 +72,16 @@ export class TypeSvgBehavior implements TypeBehavior {
       );
       let size = measure.modelExtents(textModel);
 
-      if (curve > 0) {
+      if (curve > 0 && htmlSvg.length > 1) {
         const radius = (size.width * 180) / curve / Math.PI;
         const arc = new Arc([0, 0], radius, 270 - curve / 2, 270 + curve / 2);
         layout.childrenOnPath(textModel, arc, 0, false, true, true);
         size = measure.modelExtents(textModel);
-      } else if (curve < 0) {
-        const _curve = Math.abs(curve);
-        const radius = (size.width * 180) / curve / Math.PI;
+      } else if (curve < 0 && htmlSvg.length > 1) {
+        const _curve = Math.abs(curve); 
+        const radius = (size.width * 180) / _curve / Math.PI;
         const arc = new Arc([0, 0], radius, 90 - _curve / 2, 90 + _curve / 2);
-        layout.childrenOnPath(textModel, arc, 0, true);
+        layout.childrenOnPath(textModel, arc, 0, false, true, true);
         size = measure.modelExtents(textModel);
       }
 
@@ -114,7 +114,6 @@ export class TypeSvgBehavior implements TypeBehavior {
       }
 
       const svgHtml = exporter.toSVG(textModel, optionsExport);
-
       this.renderSvgDom(svgHtml);
       this.element.updateSizeByFontsize({
         width: size.width,
