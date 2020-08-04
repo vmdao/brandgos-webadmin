@@ -78,7 +78,7 @@ export class TypeSvgBehavior implements TypeBehavior {
         layout.childrenOnPath(textModel, arc, 0, false, true, true);
         size = measure.modelExtents(textModel);
       } else if (curve < 0 && htmlSvg.length > 1) {
-        const _curve = Math.abs(curve); 
+        const _curve = Math.abs(curve);
         const radius = (size.width * 180) / _curve / Math.PI;
         const arc = new Arc([0, 0], radius, 90 - _curve / 2, 90 + _curve / 2);
         layout.childrenOnPath(textModel, arc, 0, false, true, true);
