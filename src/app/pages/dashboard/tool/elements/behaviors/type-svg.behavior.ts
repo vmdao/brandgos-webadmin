@@ -59,7 +59,6 @@ export class TypeSvgBehavior implements TypeBehavior {
     const curve = data['curve'];
     // tslint:disable-next-line: no-string-literal
     const fontSize = data['fontSize'];
-    
     const optionsText = {
       letterSpacing: 0,
     } as RenderOptions;
