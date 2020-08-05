@@ -3,12 +3,23 @@ import { TypeBehavior } from './interfaces/type.interface';
 import { TypeNothingBehavior } from './behaviors/type-nothing.behavior';
 import { BaseElement } from './base.abstract';
 
-export abstract class BaseTextChild {
-  $dom: any;
-
+export interface BaseTextChildData {
   curve: number;
   letterSpacing: number;
-  lightHeight: number;
+  lineHeight: number;
+  textAlign: string;
+  fontFamily: string;
+  transform: string;
+  fontSize: number;
+  color: string;
+  html: string;
+}
+
+export abstract class BaseTextChild {
+  $dom: any;
+  curve: number;
+  letterSpacing: number;
+  lineHeight: number;
   textAlign: string;
   fontFamily: string;
   transform: string;
@@ -23,7 +34,7 @@ export abstract class BaseTextChild {
     this.curve = options.style.curve;
     this.fontFamily = options.style.fontFamily;
     this.letterSpacing = options.style.letterSpacing;
-    this.lightHeight = options.style.lightHeight;
+    this.lineHeight = options.style.lineHeight;
     this.fontSize = options.style.fontSize;
     this.textAlign = options.style.textAlign;
     this.transform = options.transform || 'none';
@@ -94,11 +105,11 @@ export abstract class BaseTextChild {
     this.typeBehavior.changeContent(value);
   }
 
-  getData() {
+  getData(): BaseTextChildData {
     return {
       curve: this.curve,
       fontSize: this.fontSize,
-      lineHeight: this.lightHeight,
+      lineHeight: this.lineHeight,
       letterSpacing: this.letterSpacing,
       fontFamily: this.fontFamily,
       textAlign: this.textAlign,

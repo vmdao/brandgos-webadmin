@@ -1,5 +1,17 @@
 import { BaseTextChild } from './base-text-child.abstract';
-
+export interface TextSvgChildData {
+  curve: number;
+  letterSpacing: number;
+  lineHeight: number;
+  textAlign: string;
+  fontFamily: string;
+  transform: string;
+  fontSize: number;
+  color: string;
+  html: string;
+  htmlSvg: string;
+  url: string;
+}
 export class TextSvgChild extends BaseTextChild {
   url = '';
   htmlSvg = '';
@@ -16,6 +28,11 @@ export class TextSvgChild extends BaseTextChild {
   performCurve(value: any) {
     this.curve = value.content;
     this.typeBehavior.changeCurve(value);
+  }
+
+  performLetterSpacing(value: any) {
+    this.letterSpacing = value.content;
+    this.typeBehavior.changeLetterSpacing(value);
   }
 
   perforTextTransform(value: any) {
@@ -50,11 +67,11 @@ export class TextSvgChild extends BaseTextChild {
     return this.transform === 'uppercase' ? this.html.toUpperCase() : this.html;
   }
 
-  getData() {
+  getData(): TextSvgChildData {
     return {
       curve: this.curve,
       fontSize: this.fontSize,
-      lineHeight: this.lightHeight,
+      lineHeight: this.lineHeight,
       letterSpacing: this.letterSpacing,
       fontFamily: this.fontFamily,
       textAlign: this.textAlign,

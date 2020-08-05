@@ -4,9 +4,16 @@ import { debounce } from 'rxjs/operators';
 
 export class ButtonInputUI extends BaseMenuItemUI {
   valueCurrent = 0;
+  stepCurrent = 1;
+  minCurrent = 0;
+  maxCurrent = 10;
   constructor(options) {
     super(options);
     this.valueCurrent = options.context.content || 0;
+    this.stepCurrent = options.context.step || 1;
+    this.minCurrent = options.context.min || 0;
+    this.maxCurrent = options.context.max || 10;
+
     this.htmlWrapper = `<li class="toolbar__item toolbar__item--submenu${
       this.code ? 'toolbar__item--' + this.code : ''
     } ${this.position ? 'toolbar__item--' + this.position : ''}"></li>`;
@@ -17,6 +24,7 @@ export class ButtonInputUI extends BaseMenuItemUI {
   }
 
   setCommand(action) {
+    const { stepCurrent, maxCurrent, minCurrent } = this;
     const clickIncreaset = fromEvent(
       this.$dom.find('button:first-child').get(0),
       action.event
@@ -25,8 +33,8 @@ export class ButtonInputUI extends BaseMenuItemUI {
     const resultIncreaset = clickIncreaset.pipe(debounce(() => interval(50)));
 
     resultIncreaset.subscribe((x) => {
-      if (this.valueCurrent + 10 < 360) {
-        this.valueCurrent += 10;
+      if (this.valueCurrent + stepCurrent <= maxCurrent) {
+        this.valueCurrent += stepCurrent;
         this.update();
       }
       // tslint:disable-next-line: no-string-literal
@@ -39,8 +47,8 @@ export class ButtonInputUI extends BaseMenuItemUI {
     );
     const resultDecrease = clickDecrease.pipe(debounce(() => interval(50)));
     resultDecrease.subscribe((x) => {
-      if (this.valueCurrent - 10 > -360) {
-        this.valueCurrent -= 10;
+      if (this.valueCurrent - stepCurrent >= minCurrent) {
+        this.valueCurrent -= stepCurrent;
         this.update();
       }
       // tslint:disable-next-line: no-string-literal

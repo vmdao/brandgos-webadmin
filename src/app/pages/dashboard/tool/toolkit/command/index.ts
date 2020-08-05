@@ -8,4 +8,5 @@ export * from './change-fontsize.command';
 export * from './change-transparency.command';
 export * from './change-input.command';
 export * from './change-curve.command';
+export * from './change-letterspacing.command';
 export * from './base.interface';

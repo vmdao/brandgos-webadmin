@@ -35,6 +35,7 @@ import {
   TransparencyCommand,
   InputCommand,
   CurveCommand,
+  LetterSpacingCommand,
 } from '../toolkit/command';
 
 export class Workspace {
@@ -535,6 +536,7 @@ export class Workspace {
   createMenu(dataElement) {
     const inputCommand = new InputCommand(dataElement, this);
     const curveCommand = new CurveCommand(dataElement, this);
+    const letterSpacingCommand = new LetterSpacingCommand(dataElement, this);
     const transparencyCommand = new TransparencyCommand(dataElement);
     const fontFamilyCommand = new FontFamilyCommand(dataElement, this);
     const fontsizeCommand = new FontsizeCommand(dataElement, this);
@@ -564,6 +566,22 @@ export class Workspace {
             children: [],
             context: {
               content: dataElement.text.curve,
+              step: 10,
+              max: 360,
+              min: -360,
+            },
+          },
+          {
+            type: 'button-input',
+            icon: '',
+            name: 'button-input',
+            actions: [{ event: 'click', command: letterSpacingCommand }],
+            children: [],
+            context: {
+              content: dataElement.text.letterSpacing,
+              step: 0.1,
+              max: 10,
+              min: -10,
             },
           },
 
