@@ -251,7 +251,7 @@ export class ColectionListComponent implements OnInit, OnDestroy, OnChanges {
       thumbUrl: '',
       color1: style.border > 0 ? '#fff' : '#000',
       shape,
-      stroke: style.border > 0 ? '#000' : '',
+      strokeColor: style.border > 0 ? '#000' : '',
       strokeWidth: style.border,
       borderRadius: style.radius,
     };

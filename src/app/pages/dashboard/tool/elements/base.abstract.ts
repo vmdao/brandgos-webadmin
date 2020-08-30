@@ -29,6 +29,7 @@ export abstract class BaseElement {
   background = false;
 
   borderRadius?: number;
+  strokeWidth?: number;
 
   selected = false;
 

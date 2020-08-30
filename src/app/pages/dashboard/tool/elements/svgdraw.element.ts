@@ -2,12 +2,13 @@ import { BaseElement } from './base.abstract';
 import { SvgDrawChild } from './svgdraw.child';
 export class SvgDrawElement extends BaseElement {
   background: false;
-  borderRadius = 0;
   constructor(options: any) {
     super(options);
 
     this.background = options.background || false;
+
     this.borderRadius = options.style.borderRadius || 0;
+    this.strokeWidth = options.style.strokeWidth || 0;
     this.setSvg(new SvgDrawChild(options, this));
     this.$dom.css('border-radius', this.borderRadius);
   }

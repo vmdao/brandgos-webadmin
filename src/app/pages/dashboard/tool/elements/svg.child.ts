@@ -33,6 +33,8 @@ export class SvgChild extends BaseSvgChild {
       color1: this.color1,
       color2: this.color2,
       color3: this.color3,
+      strokeColor: this.strokeColor,
+      strokeWidth: this.strokeWidth,
       originUrl: this.originUrl,
       originThumb: this.originThumb,
     };

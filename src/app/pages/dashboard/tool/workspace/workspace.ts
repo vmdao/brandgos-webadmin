@@ -36,6 +36,8 @@ import {
   InputCommand,
   CurveCommand,
   LetterSpacingCommand,
+  StrokeWidthCommand,
+  StrokeColorCommand,
 } from '../toolkit/command';
 
 export class Workspace {
@@ -536,6 +538,8 @@ export class Workspace {
   createMenu(dataElement) {
     const inputCommand = new InputCommand(dataElement, this);
     const curveCommand = new CurveCommand(dataElement, this);
+    const strokeColorCommand = new StrokeColorCommand(dataElement);
+    const strokeWidthCommand = new StrokeWidthCommand(dataElement);
     const letterSpacingCommand = new LetterSpacingCommand(dataElement, this);
     const transparencyCommand = new TransparencyCommand(dataElement);
     const fontFamilyCommand = new FontFamilyCommand(dataElement, this);
@@ -735,6 +739,112 @@ export class Workspace {
         break;
       }
       case 'svgdraw':
+        items = [
+          {
+            type: 'drop-pad',
+            icon: 'transparency',
+            code: 'transparency',
+            name: 'transparency',
+            actions: [],
+            children: [
+              {
+                type: 'slider-one',
+                icon: 'slider',
+                name: 'Transprency',
+                actions: [{ event: 'change', command: transparencyCommand }],
+                context: {
+                  min: 0,
+                  max: 100,
+                  step: 1,
+                  valueDefault: 100,
+                },
+              },
+            ],
+            context: {},
+          },
+          {
+            type: 'button-color',
+            icon: '',
+            name: 'color1',
+            actions: [{ event: 'change', command: svgColorCommand }],
+            children: [],
+            context: {
+              color1: dataElement.svg.color1,
+              color2: dataElement.svg.color2,
+              color3: dataElement.svg.color3,
+            },
+          },
+          {
+            type: 'button-input',
+            icon: '',
+            name: 'button-input',
+            actions: [{ event: 'click', command: strokeWidthCommand }],
+            children: [],
+            context: {
+              content: dataElement.svg.strokeWidth,
+              step: 1,
+              max: 60,
+              min: 0,
+            },
+          },
+          {
+            type: 'button-color',
+            icon: '',
+            name: 'color1',
+            actions: [{ event: 'change', command: strokeColorCommand }],
+            children: [],
+            context: {
+              strokeColor: dataElement.svg.strokeColor,
+            },
+          },
+          {
+            type: 'button',
+            icon: 'delete',
+            name: 'Delete',
+            actions: [{ event: 'click', command: deleteCommand }],
+            children: [],
+            context: {},
+            position: 'right',
+          },
+          {
+            type: 'button',
+            icon: 'clone',
+            name: 'Clone',
+            actions: [{ event: 'click', command: cloneComand }],
+            children: [],
+            context: {},
+            position: 'right',
+          },
+
+          {
+            type: 'drop-pad',
+            icon: '',
+            code: 'Layer',
+            name: 'Layer',
+            actions: [],
+            children: [
+              {
+                type: 'button',
+                icon: 'clone',
+                name: 'Clone',
+                actions: [{ event: 'click', command: cloneComand }],
+                children: [],
+                context: {},
+              },
+              {
+                type: 'button',
+                icon: 'clone',
+                name: 'Clone',
+                actions: [{ event: 'click', command: cloneComand }],
+                children: [],
+                context: {},
+              },
+            ],
+            context: {},
+            position: 'right',
+          },
+        ];
+        break;
       case 'svg': {
         items = [
           {

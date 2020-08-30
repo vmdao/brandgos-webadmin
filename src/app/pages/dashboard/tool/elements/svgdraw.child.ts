@@ -201,13 +201,13 @@ export class SvgDrawChild extends BaseSvgChild {
 
   genarateSvgByHtml() {
     const { width, height, borderRadius } = this.parent;
-    const strokeWidth = this.strokeWidth || 0;
+    const { strokeWidth = 0, strokeColor } = this;
     const draw = document.createElement('div');
 
     draw.style.width = `${width}px`;
     draw.style.height = `${height}px`;
     draw.style.boxSizing = 'border-box';
-    draw.className = 'color1';
+    draw.className = 'color-1';
 
     switch (this.shape) {
       case 'rect':
@@ -219,10 +219,16 @@ export class SvgDrawChild extends BaseSvgChild {
         break;
     }
 
-    draw.style.border = `${strokeWidth}px solid #000000`;
-    if (strokeWidth === 0) {
-      draw.style.backgroundColor = `#000000`;
-    }
+    draw.style.borderWidth = `${strokeWidth}px`;
+    draw.style.borderColor = strokeColor;
+    draw.style.borderStyle = `solid`;
+
+    const color =
+      typeof this.color1 === 'string' && this.color1 !== ''
+        ? this.color1
+        : null;
+
+    draw.style.backgroundColor = color;
 
     const svgHtml = draw.outerHTML;
     return svgHtml;
@@ -233,6 +239,8 @@ export class SvgDrawChild extends BaseSvgChild {
       color1: this.color1,
       color2: this.color2,
       color3: this.color3,
+      strokeWidth: this.strokeWidth,
+      strokeColor: this.strokeColor,
     };
   }
 }

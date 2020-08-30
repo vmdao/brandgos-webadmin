@@ -12,11 +12,7 @@ import { ItemModel, ItemsActions } from '@app/pages/@store/item';
 import { Subject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromApp from '@app/pages/@store';
-import {
-  CollectionModel,
-  CollectionsActions,
-} from '@app/pages/@store/collection';
-import { takeUntil } from 'rxjs/operators';
+import { CollectionModel } from '@app/pages/@store/collection';
 
 @Component({
   selector: 'app-tab-shape',

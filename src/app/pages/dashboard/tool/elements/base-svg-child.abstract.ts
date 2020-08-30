@@ -3,6 +3,8 @@ import { BaseElement } from './base.abstract';
 
 export abstract class BaseSvgChild {
   $dom: any;
+  strokeWidth: number;
+  strokeColor: string;
   color1: string;
   color2: string;
   color3: string;
@@ -24,18 +26,28 @@ export abstract class BaseSvgChild {
     this.$dom.appendTo(parent);
   }
 
+  performStrokeWidth(value) {
+    this.$dom.find('.color-1').css({ borderWidth: value });
+    this.strokeWidth = value;
+  }
+
+  performStrokeColor(color) {
+    this.$dom.find('.color-1').css({ borderColor: color });
+    this.strokeColor = color;
+  }
+
   performColor1(color) {
-    this.$dom.find('.color-1').css('fill', color);
+    this.$dom.find('.color-1').css({ fill: color, backgroundColor: color });
     this.color1 = color;
   }
 
   performColor2(color) {
-    this.$dom.find('.color-2').css('fill', color);
+    this.$dom.find('.color-2').css({ fill: color, backgroundColor: color });
     this.color2 = color;
   }
 
   performColor3(color) {
-    this.$dom.find('.color-3').css('fill', color);
+    this.$dom.find('.color-3').css({ fill: color, backgroundColor: color });
     this.color3 = color;
   }
 
@@ -72,6 +84,8 @@ export abstract class BaseSvgChild {
       color1: this.color1,
       color2: this.color2,
       color3: this.color3,
+      strokeWidth: this.strokeWidth,
+      strokeColor: this.strokeColor,
     };
   }
 }

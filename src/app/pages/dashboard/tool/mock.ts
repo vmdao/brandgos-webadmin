@@ -174,9 +174,9 @@ export default {
         left: 194,
         style: {
           color1: '#000',
-          originUrl: 'http://api.devlazy.com/upload/icon-01.svg',
-          thumbUrl: 'http://api.devlazy.com/upload/icon-01.svg',
-          url: 'http://api.devlazy.com/upload/icon-01.svg',
+          originUrl: 'http://brandgos-api.dizen.vn/upload/icon-01.svg',
+          thumbUrl: 'http://brandgos-api.dizen.vn/upload/icon-01.svg',
+          url: 'http://brandgos-api.dizen.vn/upload/icon-01.svg',
         },
       },
     ],
