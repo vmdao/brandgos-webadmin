@@ -11,4 +11,6 @@ export * from './change-transparency.command';
 export * from './change-input.command';
 export * from './change-curve.command';
 export * from './change-letterspacing.command';
+export * from './change-flip-horizontal.command';
+export * from './change-flip-vertical.command';
 export * from './base.interface';

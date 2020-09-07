@@ -38,6 +38,8 @@ import {
   LetterSpacingCommand,
   StrokeWidthCommand,
   StrokeColorCommand,
+  FlipHorizontalCommand,
+  FlipVerticalCommand,
 } from '../toolkit/command';
 
 export class Workspace {
@@ -550,6 +552,9 @@ export class Workspace {
     const cloneComand = new CloneCommand(dataElement, this);
     const deleteCommand = new DeleteCommand(dataElement, this);
 
+    const flipHorizontalCommand = new FlipHorizontalCommand(dataElement);
+    const flipVerticalCommand = new FlipVerticalCommand(dataElement);
+
     const fonts = [
       '/assets/UV-Akashi.ttf',
       '/assets/cantata-one-regular.otf',
@@ -957,7 +962,32 @@ export class Workspace {
       }
     }
 
-    return this.buildMenu(dataElement, items);
+    const itemsFix = [
+      {
+        type: 'button-toggle',
+        icon: 'uppercase',
+        name: 'transform',
+        actions: [{ event: 'click', command: flipHorizontalCommand }],
+        children: [],
+        context: {
+          isActive: dataElement.flipHorizontal ? true : false,
+        },
+        position: 'right',
+      },
+      {
+        type: 'button-toggle',
+        icon: 'uppercase',
+        name: 'transform',
+        actions: [{ event: 'click', command: flipVerticalCommand }],
+        children: [],
+        context: {
+          isActive: dataElement.flipVertical ? true : false,
+        },
+        position: 'right',
+      },
+    ];
+
+    return this.buildMenu(dataElement, [...items, ...itemsFix]);
   }
 
   updateStyle(values) {

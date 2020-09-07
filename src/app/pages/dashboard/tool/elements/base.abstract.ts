@@ -2,7 +2,6 @@ import * as jQuery from 'jquery';
 
 import { MoveBehavior } from './interfaces/move.interface';
 import { RotateBehavior } from './interfaces/rotate.interface';
-import { FlipBehavior } from './interfaces/flip.interface';
 
 import { BaseTextChild } from './base-text-child.abstract';
 import { BaseSvgChild } from './base-svg-child.abstract';
@@ -38,7 +37,6 @@ export abstract class BaseElement {
 
   moveBehavior: MoveBehavior;
   rotateBehavior: RotateBehavior;
-  flipBehavior: FlipBehavior;
 
   constructor(options: any) {
     this.elementId = options.elementId;
@@ -163,11 +161,27 @@ export abstract class BaseElement {
   }
 
   performFlipHorizontal(value: boolean) {
-    this.flipBehavior.changeHorizontal(value);
+    this.flipHorizontal = value;
+    this.$dom
+      .find('.element-inner')
+      .css(
+        'transform',
+        `scale(${this.flipHorizontal ? '-1' : '1'},${
+          this.flipVertical ? '-1' : '1'
+        })`
+      );
   }
 
   performFlipVertical(value: boolean) {
-    this.flipBehavior.changeVertical(value);
+    this.flipVertical = value;
+    this.$dom
+      .find('.element-inner')
+      .css(
+        'transform',
+        `scale(${this.flipHorizontal ? '-1' : '1'},${
+          this.flipVertical ? '-1' : '1'
+        })`
+      );
   }
 
   performRotate(angle: number) {
@@ -184,10 +198,6 @@ export abstract class BaseElement {
 
   setRotateBehavior(rotateBehavior: RotateBehavior) {
     this.rotateBehavior = rotateBehavior;
-  }
-
-  setFlipBehavior(flipBehavior: FlipBehavior) {
-    this.flipBehavior = flipBehavior;
   }
 
   setTransparent(value: number) {
