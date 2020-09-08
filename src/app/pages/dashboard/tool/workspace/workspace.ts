@@ -1,8 +1,8 @@
-import { BaseElement } from '../elements/base.abstract';
 import * as _ from 'lodash';
 import * as jQuery from 'jquery';
 import { Border } from './border';
 import { Frame } from 'scenejs';
+
 import {
   TextSvgElement,
   SvgElement,
@@ -10,10 +10,11 @@ import {
   TextElement,
 } from '../elements';
 import { ToolbarMenu } from '../toolkit/toolbar/menu';
+import { BaseElement } from '../elements/base.abstract';
 
 import Selecto from 'selecto';
 import Moveable from 'moveable';
-
+import { IObject } from '@daybrush/utils';
 class CusMoveable extends Moveable {
   public keepRatio: boolean;
   public target:
@@ -24,6 +25,7 @@ class CusMoveable extends Moveable {
   public renderDirections: string[];
   public elementGuidelines: Element[];
 }
+
 import {
   ColorCommand,
   SvgColorCommand,
@@ -41,6 +43,14 @@ import {
   FlipHorizontalCommand,
   FlipVerticalCommand,
 } from '../toolkit/command';
+
+import HistoryManager from '../utils/HistoryManager';
+import Debugger from '../utils/Debugger';
+import EventBus from '../utils/EventBus';
+import Memory from '../utils/Memory';
+import KeyManager from '../KeyManager/KeyManager';
+import ClipboardManager from '../utils/ClipboardManager';
+import { isMacintosh } from '../utils/consts';
 
 export class Workspace {
   $dom: any;
@@ -61,6 +71,14 @@ export class Workspace {
   managerSelector: Selecto;
   managerMoveabler: CusMoveable;
 
+  public console = new Debugger(true);
+  public historyManager = new HistoryManager(this);
+  public eventBus = new EventBus();
+  public memory = new Memory();
+
+  public keyManager = new KeyManager(this.console);
+  public clipboardManager = new ClipboardManager(this);
+
   constructor(option) {
     this.documentId = option.documentId;
     this.width = option.width;
@@ -74,6 +92,135 @@ export class Workspace {
     this.$dom = jQuery(`<div class="elements"></div>`);
 
     this.$toolbar = jQuery(`#designtool`);
+
+    this.setupHotkey();
+  }
+
+  removeByIds(ids: string[], isRestore?: boolean) {
+    return this.removeElements(this.getViewport().getElements(ids), isRestore);
+  }
+
+  public removeElements(
+    targets: Array<HTMLElement | SVGElement>,
+    isRestore?: boolean
+  ) {
+    const viewport = this.getViewport();
+    const frameMap = this.removeFrames(targets);
+    const indexesList = viewport.getSortedIndexesList(targets);
+    const indexesListLength = indexesList.length;
+    let scopeId = '';
+    let selectedInfo: BaseElement | null = null;
+
+    if (indexesListLength) {
+      const lastInfo = viewport.getInfoByIndexes(
+        indexesList[indexesListLength - 1]
+      );
+      const nextInfo = viewport.getNextInfo(lastInfo.id!);
+
+      scopeId = lastInfo.scopeId!;
+      selectedInfo = nextInfo;
+    }
+    // return;
+    return viewport.removeTargets(targets).then(({ removed }) => {
+      let selectedTarget =
+        selectedInfo ||
+        viewport.getLastChildInfo(scopeId)! ||
+        viewport.getInfo(scopeId);
+
+      this.setSelectedTargets(
+        selectedTarget && selectedTarget.el ? [selectedTarget.el!] : [],
+        true
+      );
+
+      this.console.log('removeTargets', removed);
+      // !isRestore &&
+      //   this.historyManager.addAction('removeElements', {
+      //     infos: removed.map(function removeTarget(
+      //       info: BaseElement
+      //     ): BaseElement {
+      //       return {
+      //         ...info,
+      //         children: info.children!.map(removeTarget),
+      //         frame: frameMap[info.id!] || info.frame,
+      //       };
+      //     }),
+      //   });
+      return targets;
+    });
+  }
+  public getViewport() {
+    return this.$dom;
+  }
+  public removeFrames(targets: Array<HTMLElement | SVGElement>) {
+    const frameMap: IObject<any> = {};
+    const moveableData = [];
+    const viewport = this;
+
+    // targets.forEach(function removeFrame(target) {
+    //   const info = viewport.getInfoByElement(target)!;
+
+    //   frameMap[info.id!] = moveableData.getFrame(target).get();
+    //   moveableData.removeFrame(target);
+
+    //   info.children!.forEach((childInfo) => {
+    //     removeFrame(childInfo.el!);
+    //   });
+    // });
+
+    return frameMap;
+  }
+
+  public setSelectedTargets(
+    targets: Array<HTMLElement | SVGElement>,
+    isRestore?: boolean
+  ) {
+    targets = targets.filter((target) => {
+      return targets.every(
+        (parnetTarget) =>
+          parnetTarget === target || !parnetTarget.contains(target)
+      );
+    });
+    // return this.promiseState({
+    //   selectedTargets: targets,
+    // }).then(() => {
+    //   if (!isRestore) {
+    //     const prevs = getIds(this.moveableData.getSelectedTargets());
+    //     const nexts = getIds(targets);
+
+    //     if (!prevs.every((prev, i) => nexts[i] === prev)) {
+    //       this.historyManager.addAction('selectTargets', {
+    //         prevs,
+    //         nexts,
+    //       });
+    //     }
+    //   }
+    //   this.selecto.current!.setSelectedTargets(targets);
+    //   this.moveableData.setSelectedTargets(targets);
+    //   this.eventBus.trigger('setSelectedTargets');
+    //   return targets;
+    // });
+  }
+
+  setupHotkey() {
+    this.keyManager.keydown(
+      [isMacintosh ? 'meta' : 'ctrl', 'v'],
+      () => {},
+      'Paste'
+    );
+    this.keyManager.keydown(
+      [isMacintosh ? 'meta' : 'ctrl', 'z'],
+      () => {
+        this.historyManager.undo();
+      },
+      'Undo'
+    );
+    this.keyManager.keydown(
+      [isMacintosh ? 'meta' : 'ctrl', 'shift', 'z'],
+      () => {
+        this.historyManager.redo();
+      },
+      'Redo'
+    );
   }
 
   render(selector: string) {
@@ -1000,4 +1147,47 @@ export class Workspace {
     };
     this.$dom.css(styles);
   }
+}
+
+function undoCreateElements(
+  { infos, prevSelected }: IObject<any>,
+  editor: Workspace
+) {
+  const res = editor.removeByIds(
+    infos.map((info: BaseElement) => info.elementId),
+    true
+  );
+
+  if (prevSelected) {
+    res.then(() => {
+      editor.setSelectedTargets(
+        editor.getViewport().getElements(prevSelected),
+        true
+      );
+    });
+  }
+}
+function restoreElements({ infos }: IObject<any>, editor: Workspace) {
+  // editor.appendJSXs(
+  //   infos.map((info: BaseElement) => ({
+  //     ...info,
+  //   })),
+  //   true
+  // );
+}
+function undoSelectTargets({ prevs, nexts }: IObject<any>, editor: Workspace) {
+  // editor.setSelectedTargets(editor.viewport.current!.getElements(prevs), true);
+}
+function redoSelectTargets({ prevs, nexts }: IObject<any>, editor: Workspace) {
+  // editor.setSelectedTargets(editor.viewport.current!.getElements(nexts), true);
+}
+function undoChangeText({ prev, next, id }: IObject<any>, editor: Workspace) {
+  const info = editor.getViewport().getInfo(id)!;
+  info.innerText = prev;
+  info.el!.innerText = prev;
+}
+function redoChangeText({ prev, next, id }: IObject<any>, editor: Workspace) {
+  const info = editor.getViewport().getInfo(id)!;
+  info.innerText = next;
+  info.el!.innerText = next;
 }
