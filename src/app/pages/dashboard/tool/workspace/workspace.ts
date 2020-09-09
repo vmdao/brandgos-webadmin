@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import * as jQuery from 'jquery';
-import { Border } from './border';
 import { Frame } from 'scenejs';
 
 import {
@@ -54,7 +53,13 @@ import { isMacintosh } from '../utils/consts';
 
 export class Workspace {
   $dom: any;
+  $domHeading: any;
+  $domBody: any;
+  $domControll: any;
   $domWrapper: any;
+  $domArea: any;
+  $domWorkspaceExpand: any;
+  $domBackground: any;
   $toolbar;
 
   width: number;
@@ -66,7 +71,6 @@ export class Workspace {
   version: string;
 
   order: number;
-  border: Border;
   elements: Array<BaseElement> = [];
   managerSelector: Selecto;
   managerMoveabler: CusMoveable;
@@ -86,13 +90,9 @@ export class Workspace {
     this.code = option.code;
     this.version = option.version;
     this.order = option.order;
-    this.border = option.border;
 
-    this.$domWrapper = jQuery(`<div class="workspace" id="workspace"></div>`);
+    this.$toolbar = jQuery(`#toolbar`);
     this.$dom = jQuery(`<div class="elements"></div>`);
-
-    this.$toolbar = jQuery(`#designtool`);
-
     this.setupHotkey();
   }
 
@@ -148,9 +148,11 @@ export class Workspace {
       return targets;
     });
   }
+
   public getViewport() {
     return this.$dom;
   }
+
   public removeFrames(targets: Array<HTMLElement | SVGElement>) {
     const frameMap: IObject<any> = {};
     const moveableData = [];
@@ -223,13 +225,38 @@ export class Workspace {
     );
   }
 
+  changeView(zoom: number) {
+    this.$domBody.css({
+      width: this.width,
+      height: this.height,
+      transform: `scale(${zoom})`,
+    });
+    this.$domWrapper.css({
+      width: zoom * this.width,
+      height: zoom * this.height,
+    });
+  }
+
   render(selector: string) {
     this.renderSize();
+    this.$domWrapper = jQuery(`<div class="page"></div>`);
+
+    this.$domControll = jQuery(`<div class="page-controll"></div>`);
+    this.$domHeading = jQuery(`<div class="page-heading"></div>`);
+    this.$domBody = jQuery(`<div class="page-body"></div>`);
+
     this.$dom = jQuery(`<div class="elements"></div>`);
-    this.$dom.appendTo(this.$domWrapper);
+
+    this.$dom.appendTo(this.$domBody);
+    this.$domHeading.appendTo(this.$domWrapper);
+    this.$domBody.appendTo(this.$domWrapper);
+    this.$domControll.appendTo(this.$domWrapper);
+
     this.$domWrapper.appendTo(selector);
+
+    this.$domArea = jQuery(`.book-body`);
+
     this.updateStyle({});
-    this.border.render(selector);
     this.event();
   }
 
@@ -279,7 +306,7 @@ export class Workspace {
       dataMenu2 = this.createMenu(dataElement);
       dataElement.$dom.data('dataMenu', dataMenu2);
     }
-    dataMenu2.appendTo('#designtool');
+    dataMenu2.appendTo('#toolbar');
     this.$toolbar.addClass('menu--active');
   }
 
@@ -332,8 +359,8 @@ export class Workspace {
     let targetsSelected = [];
 
     this.managerSelector = new Selecto({
-      container: this.$dom.get(0),
-      dragContainer: '#areaWorkspace',
+      container: this.$domWrapper.get(0),
+      dragContainer: '.book-body',
       selectableTargets: ['.elements .element'],
       hitRate: 0,
       selectByClick: true,
@@ -341,7 +368,7 @@ export class Workspace {
       toggleContinueSelect: ['shift'],
     });
 
-    this.managerMoveabler = new Moveable(this.$dom.get(0), {
+    this.managerMoveabler = new Moveable(this.$domWrapper.get(0), {
       zoom: 1,
       edge: false,
       keepRatio: true,
@@ -353,7 +380,7 @@ export class Workspace {
       rotatable: true,
 
       throttleDrag: 0,
-      throttleResize: 10,
+      throttleResize: 1,
       throttleRotate: 0,
 
       snappable: true,

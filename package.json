@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "~10.0.5",
     "@angular/router": "~10.0.5",
     "@ant-design/icons-angular": "^9.0.1",
+    "@better-scroll/core": "^2.0.3",
     "@date-fns/upgrade": "^1.0.3",
     "@delon/abc": "^9.5.5",
     "@delon/acl": "^9.5.5",
@@ -79,5 +80,10 @@
     "ts-node": "^8.10.2",
     "tslint": "^6.1.2",
     "typescript": "~3.9.7"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run lint"
+    }
   }
 }

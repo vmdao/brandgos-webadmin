@@ -45,7 +45,7 @@ export class HeaderComponent implements OnInit {
   }
   onClickRender() {
     this.isVisible = true;
-    const work = document.getElementById('workspace');
+    const work = document.getElementsByClassName('elements')[0];
     this.store$.dispatch(
       ItemsActions.render({ payload: { html: work.innerHTML } })
     );
@@ -80,8 +80,7 @@ export class HeaderComponent implements OnInit {
         this.percent += 1;
       }
     });
-    const work = document.getElementById('workspace');
-    console.log(work.innerHTML);
+    const work = document.getElementById('pages');
   }
 
   onClickDownloadFile2() {

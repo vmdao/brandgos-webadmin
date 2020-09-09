@@ -1,5 +1,5 @@
 import { Component, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Workspace, Border } from './tool';
+import { Workspace } from './tool';
 import * as mock from './tool/mock';
 const { localStorages } = mock.default;
 
@@ -10,14 +10,24 @@ const { localStorages } = mock.default;
 })
 export class DashboardComponent implements OnInit {
   workspace: Workspace;
-
+  zooms = [
+    { label: '20%', value: 0.2 },
+    { label: '50%', value: 0.5 },
+    { label: '75%', value: 0.75 },
+    { label: '100%', value: 1 },
+    { label: '150%', value: 1.5 },
+    { label: '200%', value: 2 },
+    { label: '300%', value: 3 },
+  ];
+  zoomSelected: { label: string; value: number };
   constructor(private zone: NgZone, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.zoomSelected = this.zooms.find((zoom) => zoom.value === 1);
+
     this.zone.runOutsideAngular(() => {
-      const border = new Border({ ...localStorages });
-      this.workspace = new Workspace({ ...localStorages, border });
-      this.workspace.render('#areaWorkspace');
+      this.workspace = new Workspace({ ...localStorages });
+      this.workspace.render('#pages');
       this.workspace.createElements(localStorages.elements);
     });
     this.cd.detectChanges();
@@ -29,5 +39,12 @@ export class DashboardComponent implements OnInit {
     }
 
     this.cd.detectChanges();
+  }
+
+  onClickZoom(zoom) {
+    this.zoomSelected = zoom;
+    if (this.workspace) {
+      this.workspace.changeView(zoom.value);
+    }
   }
 }

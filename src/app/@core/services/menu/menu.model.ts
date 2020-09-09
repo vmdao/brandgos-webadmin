@@ -84,7 +84,7 @@ export const menuData = [
   {
     title: 'SIM',
     path: 'sims',
-    icon: 'book',
+    icon: 'pages',
     roles: ['ROLE_AGENCY', 'ROLE_AFFILIATE', 'ROLE_ADMIN'],
     childs: [
       {

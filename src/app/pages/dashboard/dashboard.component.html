@@ -8,16 +8,38 @@
         <app-sidebar (clickItem)="onClickItem($event)"></app-sidebar>
       </nz-sider>
       <nz-content class="inner-content">
-        <section id="content">
-          <section class="showOff on">
-            <section id="zone-design">
-              <div id="zone-left">
-                <div id="areaWorkspace">
-                  <div id="workspace-expand"></div>
-                </div>
-                <div id="designtool"></div>
+        <section id="content" class="showOff on">
+          <section id="design-zone">
+            <div class="book">
+              <div class="book-body">
+                <div id="pages"></div>
               </div>
-            </section>
+              <div id="toolbar"></div>
+            </div>
+            <div id="toolview">
+              <div class="toolview-inner">
+                <button nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
+                  {{ zoomSelected.label }}
+                </button>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                  <ul nz-menu nzSelectable>
+                    <li
+                      *ngFor="let zoom of zooms"
+                      nz-menu-item
+                      (click)="onClickZoom(zoom)"
+                    >
+                      {{ zoom.label }}
+                      <i
+                        *ngIf="zoomSelected.value === zoom.value"
+                        nz-icon
+                        nzType="check"
+                        nzTheme="outline"
+                      ></i>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </div>
           </section>
         </section>
       </nz-content>
