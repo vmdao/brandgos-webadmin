@@ -23,6 +23,16 @@ class CusMoveable extends Moveable {
     | null;
   public renderDirections: string[];
   public elementGuidelines: Element[];
+
+  // clippable: true,
+  // defaultClipPath: 'rect',
+  // clipRelative: false,
+  // clipArea: true,
+  // dragWithClip: true,
+  public clippable: boolean;
+  public clipArea: boolean;
+  public dragWithClip: boolean;
+  public defaultClipPath: string;
 }
 
 import {
@@ -366,6 +376,7 @@ export class Workspace {
       selectByClick: true,
       selectFromInside: false,
       toggleContinueSelect: ['shift'],
+      preventDefault: true,
     });
 
     this.managerMoveabler = new Moveable(this.$domWrapper.get(0), {
@@ -390,14 +401,56 @@ export class Workspace {
       snapElement: true,
       snapThreshold: 0,
       elementGuidelines: [],
-
-      clippable: true,
-      defaultClipPath: 'rect',
-      clipRelative: false,
-      clipArea: true,
-      dragWithClip: true,
-      padding: { left: 10, top: 0, right: 0, bottom: 0 },
+      checkInput: true,
+      className: 'uplevo',
+      isDisplaySnapDigit: false,
+      dragArea: true,
+      // clippable: true,
+      // defaultClipPath: 'rect',
+      // clipRelative: false,
+      // clipArea: true,
+      // dragWithClip: true,
     });
+
+    this.managerSelector
+      .on('dragStart', (e) => {
+        const target = e.inputEvent.target;
+        if (
+          this.managerMoveabler.isMoveableElement(target) ||
+          targetsSelected.some((t) => t === target || t.contains(target))
+        ) {
+          e.stop();
+        }
+      })
+      .on('selectEnd', ({ isDragStart, inputEvent, selected }) => {
+        targetsSelected = selected;
+        this.managerMoveabler.target = targetsSelected;
+        if (targetsSelected.length === 1) {
+          this.selectedElement(jQuery(targetsSelected[0]));
+        } else {
+          const renderDirections = ['nw', 'ne', 'sw', 'se'];
+          this.managerMoveabler.renderDirections = renderDirections;
+          this.managerMoveabler.keepRatio = true;
+          this.offMenuElements();
+        }
+
+        const elementsGuidelines = Array.from(
+          document.querySelectorAll('.elements .element')
+        );
+
+        this.managerMoveabler.elementGuidelines = elementsGuidelines;
+
+        selected.forEach((target) => {
+          getFrame(target);
+        });
+
+        if (isDragStart) {
+          inputEvent.preventDefault();
+          setTimeout(() => {
+            this.managerMoveabler.dragStart(inputEvent);
+          });
+        }
+      });
 
     this.managerMoveabler
       .on('renderStart', ({ target }) => {
@@ -475,6 +528,22 @@ export class Workspace {
       .on('resizeEnd', () => {});
 
     this.managerMoveabler
+      .on('click', ({ target, isDouble }) => {
+        console.log('click', isDouble);
+        // if (isDouble) {
+        //   this.managerMoveabler.clippable = true;
+        //   this.managerMoveabler.defaultClipPath = 'rect';
+        //   this.managerMoveabler.clipArea = true;
+        //   this.managerMoveabler.dragWithClip = true;
+        // }
+      })
+      .on('clickGroup', (e) => {
+        console.log('clickGroup');
+
+        this.managerSelector.clickTarget(e.inputEvent, e.inputTarget);
+      });
+
+    this.managerMoveabler
       .on('renderGroupStart', ({ targets }) => {})
       .on('renderGroup', ({ targets }) => {
         targets.forEach((target) => {
@@ -488,10 +557,6 @@ export class Workspace {
           updateElement(target);
         });
       });
-
-    this.managerMoveabler.on('clickGroup', (e) => {
-      this.managerSelector.clickTarget(e.inputEvent, e.inputTarget);
-    });
 
     this.managerMoveabler
       .on('dragGroupStart', ({ events }) => {
@@ -561,46 +626,16 @@ export class Workspace {
         console.log('onRotateGroupEnd');
       });
 
-    this.managerSelector
-      .on('dragStart', (e) => {
-        const target = e.inputEvent.target;
-        if (
-          this.managerMoveabler.isMoveableElement(target) ||
-          targetsSelected.some((t) => t === target || t.contains(target))
-        ) {
-          e.stop();
-        }
-      })
-      .on('selectStart', ({ selected }) => {
-        // console.log('selectStart', selected);
-      })
-      .on('select', ({ selected }) => {
-        targetsSelected = selected;
-        this.managerMoveabler.target = selected;
-        if (targetsSelected.length === 1) {
-          this.selectedElement(jQuery(targetsSelected[0]));
-        } else {
-          const renderDirections = ['nw', 'ne', 'sw', 'se'];
-          this.managerMoveabler.renderDirections = renderDirections;
-          this.managerMoveabler.keepRatio = true;
-          this.offMenuElements();
-        }
-      })
-      .on('selectEnd', ({ isDragStart, inputEvent, selected }) => {
-        const elementsGuidelines = Array.from(
-          document.querySelectorAll('.elements .element')
-        );
-        this.managerMoveabler.elementGuidelines = elementsGuidelines;
-        selected.forEach((target) => {
-          getFrame(target);
-        });
-        if (isDragStart) {
-          inputEvent.preventDefault();
-          setTimeout(() => {
-            this.managerMoveabler.dragStart(inputEvent);
-          });
-        }
-      });
+    // this.managerMoveabler
+    //   .on('clip', ({ target, clipStyle, clientX, distX, distY, clientY }) => {
+    //     target.style.clip = clipStyle;
+    //     console.log('clipType', clipStyle, clientX, clientY, distX, distY);
+    //   })
+    //   .on('clipEnd', ({ lastEvent }) => {
+    //     // if (lastEvent) {
+    //     //   frame.clipStyle = lastEvent.clipStyle;
+    //     // }
+    //   });
 
     function updateElement(dom) {
       const frame = getFrame(dom);
