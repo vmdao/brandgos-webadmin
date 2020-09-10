@@ -76,8 +76,11 @@ body {
     }
   }
   .group-center {
+    width: 142px;
+    display: flex;
+    justify-content: space-between;
     .btn:last-child {
-      margin-left: 16px;
+      margin-left: 4px;
     }
   }
   .btn {

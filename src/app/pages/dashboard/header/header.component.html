@@ -1,8 +1,38 @@
 <div class="group-first">
   <img class="logo" src="/assets/images/logo.svg" alt="Brandgos logo" />
 </div>
+<div class="group-center">
+  <button class="btn btn-gray-ghost btn-icon" style="padding: 4px 6px;">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M6.05 7.25l2.22-2.22A.75.75 0 0 0 7.2 3.97L4.43 6.75c-.69.68-.69 1.8 0 2.48l2.83 2.83A.75.75 0 0 0 8.32 11L6.07 8.75H16a4.25 4.25 0 1 1 0 8.5h-4a.75.75 0 1 0 0 1.5h4a5.75 5.75 0 0 0 0-11.5H6.05z"
+      ></path>
+    </svg>
+    Undo
+  </button>
+  <button class="btn btn-gray-ghost btn-icon" style="padding: 4px 6px;">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M18.05 16.75H8a5.75 5.75 0 0 1 0-11.5h4a.75.75 0 1 1 0 1.5H8a4.25 4.25 0 1 0 0 8.5h9.97l-2.21-2.22a.75.75 0 0 1 1.06-1.06l2.83 2.83c.68.68.68 1.8 0 2.48l-2.83 2.82a.75.75 0 1 1-1.06-1.06l2.3-2.3z"
+      ></path>
+    </svg>
+    Redo
+  </button>
+</div>
 <div class="group-last">
-  <button class="btn btn-gray-ghost btn-icon" style="margin-right: 16;">
+  <button class="btn btn-gray-ghost btn-icon" style="margin-right: 16px">
     <svg width="34.156px" height="19.348px" viewBox="0 0 34.156 19.348">
       <g>
         <path
@@ -18,7 +48,7 @@ C29.76,11.928,25.083,16.658,17.538,16.842z"
     </svg>
     Preview
   </button>
-  <button class="btn btn-gray-ghost btn-icon" style="margin-right: 16;">
+  <button class="btn btn-gray-ghost btn-icon" style="margin-right: 16">
     <svg
       version="1.1"
       width="32.338px"
@@ -47,7 +77,7 @@ h2.611c0.008,0.001,0.015,0,0.02,0c0.69,0,1.25-0.56,1.25-1.25C21.083,12.795,20.88
   </button>
   <button
     class="btn btn-primary btn-icon"
-    style="margin-right: 32;"
+    style="margin-right: 32"
     (click)="onClickRender()"
   >
     <svg width="32.58px" height="20px" viewBox="0 0 32.58 26.383">
@@ -68,7 +98,7 @@ h2.611c0.008,0.001,0.015,0,0.02,0c0.69,0,1.25-0.56,1.25-1.25C21.083,12.795,20.88
   </button>
   <nz-avatar
     nzText="U"
-    style="color: #f56a00; background-color: #fde3cf;"
+    style="color: #f56a00; background-color: #fde3cf"
   ></nz-avatar>
 
   <nz-modal
@@ -79,7 +109,7 @@ h2.611c0.008,0.001,0.015,0,0.02,0c0.69,0,1.25-0.56,1.25-1.25C21.083,12.795,20.88
     nzOkText="Close"
     nzCancelDisabled
   >
-    <div *ngIf="renderLoading" style="text-align: center;">
+    <div *ngIf="renderLoading" style="text-align: center">
       Waiting some mins ...
     </div>
     <nz-progress
@@ -87,7 +117,7 @@ h2.611c0.008,0.001,0.015,0,0.02,0c0.69,0,1.25-0.56,1.25-1.25C21.083,12.795,20.88
       [nzPercent]="percent"
       [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
     ></nz-progress>
-    <div *ngIf="renderLoading === false" style="text-align: center;">
+    <div *ngIf="renderLoading === false" style="text-align: center">
       <h2>Create your Logo Successful</h2>
       <a (click)="onClickDownloadFile2()">Download your logo Click here</a>
     </div>
@@ -101,7 +131,7 @@ h2.611c0.008,0.001,0.015,0,0.02,0c0.69,0,1.25-0.56,1.25-1.25C21.083,12.795,20.88
     nzOkText="Close"
     nzCancelDisabled
   >
-    <div *ngIf="renderLoading$ | async" style="text-align: center;">
+    <div *ngIf="renderLoading$ | async" style="text-align: center">
       Waiting some mins ...
     </div>
     <nz-progress
@@ -109,7 +139,7 @@ h2.611c0.008,0.001,0.015,0,0.02,0c0.69,0,1.25-0.56,1.25-1.25C21.083,12.795,20.88
       [nzPercent]="percent"
       [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }"
     ></nz-progress>
-    <div *ngIf="(renderLoading$ | async) === false" style="text-align: center;">
+    <div *ngIf="(renderLoading$ | async) === false" style="text-align: center">
       <h2>Create your Logo Successful</h2>
       <a (click)="onClickDownloadFile()">Download your logo Click here</a>
     </div>

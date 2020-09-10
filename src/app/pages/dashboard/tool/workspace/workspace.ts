@@ -390,6 +390,13 @@ export class Workspace {
       snapElement: true,
       snapThreshold: 0,
       elementGuidelines: [],
+
+      clippable: true,
+      defaultClipPath: 'rect',
+      clipRelative: false,
+      clipArea: true,
+      dragWithClip: true,
+      padding: { left: 10, top: 0, right: 0, bottom: 0 },
     });
 
     this.managerMoveabler
