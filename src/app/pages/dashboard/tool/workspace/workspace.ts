@@ -24,11 +24,6 @@ class CusMoveable extends Moveable {
   public renderDirections: string[];
   public elementGuidelines: Element[];
 
-  // clippable: true,
-  // defaultClipPath: 'rect',
-  // clipRelative: false,
-  // clipArea: true,
-  // dragWithClip: true,
   public clippable: boolean;
   public clipArea: boolean;
   public dragWithClip: boolean;
@@ -264,10 +259,11 @@ export class Workspace {
 
     this.$domWrapper.appendTo(selector);
 
-    this.$domArea = jQuery(`.book-body`);
+    this.$domArea = jQuery(`.viewport-body`);
 
     this.updateStyle({});
     this.event();
+    this.setupHistory();
   }
 
   renderSize() {
@@ -370,7 +366,7 @@ export class Workspace {
 
     this.managerSelector = new Selecto({
       container: this.$domWrapper.get(0),
-      dragContainer: '.book-body',
+      dragContainer: '.viewport-body',
       selectableTargets: ['.elements .element'],
       hitRate: 0,
       selectByClick: true,
@@ -527,21 +523,9 @@ export class Workspace {
       })
       .on('resizeEnd', () => {});
 
-    this.managerMoveabler
-      .on('click', ({ target, isDouble }) => {
-        console.log('click', isDouble);
-        // if (isDouble) {
-        //   this.managerMoveabler.clippable = true;
-        //   this.managerMoveabler.defaultClipPath = 'rect';
-        //   this.managerMoveabler.clipArea = true;
-        //   this.managerMoveabler.dragWithClip = true;
-        // }
-      })
-      .on('clickGroup', (e) => {
-        console.log('clickGroup');
-
-        this.managerSelector.clickTarget(e.inputEvent, e.inputTarget);
-      });
+    this.managerMoveabler.on('clickGroup', (e) => {
+      this.managerSelector.clickTarget(e.inputEvent, e.inputTarget);
+    });
 
     this.managerMoveabler
       .on('renderGroupStart', ({ targets }) => {})
@@ -626,16 +610,16 @@ export class Workspace {
         console.log('onRotateGroupEnd');
       });
 
-    // this.managerMoveabler
-    //   .on('clip', ({ target, clipStyle, clientX, distX, distY, clientY }) => {
-    //     target.style.clip = clipStyle;
-    //     console.log('clipType', clipStyle, clientX, clientY, distX, distY);
-    //   })
-    //   .on('clipEnd', ({ lastEvent }) => {
-    //     // if (lastEvent) {
-    //     //   frame.clipStyle = lastEvent.clipStyle;
-    //     // }
-    //   });
+    this.managerMoveabler
+      .on('clip', ({ target, clipStyle, clientX, distX, distY, clientY }) => {
+        target.style.clip = clipStyle;
+        console.log('clipType', clipStyle, clientX, clientY, distX, distY);
+      })
+      .on('clipEnd', ({ lastEvent }) => {
+        // if (lastEvent) {
+        //   frame.clipStyle = lastEvent.clipStyle;
+        // }
+      });
 
     function updateElement(dom) {
       const frame = getFrame(dom);
@@ -739,6 +723,14 @@ export class Workspace {
         height: parseFloat(height),
       };
     }
+  }
+
+  setupHistory() {
+    this.historyManager.registerType(
+      'createElements',
+      undoCreateElements,
+      restoreElements
+    );
   }
 
   selectedElement(elementSelected) {
@@ -1236,6 +1228,7 @@ function undoCreateElements(
     });
   }
 }
+
 function restoreElements({ infos }: IObject<any>, editor: Workspace) {
   // editor.appendJSXs(
   //   infos.map((info: BaseElement) => ({
