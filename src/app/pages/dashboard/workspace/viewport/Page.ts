@@ -1,19 +1,38 @@
 import { Component } from '../lifecycle/component.astract';
 import { PageInfo } from './PageDTO';
-import { getViewEl, append } from '../utils/HtmlHelper';
+import { getViewEl, append, findChildrenEl } from '../utils/HtmlHelper';
 import { ElementInfo } from './ElementDTO';
 import { IObject, isString } from '@daybrush/utils';
-import { getId, isNumber, DATA_ELEMENT_ID } from '../utils/utils';
+import {
+  getId,
+  isNumber,
+  DATA_ELEMENT_ID,
+  DATA_PAGE_ID,
+  getEl,
+} from '../utils/utils';
+import {
+  TextSvgElement,
+  TextElement,
+  SvgDrawElement,
+  SvgElement,
+} from '../elements';
+import EventBus from '../utils/EventBus';
+import MoveableData from './MoveableData';
 
 export class Page extends Component {
   el: HTMLElement;
   page: PageInfo;
   elements: IObject<HTMLElement> = {};
   ids: IObject<ElementInfo> = {};
+  zoom = 1;
 
-  constructor(params) {
+  eventBus: EventBus;
+  moveableData: MoveableData;
+  constructor(option: { zoom; eventBus: EventBus }, params) {
     super();
     this.page = params;
+    this.zoom = option.zoom;
+    this.eventBus = option.eventBus;
   }
 
   public makeId(ids: IObject<any> = this.ids) {
@@ -111,29 +130,18 @@ export class Page extends Component {
     appendIndex: number,
     scopeId?: string
   ): Promise<AddedElementInfo> {
-    const jsxInfos = this.registerChildren(elementInfos, scopeId);
+    const elements = this.registerChildren(elementInfos, scopeId);
 
-    jsxInfos.forEach((info, i) => {
+    elements.forEach((info, i) => {
       // tslint:disable-next-line: no-non-null-assertion
       const scopeInfo = this.getInfo(scopeId || info.scopeId!);
-      // tslint:disable-next-line: no-non-null-assertion
-      const children = scopeInfo.children!;
-
-      if (appendIndex > -1) {
-        children.splice(appendIndex + i, 0, info);
-        info.index = appendIndex + i;
-      } else if (isNumber(info.index)) {
-        children.splice(info.index, 0, info);
-      } else {
-        info.index = children.length;
-        children.push(info);
-      }
-
-      append(this.el, info.el);
+      info.index = appendIndex + i;
+      const elementsEl = findChildrenEl(this.el, '.elements');
+      append(elementsEl, info.el);
     });
 
     return new Promise((resolve) => {
-      const infos = jsxInfos.map(function registerElement(info) {
+      const infos = elements.map(function registerElement(info) {
         // tslint:disable-next-line: no-non-null-assertion
         const id = info.id!;
 
@@ -151,29 +159,67 @@ export class Page extends Component {
     });
   }
 
-  public registerChildren(jsxs: ElementInfo[], parentScopeId?: string) {
-    return jsxs.map((info) => {
+  public registerChildren(elementInfos: ElementInfo[], parentScopeId?: string) {
+    return elementInfos.map((info) => {
       const id = info.id || this.makeId();
-      const children = info.children || [];
       const scopeId = parentScopeId || info.scopeId || 'page';
 
       const elementInfo: ElementInfo = {
         ...info,
-        children: this.registerChildren(children, id),
         scopeId,
         frame: info.frame || {},
         el: null,
         id,
       };
+      const element = this.createElement({
+        elementType: 'svg',
+        width: 200,
+        height: 200,
+        top: 100,
+        left: 200,
+        style: {
+          color1: '#000',
+          originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+        },
+      });
+
+      elementInfo.el = element.$dom.get(0);
       this.setInfo(id, elementInfo);
       return elementInfo;
     });
   }
 
+  public setPageSize() {
+    this.el.style.width = this.zoom * this.page.width + 'px';
+    this.el.style.height = this.zoom * this.page.height + 64 + 'px';
+
+    const pageBodyEl = findChildrenEl(this.el, '.page-body');
+    const elementsEl = findChildrenEl(this.el, '.elements');
+
+    if (this.zoom !== 1) {
+      pageBodyEl.style.width = this.page.width + 'px';
+      pageBodyEl.style.height = this.page.height + 'px';
+      pageBodyEl.style.transform = `scale(${this.zoom})`;
+    }
+
+    elementsEl.style.width = this.page.width + 'px';
+    elementsEl.style.height = this.page.height + 'px';
+  }
+
   render() {
-    this.el = getViewEl(PAGE_HTML, {});
-    console.log(this);
+    this.el = getViewEl(PAGE_HTML, {
+      dataName: DATA_PAGE_ID,
+      dataValue: this.page.id,
+    });
     super.render();
+  }
+
+  setupEvent() {
+    this.el.addEventListener('mouseover', ({ target, currentTarget }) => {
+      if (currentTarget === this.el && this.el === target) {
+        this.eventBus.trigger('hoverpage', { target: target });
+      }
+    });
   }
 
   remove() {
@@ -185,18 +231,42 @@ export class Page extends Component {
   }
 
   onViewed() {
-    console.log('onViewed');
+    this.setPageSize();
+    this.setupEvent();
   }
 
   onDestroy() {
     console.log('onDestroy');
   }
+
+  createElement(dataElement) {
+    return this.factoryCreateElement(dataElement);
+  }
+
+  factoryCreateElement(dataElement) {
+    switch (dataElement.elementType) {
+      case 'image':
+        return new TextSvgElement(dataElement);
+      case 'text':
+        return new TextElement(dataElement);
+      case 'svgtext':
+        return new TextSvgElement(dataElement);
+      case 'svgdraw':
+        return new SvgDrawElement(dataElement);
+      case 'svg':
+        return new SvgElement(dataElement);
+      default:
+        return new SvgElement(dataElement);
+    }
+  }
 }
 
 const PAGE_HTML = `
-  <div class="page">
+  <div class="page" <%- dataName %>=<%- dataValue %>>
         <div class="page-heading"></div>
-        <div class="page-body"></div>
+        <div class="page-body">
+          <div class="elements"></div>
+        </div>
         <div class="page-footer"></div>
   </div>
   `;

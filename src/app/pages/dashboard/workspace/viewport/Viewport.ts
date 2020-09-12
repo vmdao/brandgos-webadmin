@@ -1,11 +1,20 @@
 import { IObject, isString } from '@daybrush/utils';
-import { getId, isNumber, getEl } from '../utils/utils';
+import {
+  getId,
+  getEl,
+  getPageId,
+  checkImageLoaded,
+  CusMoveable,
+} from '../utils/utils';
 import { PageInfo } from './PageDTO';
 import { SavedDocumentData } from './DocumentDTO';
-import { append, getViewEl } from '../utils/HtmlHelper';
+import { append } from '../utils/HtmlHelper';
 import { Page } from './Page';
 import { DATA_PAGE_ID } from '../utils/consts';
 import { Component } from '../lifecycle/component.astract';
+import { ElementInfo } from './ElementDTO';
+import MoveableData from './MoveableData';
+import EventBus from '../utils/EventBus';
 
 export class Viewport extends Component {
   public viewport: SavedDocumentData = {
@@ -13,12 +22,27 @@ export class Viewport extends Component {
     id: 'viewport',
     pages: [],
   };
+
   el: HTMLElement;
   pages: IObject<HTMLElement> = {};
   ids: IObject<Page> = {};
+  zoom = 1;
 
-  constructor() {
+  eventBus: EventBus;
+  moveableData: MoveableData;
+  managerMoveabler: CusMoveable;
+  moveablers: IObject<CusMoveable> = {};
+
+  moveablerSelected: CusMoveable;
+  constructor(option: {
+    zoom;
+    eventBus: EventBus;
+    moveableData: MoveableData;
+  }) {
     super();
+    this.zoom = option.zoom;
+    this.moveableData = option.moveableData;
+    this.eventBus = option.eventBus;
   }
 
   render() {
@@ -32,10 +56,18 @@ export class Viewport extends Component {
 
   onViewed() {
     console.log('onViewed');
+    // this.setupEvent();
   }
 
   onDestroy() {
     console.log('onDestroy');
+  }
+
+  setupEvent() {
+    this.eventBus.on('hoverpage', ({ target }) => {
+      const moveablerSelected = this.getMoveablerElement(target);
+      this.moveablerSelected = moveablerSelected;
+    });
   }
 
   public makeId(ids: IObject<any> = this.ids) {
@@ -51,6 +83,19 @@ export class Viewport extends Component {
   public setPageInfo(id: string, info: Page) {
     const ids = this.ids;
     ids[id] = info;
+  }
+
+  public getMoveabler(id: string) {
+    return this.moveablers[id];
+  }
+
+  public setMoveabler(id: string, info: CusMoveable) {
+    const moveablers = this.moveablers;
+    moveablers[id] = info;
+  }
+
+  public getMoveablerElement(el: HTMLElement | SVGElement) {
+    return this.moveablers[getPageId(el)];
   }
 
   public getPageInfo(id: string) {
@@ -101,8 +146,38 @@ export class Viewport extends Component {
       const id = info.id || this.makeId();
       const scopeId = parentScopeId || info.scopeId || 'viewport';
       info.scopeId = scopeId;
-      const page = new Page(info);
+      info.id = id;
+      const page = new Page({ zoom: this.zoom, eventBus: this.eventBus }, info);
       this.setPageInfo(id, page);
+      const moveabler = new CusMoveable(page.el, {
+        zoom: 1,
+        edge: false,
+        keepRatio: true,
+        pinchable: true,
+        roundable: true,
+
+        draggable: true,
+        resizable: true,
+        rotatable: true,
+
+        throttleDrag: 0,
+        throttleResize: 1,
+        throttleRotate: 0,
+
+        snappable: true,
+        snapCenter: true,
+        snapHorizontal: true,
+        snapVertical: true,
+        snapElement: true,
+        snapThreshold: 0,
+        elementGuidelines: [],
+        checkInput: true,
+        className: 'uplevo',
+        isDisplaySnapDigit: false,
+        dragArea: true,
+      });
+
+      this.setMoveabler(id, moveabler);
       return page;
     });
   }
@@ -134,6 +209,7 @@ export class Viewport extends Component {
 
     return indexesList;
   }
+
   public getSortedTargets(targets: Array<string | HTMLElement | SVGElement>) {
     // tslint:disable-next-line: no-non-null-assertion
     return this.getSortedInfos(targets).map((info) => info.el!);
@@ -156,7 +232,9 @@ export class Viewport extends Component {
       const scopeInfo = this.getPageInfo(scopeId || info.page.scopeId!);
       info.page.index = appendIndex + i;
       info.render();
+
       append(this.el, info.el);
+      this.appendElement(info, info.page.elements).then((ok) => {});
     });
 
     return new Promise((resolve) => {
@@ -167,12 +245,72 @@ export class Viewport extends Component {
         // tslint:disable-next-line: no-non-null-assertion
         const target = getEl(selector)!;
         info.el = target;
+
         return info;
       });
       resolve({
         added: infos,
       });
     });
+  }
+
+  public appendElement(
+    page: Page,
+    elementInfos: ElementInfo[],
+    isRestore?: boolean
+  ): Promise<Array<HTMLElement | SVGElement>> {
+    const appendIndex = -1;
+    const scopeId = '';
+
+    return page
+      .appendElement(elementInfos, appendIndex, scopeId)
+      .then(({ added }) => {
+        return this.appendElementComplete(added, isRestore);
+      });
+  }
+
+  public appendElementComplete(infos: ElementInfo[], isRestore?: boolean) {
+    if (!isRestore) {
+      // this.historyManager.addAction('createElements', {
+      //   infos,
+      //   prevSelected: getIds(this.getSelectedTargets()),
+      // });
+    }
+
+    const data = this.moveableData;
+    const targets = infos
+      .map(function registerFrame(info) {
+        // tslint:disable-next-line: no-non-null-assertion
+        data.createFrame(info.el!, info.frame);
+        // tslint:disable-next-line: no-non-null-assertion
+        data.render(info.el!);
+
+        // tslint:disable-next-line: no-non-null-assertion
+        // info.children!.forEach(registerFrame);
+        // tslint:disable-next-line: no-non-null-assertion
+        return info.el!;
+      })
+      .filter((el) => el);
+
+    return Promise.all(targets.map((target) => checkImageLoaded(target))).then(
+      () => {
+        this.setSelectedTargets(targets, true);
+        return targets;
+      }
+    );
+  }
+
+  public setSelectedTargets(
+    targets: Array<HTMLElement | SVGElement>,
+    isRestore?: boolean
+  ) {
+    targets = targets.filter((target) => {
+      return targets.every((parnetTarget) => {
+        return parnetTarget === target || !parnetTarget.contains(target);
+      });
+    });
+
+    return targets;
   }
 }
 

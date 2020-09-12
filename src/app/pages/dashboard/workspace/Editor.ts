@@ -13,8 +13,15 @@ import { SavedDocumentData } from './viewport/DocumentDTO';
 import { Viewport } from './viewport/Viewport';
 import { PageInfo } from './viewport/PageDTO';
 import { Page } from './viewport/Page';
-import { getIds } from './utils/utils';
+import Selecto from 'selecto';
+
+import { CusMoveable } from './utils/utils';
 export class Editor extends Component {
+  el: HTMLElement;
+  documentData: SavedDocumentData;
+  zoom = 1;
+  targetsSelected = [];
+  public selectoManager: Selecto;
   public historyManager = new HistoryManager(this);
   public console = new Debugger(this.params.debug);
   public eventBus = new EventBus();
@@ -24,26 +31,87 @@ export class Editor extends Component {
   public keyManager = new KeyManager(this.console);
   public clipboardManager = new ClipboardManager(this);
 
-  public viewport = new Viewport();
-
-  el: HTMLElement;
-  documentData: SavedDocumentData;
+  public viewport: Viewport;
+  moveablerSelected: CusMoveable;
 
   constructor(private params) {
     super();
+    this.zoom = params.zoom || 1;
+    this.viewport = new Viewport({
+      zoom: this.zoom,
+      eventBus: this.eventBus,
+      moveableData: this.moveableData,
+    });
   }
 
-  onInit() {
-    console.log('onInit');
-  }
+  onInit() {}
 
   onViewed() {
     console.log('onViewed');
+    this.eventBus.on('changeZoom', (message: { zoom: number }) => {
+      this.zoom = message.zoom;
+    });
     this.viewport.render();
+    this.setupEvent();
+    this.selectoManager = new Selecto({
+      container: this.el,
+      dragContainer: '.viewport-body',
+      selectableTargets: ['.elements .element'],
+      hitRate: 0,
+      selectByClick: true,
+      selectFromInside: false,
+      toggleContinueSelect: ['shift'],
+      preventDefault: true,
+    });
+
+    this.selectoManager
+      .on('dragStart', (e) => {
+        const target = e.inputEvent.target;
+        if (
+          this.moveablerSelected.isMoveableElement(target) ||
+          this.targetsSelected.some((t) => t === target || t.contains(target))
+        ) {
+          e.stop();
+        }
+      })
+      .on('selectEnd', ({ isDragStart, inputEvent, selected }) => {
+        console.log(selected);
+        this.targetsSelected = selected;
+        this.moveablerSelected.target = this.targetsSelected;
+        console.log(this.targetsSelected);
+        // if (targetsSelected.length === 1) {
+        //   this.selectedElement(jQuery(targetsSelected[0]));
+        // } else {
+        //   const renderDirections = ['nw', 'ne', 'sw', 'se'];
+        //   this.managerMoveabler.renderDirections = renderDirections;
+        //   this.managerMoveabler.keepRatio = true;
+        //   this.offMenuElements();
+        // }
+        // const elementsGuidelines = Array.from(
+        //   document.querySelectorAll('.elements .element')
+        // );
+        // this.managerMoveabler.elementGuidelines = elementsGuidelines;
+        // selected.forEach((target) => {
+        //   getFrame(target);
+        // });
+        // if (isDragStart) {
+        //   inputEvent.preventDefault();
+        //   setTimeout(() => {
+        //     this.managerMoveabler.dragStart(inputEvent);
+        //   });
+        // }
+      });
   }
 
   onDestroy() {
     console.log('onDestroy');
+  }
+
+  setupEvent() {
+    this.eventBus.on('hoverpage', ({ target }) => {
+      const moveablerSelected = this.viewport.getMoveablerElement(target);
+      this.moveablerSelected = moveablerSelected;
+    });
   }
 
   loadData(documentData: SavedDocumentData) {

@@ -75,4 +75,8 @@ export default class MoveableData extends MoveableHelper {
       return frameValues.filter((color) => color)[0] || defaultValues[i];
     });
   }
+
+  render(target) {
+    console.log(target);
+  }
 }

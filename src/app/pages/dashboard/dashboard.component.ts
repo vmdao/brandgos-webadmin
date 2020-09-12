@@ -35,12 +35,28 @@ export class DashboardComponent implements OnInit {
         width: 1000,
         height: 1000,
       },
-      pages: [{ elements: [], index: 1, scopeId: 'viewport' }],
+      pages: [
+        {
+          elements: [{ name: 'hello', scopeId: 'viewport' }],
+          index: 1,
+          scopeId: 'viewport',
+          width: 630,
+          height: 300,
+        },
+        {
+          elements: [],
+          index: 2,
+          scopeId: 'viewport',
+          width: 630,
+          height: 300,
+        },
+      ],
     };
+
     this.zoomSelected = this.zooms.find((zoom) => zoom.value === 1);
 
     this.zone.runOutsideAngular(() => {
-      this.editor = new Editor({ ...localStorages });
+      this.editor = new Editor({ zoom: 0.8 });
       this.editor.render('#viewport-container');
       this.editor.loadData(page);
       // this.editor.createElements(localStorages.elements);

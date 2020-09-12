@@ -7,4 +7,6 @@ export interface PageInfo {
   id?: string;
   index?: number;
   elements: Array<ElementInfo>;
+  width: number;
+  height: number;
 }

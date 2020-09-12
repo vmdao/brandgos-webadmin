@@ -398,11 +398,6 @@ export class Workspace {
       className: 'uplevo',
       isDisplaySnapDigit: false,
       dragArea: true,
-      // clippable: true,
-      // defaultClipPath: 'rect',
-      // clipRelative: false,
-      // clipArea: true,
-      // dragWithClip: true,
     });
 
     this.managerSelector
