@@ -1,9 +1,9 @@
-import { Workspace } from '../workspace';
 import { checkInput } from './utils';
 import { IObject } from '@daybrush/utils';
+import { Editor } from '../editor';
 
 export default class ClipboardManager {
-  constructor(private editor: Workspace) {
+  constructor(private editor: Editor) {
     document.addEventListener('cut', this.onCut);
     document.addEventListener('copy', this.onCopy);
     document.addEventListener('paste', this.onPaste);

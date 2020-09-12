@@ -1,6 +1,6 @@
 import KeyController from 'keycon';
-import Debugger from '../utils/Debugger';
-import { checkInput } from '../utils/utils';
+import Debugger from './Debugger';
+import { checkInput } from './utils';
 
 function check(e: any) {
   const inputEvent = e.inputEvent;

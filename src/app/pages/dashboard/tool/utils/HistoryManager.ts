@@ -1,7 +1,7 @@
 import { IObject } from '@daybrush/utils';
-import { Workspace } from '../workspace/workspace';
+import { Editor } from '../editor';
 
-export type RestoreCallback = (props: IObject<any>, editor: Workspace) => any;
+export type RestoreCallback = (props: IObject<any>, editor: Editor) => any;
 export interface HistoryAction {
   type: string;
   props: IObject<any>;
@@ -10,7 +10,7 @@ export default class HistoryManager {
   private undoStack: HistoryAction[] = [];
   private redoStack: HistoryAction[] = [];
   private types: IObject<{ redo: RestoreCallback; undo: RestoreCallback }> = {};
-  constructor(private editor: Workspace) {}
+  constructor(private editor: Editor) {}
   public registerType(
     type: string,
     undo: RestoreCallback,

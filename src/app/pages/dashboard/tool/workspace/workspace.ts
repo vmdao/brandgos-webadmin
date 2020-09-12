@@ -52,7 +52,7 @@ import HistoryManager from '../utils/HistoryManager';
 import Debugger from '../utils/Debugger';
 import EventBus from '../utils/EventBus';
 import Memory from '../utils/Memory';
-import KeyManager from '../KeyManager/KeyManager';
+import KeyManager from '../utils/KeyManager';
 import ClipboardManager from '../utils/ClipboardManager';
 import { isMacintosh } from '../utils/consts';
 
@@ -1237,6 +1237,7 @@ function restoreElements({ infos }: IObject<any>, editor: Workspace) {
   //   true
   // );
 }
+
 function undoSelectTargets({ prevs, nexts }: IObject<any>, editor: Workspace) {
   // editor.setSelectedTargets(editor.viewport.current!.getElements(prevs), true);
 }
