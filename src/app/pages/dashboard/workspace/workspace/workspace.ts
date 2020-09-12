@@ -55,7 +55,7 @@ import Memory from '../utils/Memory';
 import KeyManager from '../utils/KeyManager';
 import ClipboardManager from '../utils/ClipboardManager';
 import { isMacintosh } from '../utils/consts';
-import { Editor } from '../editor';
+import { Editor } from '../Editor';
 
 export class Workspace {
   $dom: any;

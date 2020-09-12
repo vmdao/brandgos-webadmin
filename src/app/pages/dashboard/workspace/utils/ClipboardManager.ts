@@ -1,6 +1,6 @@
 import { checkInput } from './utils';
 import { IObject } from '@daybrush/utils';
-import { Editor } from '../editor';
+import { Editor } from '../Editor';
 
 export default class ClipboardManager {
   constructor(private editor: Editor) {
