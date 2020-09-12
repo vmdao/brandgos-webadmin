@@ -1,4 +1,3 @@
-import { IObject } from '@daybrush/utils';
 import HistoryManager from './utils/HistoryManager';
 import Debugger from './utils/Debugger';
 import EventBus from './utils/EventBus';

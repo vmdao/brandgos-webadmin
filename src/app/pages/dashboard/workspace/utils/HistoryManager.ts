@@ -1,5 +1,5 @@
 import { IObject } from '@daybrush/utils';
-import { Editor } from '../editor';
+import { Editor } from '../Editor';
 
 export type RestoreCallback = (props: IObject<any>, editor: Editor) => any;
 export interface HistoryAction {
