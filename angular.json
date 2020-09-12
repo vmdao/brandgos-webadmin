@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ad-webadmin": {
+    "brandgos-webadmin": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -158,18 +158,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ad-webadmin:build"
+            "browserTarget": "brandgos-webadmin:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ad-webadmin:build:production"
+              "browserTarget": "brandgos-webadmin:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ad-webadmin:build"
+            "browserTarget": "brandgos-webadmin:build"
           }
         },
         "test": {
@@ -214,19 +214,19 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ad-webadmin:serve"
+            "devServerTarget": "brandgos-webadmin:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ad-webadmin:serve:production"
+              "devServerTarget": "brandgos-webadmin:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "ad-webadmin",
+  "defaultProject": "brandgos-webadmin",
   "cli": {
-    "analytics": "7b8c85a8-5a72-4653-9ea3-48d390a4dcbb"
+    "analytics": "96c122f3-d6b2-454f-aae3-9df9bf35bd1a"
   }
 }

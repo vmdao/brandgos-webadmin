@@ -22,7 +22,6 @@ registerLocaleData(vi);
     DelonABCModule,
     DelonACLModule,
     NgZorroAntdModule,
-    // AmChartsModule,
   ],
   exports: [
     DelonABCModule,
