@@ -1,6 +1,8 @@
 import { Component, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Workspace } from './tool';
-import * as mock from './tool/mock';
+// import { Workspace } from './workspace';
+import * as mock from './workspace/mock';
+import { Editor } from './workspace/Editor';
+import { SavedDocumentData } from './workspace/viewport/DocumentDTO';
 const { localStorages } = mock.default;
 
 @Component({
@@ -9,7 +11,7 @@ const { localStorages } = mock.default;
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  workspace: Workspace;
+  editor: Editor;
   zooms = [
     { label: '20%', value: 0.2 },
     { label: '50%', value: 0.5 },
@@ -23,28 +25,41 @@ export class DashboardComponent implements OnInit {
   constructor(private zone: NgZone, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
+    const page: SavedDocumentData = {
+      id: '',
+      name: 'abc',
+      layout: {
+        id: 'string',
+        name: 'string',
+        type: 'string',
+        width: 1000,
+        height: 1000,
+      },
+      pages: [{ elements: [], index: 1, scopeId: 'viewport' }],
+    };
     this.zoomSelected = this.zooms.find((zoom) => zoom.value === 1);
 
     this.zone.runOutsideAngular(() => {
-      this.workspace = new Workspace({ ...localStorages });
-      this.workspace.render('#pages');
-      this.workspace.createElements(localStorages.elements);
+      this.editor = new Editor({ ...localStorages });
+      this.editor.render('#viewport-container');
+      this.editor.loadData(page);
+      // this.editor.createElements(localStorages.elements);
     });
     this.cd.detectChanges();
   }
 
   onClickItem(item) {
-    if (this.workspace) {
-      this.workspace.createElement(item);
-    }
+    // if (this.workspace) {
+    //   this.workspace.createElement(item);
+    // }
 
     this.cd.detectChanges();
   }
 
   onClickZoom(zoom) {
     this.zoomSelected = zoom;
-    if (this.workspace) {
-      this.workspace.changeView(zoom.value);
+    if (this.editor) {
+      // this.editor.changeView(zoom.value);
     }
   }
 }

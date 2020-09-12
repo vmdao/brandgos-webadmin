@@ -13,17 +13,21 @@ export default class MoveableData extends MoveableHelper {
   public setSelectedTargets(targets: Array<HTMLElement | SVGElement>) {
     this.selectedTargets = targets;
   }
+
   public getSelectedTargets() {
     return this.selectedTargets;
   }
+
   public getSelectedFrames(): Frame[] {
     return this.getSelectedTargets().map((target) => this.getFrame(target));
   }
+
   public renderFrames() {
     this.getSelectedTargets().forEach((target: any) => {
       this.render(target);
     });
   }
+
   public setProperty(names: string[], value: any) {
     const targets = this.getSelectedTargets();
 
@@ -39,6 +43,7 @@ export default class MoveableData extends MoveableHelper {
 
     return infos;
   }
+
   public removeProperties(...names: string[]) {
     return this.getSelectedTargets().map((target) => {
       const frame = this.getFrame(target);
@@ -53,6 +58,7 @@ export default class MoveableData extends MoveableHelper {
       return { id: getId(target), prev, next };
     });
   }
+
   public getProperties(properties: string[][], defaultValues: any[]) {
     const frames = this.getSelectedFrames();
     const memory = this.memory;

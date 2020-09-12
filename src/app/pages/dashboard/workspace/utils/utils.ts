@@ -1,9 +1,14 @@
-export const DATA_SCENA_ELEMENT_ID = 'data-scena-element-id';
+export const DATA_ELEMENT_ID = 'data-element-id';
+
 export function getId(el: HTMLElement | SVGElement) {
-  return el.getAttribute(DATA_SCENA_ELEMENT_ID)!;
+  // tslint:disable-next-line: no-non-null-assertion
+  return el.getAttribute(DATA_ELEMENT_ID)!;
 }
 export function getIds(els: Array<HTMLElement | SVGElement>): string[] {
   return els.map((el) => getId(el));
+}
+export function getEl(selector): HTMLElement {
+  return document.querySelector(selector);
 }
 export function checkInput(target: HTMLElement | SVGElement) {
   const tagName = target.tagName.toLowerCase();
@@ -13,4 +18,7 @@ export function checkInput(target: HTMLElement | SVGElement) {
     tagName === 'input' ||
     tagName === 'textarea'
   );
+}
+export function isNumber(value: any): value is number {
+  return typeof value === 'number';
 }

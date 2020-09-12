@@ -55,6 +55,7 @@ import Memory from '../utils/Memory';
 import KeyManager from '../utils/KeyManager';
 import ClipboardManager from '../utils/ClipboardManager';
 import { isMacintosh } from '../utils/consts';
+import { Editor } from '../editor';
 
 export class Workspace {
   $dom: any;
@@ -79,14 +80,14 @@ export class Workspace {
   elements: Array<BaseElement> = [];
   managerSelector: Selecto;
   managerMoveabler: CusMoveable;
-
+  editor: Editor;
   public console = new Debugger(true);
-  public historyManager = new HistoryManager(this);
+  public historyManager = new HistoryManager(this.editor);
   public eventBus = new EventBus();
   public memory = new Memory();
 
   public keyManager = new KeyManager(this.console);
-  public clipboardManager = new ClipboardManager(this);
+  public clipboardManager = new ClipboardManager(this.editor);
 
   constructor(option) {
     this.documentId = option.documentId;
@@ -98,60 +99,56 @@ export class Workspace {
 
     this.$toolbar = jQuery(`#toolbar`);
     this.$dom = jQuery(`<div class="elements"></div>`);
-    this.setupHotkey();
+    // this.setupHotkey();
   }
 
   removeByIds(ids: string[], isRestore?: boolean) {
-    return this.removeElements(this.getViewport().getElements(ids), isRestore);
+    // return this.removeElements(this.getViewport().getElements(ids), isRestore);
   }
 
   public removeElements(
     targets: Array<HTMLElement | SVGElement>,
     isRestore?: boolean
   ) {
-    const viewport = this.getViewport();
-    const frameMap = this.removeFrames(targets);
-    const indexesList = viewport.getSortedIndexesList(targets);
-    const indexesListLength = indexesList.length;
-    let scopeId = '';
-    let selectedInfo: BaseElement | null = null;
-
-    if (indexesListLength) {
-      const lastInfo = viewport.getInfoByIndexes(
-        indexesList[indexesListLength - 1]
-      );
-      const nextInfo = viewport.getNextInfo(lastInfo.id!);
-
-      scopeId = lastInfo.scopeId!;
-      selectedInfo = nextInfo;
-    }
-    // return;
-    return viewport.removeTargets(targets).then(({ removed }) => {
-      let selectedTarget =
-        selectedInfo ||
-        viewport.getLastChildInfo(scopeId)! ||
-        viewport.getInfo(scopeId);
-
-      this.setSelectedTargets(
-        selectedTarget && selectedTarget.el ? [selectedTarget.el!] : [],
-        true
-      );
-
-      this.console.log('removeTargets', removed);
-      // !isRestore &&
-      //   this.historyManager.addAction('removeElements', {
-      //     infos: removed.map(function removeTarget(
-      //       info: BaseElement
-      //     ): BaseElement {
-      //       return {
-      //         ...info,
-      //         children: info.children!.map(removeTarget),
-      //         frame: frameMap[info.id!] || info.frame,
-      //       };
-      //     }),
-      //   });
-      return targets;
-    });
+    // const viewport = this.getViewport();
+    // const frameMap = this.removeFrames(targets);
+    // const indexesList = viewport.getSortedIndexesList(targets);
+    // const indexesListLength = indexesList.length;
+    // let scopeId = '';
+    // let selectedInfo: BaseElement | null = null;
+    // if (indexesListLength) {
+    //   const lastInfo = viewport.getInfoByIndexes(
+    //     indexesList[indexesListLength - 1]
+    //   );
+    //   const nextInfo = viewport.getNextInfo(lastInfo.id!);
+    //   scopeId = lastInfo.scopeId!;
+    //   selectedInfo = nextInfo;
+    // }
+    // // return;
+    // return viewport.removeTargets(targets).then(({ removed }) => {
+    //   let selectedTarget =
+    //     selectedInfo ||
+    //     viewport.getLastChildInfo(scopeId)! ||
+    //     viewport.getInfo(scopeId);
+    //   this.setSelectedTargets(
+    //     selectedTarget && selectedTarget.el ? [selectedTarget.el!] : [],
+    //     true
+    //   );
+    //   this.console.log('removeTargets', removed);
+    // !isRestore &&
+    //   this.historyManager.addAction('removeElements', {
+    //     infos: removed.map(function removeTarget(
+    //       info: BaseElement
+    //     ): BaseElement {
+    //       return {
+    //         ...info,
+    //         children: info.children!.map(removeTarget),
+    //         frame: frameMap[info.id!] || info.frame,
+    //       };
+    //     }),
+    //   });
+    //   return targets;
+    // });
   }
 
   public getViewport() {
@@ -726,11 +723,11 @@ export class Workspace {
   }
 
   setupHistory() {
-    this.historyManager.registerType(
-      'createElements',
-      undoCreateElements,
-      restoreElements
-    );
+    // this.historyManager.registerType(
+    //   'createElements',
+    //   undoCreateElements,
+    //   restoreElements
+    // );
   }
 
   selectedElement(elementSelected) {
@@ -1220,12 +1217,12 @@ function undoCreateElements(
   );
 
   if (prevSelected) {
-    res.then(() => {
-      editor.setSelectedTargets(
-        editor.getViewport().getElements(prevSelected),
-        true
-      );
-    });
+    // res.then(() => {
+    //   editor.setSelectedTargets(
+    //     editor.getViewport().getElements(prevSelected),
+    //     true
+    //   );
+    // });
   }
 }
 
@@ -1245,12 +1242,12 @@ function redoSelectTargets({ prevs, nexts }: IObject<any>, editor: Workspace) {
   // editor.setSelectedTargets(editor.viewport.current!.getElements(nexts), true);
 }
 function undoChangeText({ prev, next, id }: IObject<any>, editor: Workspace) {
-  const info = editor.getViewport().getInfo(id)!;
-  info.innerText = prev;
-  info.el!.innerText = prev;
+  // const info = editor.getViewport().getInfo(id)!;
+  // info.innerText = prev;
+  // info.el!.innerText = prev;
 }
 function redoChangeText({ prev, next, id }: IObject<any>, editor: Workspace) {
-  const info = editor.getViewport().getInfo(id)!;
-  info.innerText = next;
-  info.el!.innerText = next;
+  // const info = editor.getViewport().getInfo(id)!;
+  // info.innerText = next;
+  // info.el!.innerText = next;
 }
