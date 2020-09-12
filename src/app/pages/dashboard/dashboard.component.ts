@@ -44,7 +44,14 @@ export class DashboardComponent implements OnInit {
           height: 300,
         },
         {
-          elements: [],
+          elements: [{ name: 'hello', scopeId: 'viewport' }],
+          index: 2,
+          scopeId: 'viewport',
+          width: 630,
+          height: 300,
+        },
+        {
+          elements: [{ name: 'hello', scopeId: 'viewport' }],
           index: 2,
           scopeId: 'viewport',
           width: 630,

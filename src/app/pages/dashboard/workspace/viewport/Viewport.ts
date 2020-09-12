@@ -61,12 +61,7 @@ export class Viewport extends Component {
     console.log('onDestroy');
   }
 
-  setupEvent() {
-    this.eventBus.on('hoverpage', ({ target }) => {
-      const moveablerSelected = this.getMoveablerElement(target);
-      this.moveablerSelected = moveablerSelected;
-    });
-  }
+  setupEvent() {}
 
   public makeId(ids: IObject<any> = this.ids) {
     while (true) {

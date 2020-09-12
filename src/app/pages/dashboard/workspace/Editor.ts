@@ -67,6 +67,9 @@ export class Editor extends Component {
     this.selectoManager
       .on('dragStart', (e) => {
         const target = e.inputEvent.target;
+        if (!this.moveablerSelected) {
+          return;
+        }
         if (
           this.moveablerSelected.isMoveableElement(target) ||
           this.targetsSelected.some((t) => t === target || t.contains(target))
@@ -75,11 +78,17 @@ export class Editor extends Component {
         }
       })
       .on('select', ({ selected }) => {
+        if (!this.moveablerSelected) {
+          return;
+        }
         this.targetsSelected = selected;
         this.moveablerSelected.target = selected;
         console.log(this.moveablerSelected, 1234);
       })
       .on('selectEnd', ({ isDragStart, inputEvent, selected }) => {
+        if (!this.moveablerSelected) {
+          return;
+        }
         this.targetsSelected = selected;
         this.moveablerSelected.target = this.targetsSelected;
         console.log(this.targetsSelected);
@@ -115,6 +124,7 @@ export class Editor extends Component {
     this.eventBus.on('hoverpage', ({ target }) => {
       const moveablerSelected = this.viewport.getMoveablerElement(target);
       this.moveablerSelected = moveablerSelected;
+      console.log('this.moveablerSelected', this.moveablerSelected);
     });
   }
 
