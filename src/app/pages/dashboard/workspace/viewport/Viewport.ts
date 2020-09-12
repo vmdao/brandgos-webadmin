@@ -30,9 +30,7 @@ export class Viewport extends Component {
 
   eventBus: EventBus;
   moveableData: MoveableData;
-  managerMoveabler: CusMoveable;
   moveablers: IObject<CusMoveable> = {};
-
   moveablerSelected: CusMoveable;
   constructor(option: {
     zoom;
@@ -149,35 +147,7 @@ export class Viewport extends Component {
       info.id = id;
       const page = new Page({ zoom: this.zoom, eventBus: this.eventBus }, info);
       this.setPageInfo(id, page);
-      const moveabler = new CusMoveable(page.el, {
-        zoom: 1,
-        edge: false,
-        keepRatio: true,
-        pinchable: true,
-        roundable: true,
 
-        draggable: true,
-        resizable: true,
-        rotatable: true,
-
-        throttleDrag: 0,
-        throttleResize: 1,
-        throttleRotate: 0,
-
-        snappable: true,
-        snapCenter: true,
-        snapHorizontal: true,
-        snapVertical: true,
-        snapElement: true,
-        snapThreshold: 0,
-        elementGuidelines: [],
-        checkInput: true,
-        className: 'uplevo',
-        isDisplaySnapDigit: false,
-        dragArea: true,
-      });
-
-      this.setMoveabler(id, moveabler);
       return page;
     });
   }
@@ -234,18 +204,47 @@ export class Viewport extends Component {
       info.render();
 
       append(this.el, info.el);
+
       this.appendElement(info, info.page.elements).then((ok) => {});
     });
 
     return new Promise((resolve) => {
-      const infos = pages.map(function registerElement(info) {
+      const infos = pages.map((info) => {
         // tslint:disable-next-line: no-non-null-assertion
         const id = info.page.id!;
         const selector = `[${DATA_PAGE_ID}="${id}"]`;
         // tslint:disable-next-line: no-non-null-assertion
         const target = getEl(selector)!;
         info.el = target;
+        const moveabler = new CusMoveable(info.el, {
+          zoom: 1,
+          edge: false,
+          keepRatio: true,
+          pinchable: true,
+          roundable: true,
 
+          draggable: true,
+          resizable: true,
+          rotatable: true,
+
+          throttleDrag: 0,
+          throttleResize: 1,
+          throttleRotate: 0,
+
+          snappable: true,
+          snapCenter: true,
+          snapHorizontal: true,
+          snapVertical: true,
+          snapElement: true,
+          snapThreshold: 0,
+          elementGuidelines: [],
+          checkInput: true,
+          className: 'uplevo',
+          isDisplaySnapDigit: false,
+          dragArea: true,
+        });
+
+        this.setMoveabler(id, moveabler);
         return info;
       });
       resolve({

@@ -74,8 +74,12 @@ export class Editor extends Component {
           e.stop();
         }
       })
+      .on('select', ({ selected }) => {
+        this.targetsSelected = selected;
+        this.moveablerSelected.target = selected;
+        console.log(this.moveablerSelected, 1234);
+      })
       .on('selectEnd', ({ isDragStart, inputEvent, selected }) => {
-        console.log(selected);
         this.targetsSelected = selected;
         this.moveablerSelected.target = this.targetsSelected;
         console.log(this.targetsSelected);
