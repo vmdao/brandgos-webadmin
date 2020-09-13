@@ -54,7 +54,7 @@ export class Viewport extends Component {
 
   onViewed() {
     console.log('onViewed');
-    // this.setupEvent();
+    this.setupEvent();
   }
 
   onDestroy() {
@@ -240,6 +240,7 @@ export class Viewport extends Component {
         });
 
         this.setMoveabler(id, moveabler);
+        this.eventBus.trigger('hoverpage', { target });
         return info;
       });
       resolve({

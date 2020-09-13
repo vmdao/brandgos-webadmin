@@ -216,8 +216,8 @@ export class Page extends Component {
 
   setupEvent() {
     this.el.addEventListener('mouseover', ({ target, currentTarget }) => {
-      if (currentTarget === this.el && this.el === target) {
-        this.eventBus.trigger('hoverpage', { target: target });
+      if (currentTarget === this.el) {
+        this.eventBus.trigger('hoverpage', { target: currentTarget });
       }
     });
   }

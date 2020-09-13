@@ -42,6 +42,7 @@
     "angulartics2": "^8.3.0",
     "eventemitter3": "^4.0.0",
     "file-saver": "^2.0.2",
+    "in-view": "^0.6.1",
     "jquery": "^3.5.0",
     "keycon": "^1.1.0",
     "load-svg": "^1.0.0",
@@ -56,6 +57,7 @@
     "scenejs": "^1.1.7",
     "selecto": "^1.6.4",
     "tslib": "^2.0.0",
+    "vanillajs-browser-helpers": "^1.1.8",
     "webfontloader": "^1.6.28",
     "zone.js": "~0.10.2"
   },

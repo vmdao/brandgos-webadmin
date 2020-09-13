@@ -1,10 +1,14 @@
 import MoveableHelper from 'moveable-helper';
 import Memory from '../utils/Memory';
 import { Frame } from 'scenejs';
-import { getId } from '../utils/utils';
+import { getId, CusMoveable } from '../utils/utils';
 
 export default class MoveableData extends MoveableHelper {
   public selectedTargets: Array<HTMLElement | SVGElement> = [];
+
+  public prevMoveabler: CusMoveable;
+  public currentMoveabler: CusMoveable;
+
   constructor(private memory: Memory) {
     super({
       createAuto: true,
