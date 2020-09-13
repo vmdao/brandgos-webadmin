@@ -1,7 +1,7 @@
 import inView from 'vanillajs-browser-helpers/inView';
 import { debounce } from 'lodash';
 import jQuery from 'jquery';
-
+const HEIGHT_THOU = 100;
 export class Scrollable {
   isDown = true;
   lastScrollTop = 0;
@@ -14,17 +14,38 @@ export class Scrollable {
     }
     this.lastScrollTop = st;
     const pages = document.querySelectorAll(selector);
+
+    const pagesSelectedView = [].slice.call(pages).filter((p) => {
+      return jQuery(p).hasClass('selected');
+    });
+
     const pagesView = [].slice.call(pages).filter((p) => {
-      return inView(p, 100).inside;
+      return inView(p, HEIGHT_THOU).inside;
+    });
+
+    pages.forEach((p) => {
+      jQuery(p).removeClass('selected');
     });
 
     if (!pagesView.length) {
+      jQuery(pages[0]).addClass('selected');
       return cbDebounce(pages[0]);
+    }
+
+    const pageSelectedExist = pagesView.find((pV) =>
+      pagesSelectedView.find((pS) => pV === pS)
+    );
+
+    if (pageSelectedExist) {
+      jQuery(pageSelectedExist).addClass('selected');
+      return pageSelectedExist;
     }
 
     const pageSelected = this.isDown
       ? pagesView[0]
       : pagesView[pagesView.length - 1];
+
+    jQuery(pageSelected).addClass('selected');
     cbDebounce(pageSelected);
   }, 60);
 

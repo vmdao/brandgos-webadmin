@@ -142,6 +142,10 @@ body {
 nz-content {
   height: calc(100vh - 60px);
 }
+
+* {
+  user-select: none;
+}
 .store {
   display: flex;
   flex-wrap: wrap;

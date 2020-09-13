@@ -171,17 +171,7 @@ export class Page extends Component {
         el: null,
         id,
       };
-      const element = this.createElement({
-        elementType: 'svg',
-        width: 200,
-        height: 200,
-        top: 100,
-        left: 200,
-        style: {
-          color1: '#000',
-          originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
-        },
-      });
+      const element = this.createElement(elementInfo.frame);
 
       elementInfo.el = element.$dom.get(0);
       this.setInfo(id, elementInfo);
@@ -215,11 +205,11 @@ export class Page extends Component {
   }
 
   setupEvent() {
-    this.el.addEventListener('mouseover', ({ target, currentTarget }) => {
-      if (currentTarget === this.el) {
-        this.eventBus.trigger('hoverpage', { target: currentTarget });
-      }
-    });
+    // this.el.addEventListener('mouseover', ({ target, currentTarget }) => {
+    //   if (currentTarget === this.el) {
+    //     this.eventBus.trigger('hoverpage', { target: currentTarget });
+    //   }
+    // });
   }
 
   remove() {

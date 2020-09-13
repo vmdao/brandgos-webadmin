@@ -66,4 +66,5 @@ export class CusMoveable extends Moveable {
   public clipArea: boolean;
   public dragWithClip: boolean;
   public defaultClipPath: string;
+  public rotatable: boolean;
 }

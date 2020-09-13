@@ -14,6 +14,7 @@ export default class MoveableData extends MoveableHelper {
       createAuto: true,
     });
   }
+
   public setSelectedTargets(targets: Array<HTMLElement | SVGElement>) {
     this.selectedTargets = targets;
   }

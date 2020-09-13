@@ -19,3 +19,22 @@ export function append(
 ) {
   return jQuery(selector).append(el);
 }
+
+export function getPageOfElement(element) {
+  return jQuery(element).parents('.page').get(0);
+}
+
+export function filterElementsByPage(page, elements) {
+  return elements
+    .filter((e) => {
+      return jQuery(page).has(e).length;
+    })
+    .map((e) => {
+      return e;
+    });
+}
+
+export function addPageSelected(element) {
+  jQuery('.page').removeClass('selected');
+  return jQuery(element).addClass('selected');
+}

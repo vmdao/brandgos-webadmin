@@ -7,7 +7,14 @@ import ClipboardManager from './utils/ClipboardManager';
 import MoveableData from './viewport/MoveableData';
 
 import { ToolbarMenu } from './toolkit/toolbar/menu';
-import { getViewEl, append, findChildrenEl } from './utils/HtmlHelper';
+import {
+  getViewEl,
+  append,
+  findChildrenEl,
+  getPageOfElement,
+  addPageSelected,
+  filterElementsByPage,
+} from './utils/HtmlHelper';
 import { Component } from './lifecycle/component.astract';
 import { SavedDocumentData } from './viewport/DocumentDTO';
 import { Viewport } from './viewport/Viewport';
@@ -17,8 +24,6 @@ import Selecto from 'selecto';
 
 import { CusMoveable } from './utils/utils';
 import { Scrollable } from './viewport/Scroll';
-// import inView from 'in-view';
-import inView from 'vanillajs-browser-helpers/inView';
 
 export class Editor extends Component {
   el: HTMLElement;
@@ -73,40 +78,36 @@ export class Editor extends Component {
     this.selectoManager
       .on('dragStart', (e) => {
         const target = e.inputEvent.target;
-
-        if (!this.moveableData.currentMoveabler) {
-          return;
-        }
-        if (this.moveableData.prevMoveabler) {
-          this.moveableData.prevMoveabler.target = [];
-          console.log('prevMoveabler', this.moveableData.prevMoveabler);
-        }
-        if (
-          this.moveableData.currentMoveabler.isMoveableElement(target) ||
-          this.targetsSelected.some((t) => t === target || t.contains(target))
-        ) {
-          e.stop();
-        }
       })
       .on('select', ({ selected }) => {
-        // if (this.moveableData.prevMoveabler) {
-        //   this.moveableData.prevMoveabler.target = [];
-        //   console.log('prevMoveabler select');
-        // }
-        // console.log(selected);
-        // this.targetsSelected = selected;
-        // this.moveableData.currentMoveabler.target = selected;
+        for (const key in this.viewport.moveablers) {
+          if (
+            Object.prototype.hasOwnProperty.call(this.viewport.moveablers, key)
+          ) {
+            const moveabler = this.viewport.moveablers[key];
+            moveabler.target = [];
+          }
+        }
 
-        selected.forEach((sel) => {
-          sel.style.border = '1px solid';
-        });
+        if (!selected.length) {
+          this.targetsSelected = selected;
+        } else {
+          this.eventBus.trigger('select', { elements: selected });
+          const renderDirections = [];
+          this.moveableData.currentMoveabler.rotatable = false;
+          this.moveableData.currentMoveabler.renderDirections = renderDirections;
+          this.moveableData.currentMoveabler.target = this.targetsSelected;
+        }
       })
       .on('selectEnd', ({ isDragStart, inputEvent, selected }) => {
         if (!this.moveableData.currentMoveabler) {
           return;
         }
-        // const selectedOnCurrentPage =
-        this.targetsSelected = selected;
+        const renderDirections = ['nw', 'ne', 'sw', 'se'];
+        this.moveableData.currentMoveabler.renderDirections = renderDirections;
+        this.moveableData.currentMoveabler.keepRatio = true;
+        this.moveableData.currentMoveabler.rotatable = true;
+
         this.moveableData.currentMoveabler.target = this.targetsSelected;
 
         // if (targetsSelected.length === 1) {
@@ -138,58 +139,37 @@ export class Editor extends Component {
   }
 
   setupEvent() {
-    this.eventBus.on('hoverpage', ({ target }) => {
-      const moveablerSelected = this.viewport.getMoveablerElement(target);
+    this.eventBus.on('select', ({ elements }) => {
+      const firtElement = elements[0];
+      const currentPage = getPageOfElement(firtElement);
+
+      if (this.moveableData.currentMoveabler) {
+        console.log(this.moveableData.currentMoveabler);
+        this.moveableData.currentMoveabler.target = [];
+      }
+      addPageSelected(currentPage);
+
+      const elementsInPage = filterElementsByPage(currentPage, elements);
+      this.targetsSelected = elementsInPage;
+
+      const moveablerSelected = this.viewport.getMoveablerElement(currentPage);
       if (
         this.moveableData.prevMoveabler !== this.moveableData.currentMoveabler
       ) {
         this.moveableData.prevMoveabler = this.moveableData.currentMoveabler;
       }
-      if (!this.moveableData.currentMoveabler) {
-        this.moveableData.currentMoveabler = moveablerSelected;
-      }
+      this.moveableData.currentMoveabler = moveablerSelected;
     });
 
-    const viewportBodyEl = findChildrenEl(this.el, '.viewport-body');
     this.scrollable.onScrollPage('.viewport-body', '.page', (pageSelected) => {
-      console.log(1234, pageSelected);
+      const moveablerSelected = this.viewport.getMoveablerElement(pageSelected);
+      if (
+        this.moveableData.prevMoveabler !== this.moveableData.currentMoveabler
+      ) {
+        this.moveableData.prevMoveabler = this.moveableData.currentMoveabler;
+      }
+      this.moveableData.currentMoveabler = moveablerSelected;
     });
-    // viewportBodyEl.addEventListener('scroll', (e) => {
-    //   const pages = document.querySelectorAll('.page');
-    //   const pageView = [].slice.call(pages).filter((p) => {
-    //     return inView(p, 100).inside;
-    //   });
-    //   console.log('-----------------------------', pageView, e);
-    // });
-
-    // const page = document.querySelector('.page')[0];
-    // this.moveableData.currentMoveabler = new CusMoveable(page, {
-    //   zoom: 1,
-    //   edge: false,
-    //   keepRatio: true,
-    //   pinchable: true,
-    //   roundable: true,
-
-    //   draggable: true,
-    //   resizable: true,
-    //   rotatable: true,
-
-    //   throttleDrag: 0,
-    //   throttleResize: 1,
-    //   throttleRotate: 0,
-
-    //   snappable: true,
-    //   snapCenter: true,
-    //   snapHorizontal: true,
-    //   snapVertical: true,
-    //   snapElement: true,
-    //   snapThreshold: 0,
-    //   elementGuidelines: [],
-    //   checkInput: true,
-    //   className: 'uplevo',
-    //   isDisplaySnapDigit: false,
-    //   dragArea: true,
-    // });
   }
 
   loadData(documentData: SavedDocumentData) {
