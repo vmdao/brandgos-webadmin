@@ -51,6 +51,7 @@ export class Editor extends Component {
     this.eventBus.on('changeZoom', (message: { zoom: number }) => {
       this.zoom = message.zoom;
     });
+
     this.viewport.render();
     this.setupEvent();
     this.selectoManager = new Selecto({
@@ -83,7 +84,6 @@ export class Editor extends Component {
         }
         this.targetsSelected = selected;
         this.moveablerSelected.target = selected;
-        console.log(this.moveablerSelected, 1234);
       })
       .on('selectEnd', ({ isDragStart, inputEvent, selected }) => {
         if (!this.moveablerSelected) {
@@ -91,7 +91,7 @@ export class Editor extends Component {
         }
         this.targetsSelected = selected;
         this.moveablerSelected.target = this.targetsSelected;
-        console.log(this.targetsSelected);
+
         // if (targetsSelected.length === 1) {
         //   this.selectedElement(jQuery(targetsSelected[0]));
         // } else {
@@ -124,7 +124,6 @@ export class Editor extends Component {
     this.eventBus.on('hoverpage', ({ target }) => {
       const moveablerSelected = this.viewport.getMoveablerElement(target);
       this.moveablerSelected = moveablerSelected;
-      console.log('this.moveablerSelected', this.moveablerSelected);
     });
   }
 
