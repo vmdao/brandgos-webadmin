@@ -58,6 +58,126 @@ export class DashboardComponent implements OnInit {
               scopeId: 'viewport',
               frame: {
                 elementType: 'svg',
+                width: 200,
+                height: 200,
+                top: 100,
+                left: 200,
+                style: {
+                  color1: '#000',
+                  originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+                },
+              },
+            },
+            {
+              name: 'hello',
+              scopeId: 'viewport',
+              frame: {
+                elementType: 'svg',
+                width: 200,
+                height: 200,
+                top: 100,
+                left: 200,
+                style: {
+                  color1: '#000',
+                  originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+                },
+              },
+            },
+            {
+              name: 'hello',
+              scopeId: 'viewport',
+              frame: {
+                elementType: 'svg',
+                width: 200,
+                height: 200,
+                top: 100,
+                left: 200,
+                style: {
+                  color1: '#000',
+                  originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+                },
+              },
+            },
+            {
+              name: 'hello',
+              scopeId: 'viewport',
+              frame: {
+                elementType: 'svg',
+                width: 200,
+                height: 200,
+                top: 100,
+                left: 200,
+                style: {
+                  color1: '#000',
+                  originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+                },
+              },
+            },
+            {
+              name: 'hello',
+              scopeId: 'viewport',
+              frame: {
+                elementType: 'svg',
+                width: 200,
+                height: 200,
+                top: 100,
+                left: 200,
+                style: {
+                  color1: '#000',
+                  originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+                },
+              },
+            },
+            {
+              name: 'hello',
+              scopeId: 'viewport',
+              frame: {
+                elementType: 'svg',
+                width: 200,
+                height: 200,
+                top: 100,
+                left: 200,
+                style: {
+                  color1: '#000',
+                  originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+                },
+              },
+            },
+            {
+              name: 'hello',
+              scopeId: 'viewport',
+              frame: {
+                elementType: 'svg',
+                width: 200,
+                height: 200,
+                top: 100,
+                left: 200,
+                style: {
+                  color1: '#000',
+                  originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+                },
+              },
+            },
+            {
+              name: 'hello',
+              scopeId: 'viewport',
+              frame: {
+                elementType: 'svg',
+                width: 200,
+                height: 200,
+                top: 100,
+                left: 200,
+                style: {
+                  color1: '#000',
+                  originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+                },
+              },
+            },
+            {
+              name: 'hello',
+              scopeId: 'viewport',
+              frame: {
+                elementType: 'svg',
                 width: 115,
                 height: 115,
                 top: 60,
@@ -148,7 +268,7 @@ export class DashboardComponent implements OnInit {
     this.zoomSelected = this.zooms.find((zoom) => zoom.value === 1);
 
     this.zone.runOutsideAngular(() => {
-      this.editor = new Editor({ zoom: 0.3 });
+      this.editor = new Editor({ zoom: 1 });
       this.editor.render('#viewport-container');
       this.editor.loadData(page);
       // this.editor.createElements(localStorages.elements);

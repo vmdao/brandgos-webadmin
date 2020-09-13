@@ -47,11 +47,6 @@ export class Editor extends Component {
   constructor(private params) {
     super();
     this.zoom = params.zoom || 1;
-    this.viewport = new Viewport({
-      zoom: this.zoom,
-      eventBus: this.eventBus,
-      moveableData: this.moveableData,
-    });
   }
 
   onInit() {}
@@ -60,9 +55,6 @@ export class Editor extends Component {
     this.eventBus.on('changeZoom', (message: { zoom: number }) => {
       this.zoom = message.zoom;
     });
-
-    this.viewport.render();
-    this.setupEvent();
 
     this.selectoManager = new Selecto({
       container: this.el,
@@ -75,9 +67,25 @@ export class Editor extends Component {
       preventDefault: true,
     });
 
+    this.viewport = new Viewport({
+      zoom: this.zoom,
+      eventBus: this.eventBus,
+      moveableData: this.moveableData,
+      selectoManager: this.selectoManager,
+    });
+    this.viewport.render();
+    this.setupEvent();
+
     this.selectoManager
       .on('dragStart', (e) => {
         const target = e.inputEvent.target;
+        if (
+          (this.moveableData.currentMoveabler &&
+            this.moveableData.currentMoveabler.isMoveableElement(target)) ||
+          this.targetsSelected.some((t) => t === target || t.contains(target))
+        ) {
+          e.stop();
+        }
       })
       .on('select', ({ selected }) => {
         for (const key in this.viewport.moveablers) {
@@ -110,6 +118,12 @@ export class Editor extends Component {
 
         this.moveableData.currentMoveabler.target = this.targetsSelected;
 
+        if (isDragStart) {
+          inputEvent.preventDefault();
+          setTimeout(() => {
+            this.moveableData.currentMoveabler.dragStart(inputEvent);
+          });
+        }
         // if (targetsSelected.length === 1) {
         //   this.selectedElement(jQuery(targetsSelected[0]));
         // } else {
@@ -144,7 +158,6 @@ export class Editor extends Component {
       const currentPage = getPageOfElement(firtElement);
 
       if (this.moveableData.currentMoveabler) {
-        console.log(this.moveableData.currentMoveabler);
         this.moveableData.currentMoveabler.target = [];
       }
       addPageSelected(currentPage);
@@ -227,13 +240,3 @@ const EDITOR_HTML = `
     <div id="toolbar"></div>
   </div>
   `;
-function isElementInViewport(el) {
-  var rect = el.getBoundingClientRect();
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
-}

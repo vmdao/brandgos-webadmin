@@ -8,13 +8,14 @@ import {
 } from '../utils/utils';
 import { PageInfo } from './PageDTO';
 import { SavedDocumentData } from './DocumentDTO';
-import { append } from '../utils/HtmlHelper';
+import { append, findChildrenEl } from '../utils/HtmlHelper';
 import { Page } from './Page';
 import { DATA_PAGE_ID } from '../utils/consts';
 import { Component } from '../lifecycle/component.astract';
 import { ElementInfo } from './ElementDTO';
 import MoveableData from './MoveableData';
 import EventBus from '../utils/EventBus';
+import Selecto from 'selecto';
 
 export class Viewport extends Component {
   public viewport: SavedDocumentData = {
@@ -32,15 +33,18 @@ export class Viewport extends Component {
   moveableData: MoveableData;
   moveablers: IObject<CusMoveable> = {};
   moveablerSelected: CusMoveable;
+  selectoManager: Selecto;
   constructor(option: {
     zoom;
     eventBus: EventBus;
     moveableData: MoveableData;
+    selectoManager: Selecto;
   }) {
     super();
     this.zoom = option.zoom;
     this.moveableData = option.moveableData;
     this.eventBus = option.eventBus;
+    this.selectoManager = option.selectoManager;
   }
 
   render() {
@@ -211,6 +215,7 @@ export class Viewport extends Component {
         // tslint:disable-next-line: no-non-null-assertion
         const target = getEl(selector)!;
         info.el = target;
+        // const pageBody = findChildrenEl(target, '.page-body')
         const moveabler = new CusMoveable(info.el, {
           zoom: 1,
           edge: false,
@@ -239,8 +244,36 @@ export class Viewport extends Component {
           dragArea: true,
         });
 
+        moveabler
+          .on('dragStart', this.moveableData.onDragStart)
+          .on('drag', this.moveableData.onDrag)
+          .on('dragGroupStart', this.moveableData.onDragGroupStart)
+          .on('dragGroup', this.moveableData.onDragGroup);
+
+        moveabler
+          .on('rotateStart', this.moveableData.onRotateStart)
+          .on('rotate', this.moveableData.onRotate)
+          .on('rotateGroupStart', this.moveableData.onRotateGroupStart)
+          .on('rotateGroup', this.moveableData.onRotateGroup);
+
+        moveabler
+          .on('resizeStart', this.moveableData.onResizeStart)
+          .on('resize', this.moveableData.onResize)
+          .on('resizeGroupStart', this.moveableData.onResizeGroupStart)
+          .on('resizeGroup', this.moveableData.onResizeGroup);
+
+        moveabler
+          .on('click', ({ target }) => {
+            // console.log('renderStart');
+          })
+          .on('clickGroup', ({ inputEvent, inputTarget }) => {
+            this.selectoManager.clickTarget(inputEvent, inputTarget);
+          })
+          .on('renderEnd', ({ target }) => {
+            // updateElement(target);
+          });
+
         this.setMoveabler(id, moveabler);
-        this.eventBus.trigger('hoverpage', { target });
         return info;
       });
       resolve({
