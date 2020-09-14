@@ -12,6 +12,7 @@ export class Scrollable {
     } else {
       this.isDown = false;
     }
+
     this.lastScrollTop = st;
     const pages = document.querySelectorAll(selector);
 
@@ -35,15 +36,20 @@ export class Scrollable {
     const pageSelectedExist = pagesView.find((pV) =>
       pagesSelectedView.find((pS) => pV === pS)
     );
+    let pageSelected = null;
 
     if (pageSelectedExist) {
-      jQuery(pageSelectedExist).addClass('selected');
-      return pageSelectedExist;
+      pageSelected = pageSelectedExist;
     }
 
-    const pageSelected = this.isDown
-      ? pagesView[0]
-      : pagesView[pagesView.length - 1];
+    if (pagesView.lenght > 3) {
+      const num = Math.round(pagesView.length / 2);
+      pageSelected = pagesView[num];
+    } else {
+      pageSelected = this.isDown
+        ? pagesView[0]
+        : pagesView[pagesView.length - 1];
+    }
 
     jQuery(pageSelected).addClass('selected');
     cbDebounce(pageSelected);

@@ -707,12 +707,56 @@ menu.menu.toolbar {
     margin-top: 32px;
   }
   &-heading {
-    height: 64px;
-    pointer-events: none;
+    position: relative;
+    height: 32px;
+    .page-controll {
+      position: absolute;
+      display: none;
+      width: 300px;
+      button {
+        height: 28px;
+        padding: 4px 4px;
+        text-align: center;
+        text-decoration: none;
+        color: #3f4652;
+        border-radius: 4px;
+        background-color: transparent;
+        outline: none;
+        box-sizing: border-box;
+        border: 1px solid #ecedee;
+        cursor: pointer;
+        &:hover {
+          background-color: #ffffff;
+        }
+      }
+      .button-dupplicate {
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+      .button-delete {
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
   }
   &-body {
     transform-origin: 0 0;
     pointer-events: none;
+  }
+  &-footer {
+    margin-bottom: 20px;
+  }
+  &.selected,
+  &:hover {
+    .page-heading {
+      .page-controll {
+        display: block;
+      }
+    }
   }
 }
 

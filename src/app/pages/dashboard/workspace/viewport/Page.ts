@@ -13,7 +13,6 @@ import {
 import EventBus from '../utils/EventBus';
 import MoveableData from './MoveableData';
 import HistoryManager from '../utils/HistoryManager';
-import { Editor } from '../Editor';
 
 export class Page extends Component {
   el: HTMLElement;
@@ -188,11 +187,9 @@ export class Page extends Component {
     const pageBodyEl = findChildrenEl(this.el, '.page-body');
     const elementsEl = findChildrenEl(this.el, '.elements');
 
-    if (this.zoom !== 1) {
-      pageBodyEl.style.width = this.page.width + 'px';
-      pageBodyEl.style.height = this.page.height + 'px';
-      pageBodyEl.style.transform = `scale(${this.zoom})`;
-    }
+    pageBodyEl.style.width = this.page.width + 'px';
+    pageBodyEl.style.height = this.page.height + 'px';
+    pageBodyEl.style.transform = `scale(${this.zoom})`;
 
     elementsEl.style.width = this.page.width + 'px';
     elementsEl.style.height = this.page.height + 'px';
@@ -204,6 +201,11 @@ export class Page extends Component {
       dataValue: this.page.id,
     });
     super.render();
+  }
+
+  changeView(zoom) {
+    this.zoom = zoom;
+    this.setPageSize();
   }
 
   setupEvent() {
@@ -255,7 +257,15 @@ export class Page extends Component {
 
 const PAGE_HTML = `
   <div class="page" <%- dataName %>=<%- dataValue %>>
-        <div class="page-heading"></div>
+        <div class="page-heading">
+          <div class="page-title"></div>
+          <div class="page-controll">
+            <button>Up</button>
+            <button>Down</button>
+            <button class="button-dupplicate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><g><path style="line-height:normal;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000;text-transform:none;text-orientation:mixed;white-space:normal;shape-padding:0;isolation:auto;mix-blend-mode:normal;solid-color:#000;solid-opacity:1" d="M9.2754 5.9991C8.577 5.9991 8 6.5783 8 7.2765v12.4472c0 .6982.5771 1.2754 1.2754 1.2754h9.4492c.6983 0 1.2754-.5772 1.2754-1.2754V7.2765c0-.6982-.5771-1.2754-1.2754-1.2754zm0 .9727h9.4492c.1766 0 .3027.1281.3027.3047v12.4472c0 .1766-.126.3047-.3027.3047H9.2754c-.1766 0-.3027-.1281-.3027-.3047V7.2765c0-.1766.126-.3047.3027-.3047z" overflow="visible"/><path style="line-height:normal;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000;text-transform:none;text-orientation:mixed;white-space:normal;shape-padding:0;isolation:auto;mix-blend-mode:normal;solid-color:#000;solid-opacity:1" d="M6.2754 2.9991C5.577 2.9991 5 3.5783 5 4.2765v12.4472c0 .6982.5771 1.2754 1.2754 1.2754H7.5v-.9707H6.2754c-.1766 0-.3027-.1281-.3027-.3047V4.2765c0-.1766.126-.3047.3027-.3047h9.4492c.1766 0 .3027.1281.3027.3047v1.2226H17V4.2765c0-.6982-.5771-1.2754-1.2754-1.2754z" overflow="visible"/></g></svg></button>
+            <button class="button-delete"><svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 100 100" x="0px" y="0px"><rect x="38.77" y="39.95" width="6" height="33.04"/><rect x="55.23" y="39.95" width="6" height="33.04"/><path d="M56.76,8.2H43.24a8,8,0,0,0-8,8v4.93H15.91a3,3,0,0,0,0,6h5.33l2.91,52.38a13,13,0,0,0,13,12.28H62.88a13,13,0,0,0,13-12.28l2.91-52.38h5.33a3,3,0,0,0,0-6H64.76V16.2A8,8,0,0,0,56.76,8.2Zm-15.51,8a2,2,0,0,1,2-2H56.76a2,2,0,0,1,2,2v4.93H41.24ZM72.76,27.13,69.87,79.19a7,7,0,0,1-7,6.61H37.12a7,7,0,0,1-7-6.61L27.24,27.13H72.76Z"/></svg></button>
+          </div>
+        </div>
         <div class="page-body">
           <div class="elements"></div>
         </div>

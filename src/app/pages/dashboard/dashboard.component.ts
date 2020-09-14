@@ -1,9 +1,6 @@
 import { Component, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
-// import { Workspace } from './workspace';
-import * as mock from './workspace/mock';
 import { Editor } from './workspace/Editor';
 import { SavedDocumentData } from './workspace/viewport/DocumentDTO';
-const { localStorages } = mock.default;
 
 @Component({
   selector: 'app-dashboard',
@@ -12,6 +9,7 @@ const { localStorages } = mock.default;
 })
 export class DashboardComponent implements OnInit {
   editor: Editor;
+
   zooms = [
     { label: '20%', value: 0.2 },
     { label: '50%', value: 0.5 },
@@ -21,6 +19,7 @@ export class DashboardComponent implements OnInit {
     { label: '200%', value: 2 },
     { label: '300%', value: 3 },
   ];
+
   zoomSelected: { label: string; value: number };
   constructor(private zone: NgZone, private cd: ChangeDetectorRef) {}
 
@@ -273,6 +272,7 @@ export class DashboardComponent implements OnInit {
       this.editor.loadData(page);
       // this.editor.createElements(localStorages.elements);
     });
+
     this.cd.detectChanges();
   }
 
@@ -280,14 +280,12 @@ export class DashboardComponent implements OnInit {
     // if (this.workspace) {
     //   this.workspace.createElement(item);
     // }
-
-    this.cd.detectChanges();
   }
 
   onClickZoom(zoom) {
     this.zoomSelected = zoom;
     if (this.editor) {
-      // this.editor.changeView(zoom.value);
+      this.editor.viewport.changeView(zoom.value);
     }
   }
 }

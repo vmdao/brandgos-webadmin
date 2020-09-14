@@ -167,6 +167,19 @@ export class Viewport extends Component {
     });
   }
 
+  changeView(zoom) {
+    this.zoom = zoom;
+    for (const id in this.ids) {
+      if (Object.prototype.hasOwnProperty.call(this.ids, id)) {
+        const page = this.ids[id];
+        page.changeView(zoom);
+      }
+    }
+    if (this.moveableData.currentMoveabler) {
+      this.moveableData.currentMoveabler!.updateRect();
+    }
+  }
+
   public getSortedIndexesList(
     targets: Array<string | HTMLElement | SVGElement | number[]>
   ) {
@@ -449,6 +462,7 @@ function restoreRender(
   moveableData.render(el);
   return true;
 }
+
 function undoRender(
   { id, prev, next, prevOrders, currentPage, moveabler }: IObject<any>,
   editor: Editor
@@ -462,6 +476,7 @@ function undoRender(
   moveabler.updateRect();
   editor.eventBus.trigger('render');
 }
+
 function redoRender(
   { id, prev, next, nextOrders, currentPage, moveabler }: IObject<any>,
   editor: Editor

@@ -4,6 +4,7 @@ import {
   ElementRef,
   ViewChild,
   OnInit,
+  Input,
 } from '@angular/core';
 import { ItemsActions } from '@app/pages/@store/item';
 import { Subject, Observable } from 'rxjs';
@@ -12,6 +13,7 @@ import * as fromApp from '@app/pages/@store';
 import { interval } from 'rxjs';
 import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
+import { Editor } from '../workspace/Editor';
 
 @Component({
   selector: 'app-header',
@@ -20,14 +22,18 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class HeaderComponent implements OnInit {
   @ViewChild('inputElement', { static: false }) inputElement?: ElementRef;
+
+  @Input()
+  editor: Editor;
+
   renderData$: Observable<Blob>;
   renderLoading$: Observable<boolean>;
   isVisible = false;
-  isVisible2 = false;
   data: any;
   percent = 0;
   renderLoading = true;
   private unsubscribe: Subject<void> = new Subject();
+
   constructor(
     private store$: Store<fromApp.AppState>,
     private cd: ChangeDetectorRef
@@ -43,6 +49,7 @@ export class HeaderComponent implements OnInit {
     });
     this.cd.detectChanges();
   }
+
   onClickRender() {
     this.isVisible = true;
     const work = document.getElementsByClassName('elements')[0];
@@ -71,27 +78,10 @@ export class HeaderComponent implements OnInit {
     this.isVisible = false;
   }
 
-  onClickRender2() {
-    this.isVisible2 = true;
-    const secondsCounter = interval(100);
-    this.percent = 0;
-    secondsCounter.pipe(takeUntil(this.unsubscribe)).subscribe((n) => {
-      if (this.percent < 100) {
-        this.percent += 1;
-      }
-    });
-    const work = document.getElementById('pages');
+  onClickUndo() {
+    this.editor.historyManager.undo();
   }
-
-  onClickDownloadFile2() {
-    saveAs(this.data, 'Your-Logo-powered-by-Brandgos.png');
-  }
-
-  handleOk2(): void {
-    this.isVisible2 = false;
-  }
-
-  handleCancel2(): void {
-    this.isVisible2 = false;
+  onClickRedo() {
+    this.editor.historyManager.redo();
   }
 }
