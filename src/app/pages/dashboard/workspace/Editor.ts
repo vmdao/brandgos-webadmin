@@ -10,7 +10,6 @@ import { ToolbarMenu } from './toolkit/toolbar/menu';
 import {
   getViewEl,
   append,
-  findChildrenEl,
   getPageOfElement,
   addPageSelected,
   filterElementsByPage,
@@ -24,6 +23,7 @@ import Selecto from 'selecto';
 
 import { CusMoveable } from './utils/utils';
 import { Scrollable } from './viewport/Scroll';
+import { isMacintosh } from './utils/consts';
 
 export class Editor extends Component {
   el: HTMLElement;
@@ -72,9 +72,11 @@ export class Editor extends Component {
       eventBus: this.eventBus,
       moveableData: this.moveableData,
       selectoManager: this.selectoManager,
+      historyManager: this.historyManager,
     });
     this.viewport.render();
     this.setupEvent();
+    this.setupHotkey();
 
     this.selectoManager
       .on('dragStart', (e) => {
@@ -185,6 +187,28 @@ export class Editor extends Component {
     });
   }
 
+  setupHotkey() {
+    this.keyManager.keydown(
+      [isMacintosh ? 'meta' : 'ctrl', 'v'],
+      () => {},
+      'Paste'
+    );
+    this.keyManager.keydown(
+      [isMacintosh ? 'meta' : 'ctrl', 'z'],
+      () => {
+        this.historyManager.undo();
+      },
+      'Undo'
+    );
+    this.keyManager.keydown(
+      [isMacintosh ? 'meta' : 'ctrl', 'shift', 'z'],
+      () => {
+        this.historyManager.redo();
+      },
+      'Redo'
+    );
+  }
+
   loadData(documentData: SavedDocumentData) {
     this.documentData = documentData;
     this.appendJSXs(this.documentData.pages);
@@ -215,7 +239,6 @@ export class Editor extends Component {
 
   public appendComplete(infos: Page[], isRestore?: boolean) {
     const data = this.moveableData;
-
     return Promise.all([].map((target) => {})).then(() => {
       return [];
     });

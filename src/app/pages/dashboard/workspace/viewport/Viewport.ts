@@ -8,7 +8,7 @@ import {
 } from '../utils/utils';
 import { PageInfo } from './PageDTO';
 import { SavedDocumentData } from './DocumentDTO';
-import { append, findChildrenEl } from '../utils/HtmlHelper';
+import { append } from '../utils/HtmlHelper';
 import { Page } from './Page';
 import { DATA_PAGE_ID } from '../utils/consts';
 import { Component } from '../lifecycle/component.astract';
@@ -16,6 +16,9 @@ import { ElementInfo } from './ElementDTO';
 import MoveableData from './MoveableData';
 import EventBus from '../utils/EventBus';
 import Selecto from 'selecto';
+import HistoryManager from '../utils/HistoryManager';
+import { Editor } from '../Editor';
+import { diff } from '@egjs/list-differ';
 
 export class Viewport extends Component {
   public viewport: SavedDocumentData = {
@@ -34,17 +37,20 @@ export class Viewport extends Component {
   moveablers: IObject<CusMoveable> = {};
   moveablerSelected: CusMoveable;
   selectoManager: Selecto;
+  historyManager: HistoryManager;
   constructor(option: {
     zoom;
     eventBus: EventBus;
     moveableData: MoveableData;
     selectoManager: Selecto;
+    historyManager: HistoryManager;
   }) {
     super();
     this.zoom = option.zoom;
     this.moveableData = option.moveableData;
     this.eventBus = option.eventBus;
     this.selectoManager = option.selectoManager;
+    this.historyManager = option.historyManager;
   }
 
   render() {
@@ -65,7 +71,10 @@ export class Viewport extends Component {
     console.log('onDestroy');
   }
 
-  setupEvent() {}
+  setupEvent() {
+    this.historyManager.registerType('render', undoRender, redoRender);
+    this.historyManager.registerType('renders', undoRenders, redoRenders);
+  }
 
   public makeId(ids: IObject<any> = this.ids) {
     while (true) {
@@ -144,7 +153,14 @@ export class Viewport extends Component {
       const scopeId = parentScopeId || info.scopeId || 'viewport';
       info.scopeId = scopeId;
       info.id = id;
-      const page = new Page({ zoom: this.zoom, eventBus: this.eventBus }, info);
+      const page = new Page(
+        {
+          zoom: this.zoom,
+          eventBus: this.eventBus,
+          historyManager: this.historyManager,
+        },
+        info
+      );
       this.setPageInfo(id, page);
 
       return page;
@@ -269,8 +285,55 @@ export class Viewport extends Component {
           .on('clickGroup', ({ inputEvent, inputTarget }) => {
             this.selectoManager.clickTarget(inputEvent, inputTarget);
           })
-          .on('renderEnd', ({ target }) => {
-            // updateElement(target);
+
+          .on('renderStart', ({ datas, target }) => {
+            datas.prevData = this.moveableData.getFrame(target).get();
+          })
+          .on('render', ({ datas }) => {
+            // console.log('renderStart');
+            datas.isRender = true;
+          })
+          .on('renderEnd', ({ datas, target }) => {
+            this.eventBus.requestTrigger('render');
+
+            if (!datas.isRender) {
+              return;
+            }
+            this.historyManager.addAction('render', {
+              id: target,
+              prev: datas.prevData,
+              next: this.moveableData.getFrame(target).get(),
+              currentPage: info,
+              moveabler: moveabler,
+            });
+          })
+          .on('renderGroupStart', ({ datas, targets }) => {
+            datas.prevDatas = targets.map((target) =>
+              this.moveableData.getFrame(target).get()
+            );
+          })
+          .on('renderGroup', ({ datas }) => {
+            this.eventBus.requestTrigger('renderGroup');
+            datas.isRender = true;
+          })
+          .on('renderGroupEnd', ({ datas, targets }) => {
+            this.eventBus.requestTrigger('renderGroup');
+            if (!datas.isRender) {
+              return;
+            }
+            const prevDatas = datas.prevDatas;
+            const infos = targets.map((target, i) => {
+              return {
+                id: target,
+                prev: prevDatas[i],
+                next: this.moveableData.getFrame(target).get(),
+              };
+            });
+            this.historyManager.addAction('renders', {
+              infos,
+              currentPage: info,
+              moveabler: moveabler,
+            });
           });
 
         this.setMoveabler(id, moveabler);
@@ -354,4 +417,82 @@ export interface MovedPageInfo {
   info: PageInfo;
   parentInfo: PageInfo;
   prevInfo?: PageInfo;
+}
+
+function restoreRender(
+  id: HTMLElement,
+  state: IObject<any>,
+  prevState: IObject<any>,
+  orders: any,
+  editor: Editor,
+  currentPage,
+  moveabler
+) {
+  const el = id;
+  if (!el) {
+    console.error('No Element');
+    return false;
+  }
+  const moveableData = editor.moveableData;
+  const frame = moveableData.getFrame(el);
+
+  frame.clear();
+  frame.set(state);
+  frame.setOrderObject(orders);
+
+  const result = diff(Object.keys(prevState), Object.keys(state));
+  const { removed, prevList } = result;
+
+  removed.forEach((index) => {
+    el.style.removeProperty(prevList[index]);
+  });
+  moveableData.render(el);
+  return true;
+}
+function undoRender(
+  { id, prev, next, prevOrders, currentPage, moveabler }: IObject<any>,
+  editor: Editor
+) {
+  if (
+    !restoreRender(id, prev, next, prevOrders, editor, currentPage, moveabler)
+  ) {
+    return;
+  }
+
+  moveabler.updateRect();
+  editor.eventBus.trigger('render');
+}
+function redoRender(
+  { id, prev, next, nextOrders, currentPage, moveabler }: IObject<any>,
+  editor: Editor
+) {
+  if (
+    !restoreRender(id, next, prev, nextOrders, editor, currentPage, moveabler)
+  ) {
+    return;
+  }
+  moveabler.updateRect();
+  editor.eventBus.trigger('render');
+}
+
+function redoRenders(
+  { infos, currentPage, moveabler }: IObject<any>,
+  editor: Editor
+) {
+  infos.forEach(({ id, next, prev, nextOrders }: IObject<any>) => {
+    restoreRender(id, next, prev, nextOrders, editor, currentPage, moveabler);
+  });
+  moveabler.updateRect();
+  editor.eventBus.trigger('render');
+}
+
+function undoRenders(
+  { infos, moveabler, currentPage }: IObject<any>,
+  editor: Editor
+) {
+  infos.forEach(({ id, prev, next, prevOrders }: IObject<any>) => {
+    restoreRender(id, prev, next, prevOrders, editor, currentPage, moveabler);
+  });
+  moveabler.updateRect();
+  editor.eventBus.trigger('render');
 }

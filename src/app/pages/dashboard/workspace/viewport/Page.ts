@@ -3,13 +3,7 @@ import { PageInfo } from './PageDTO';
 import { getViewEl, append, findChildrenEl } from '../utils/HtmlHelper';
 import { ElementInfo } from './ElementDTO';
 import { IObject, isString } from '@daybrush/utils';
-import {
-  getId,
-  isNumber,
-  DATA_ELEMENT_ID,
-  DATA_PAGE_ID,
-  getEl,
-} from '../utils/utils';
+import { getId, DATA_ELEMENT_ID, DATA_PAGE_ID } from '../utils/utils';
 import {
   TextSvgElement,
   TextElement,
@@ -18,6 +12,8 @@ import {
 } from '../elements';
 import EventBus from '../utils/EventBus';
 import MoveableData from './MoveableData';
+import HistoryManager from '../utils/HistoryManager';
+import { Editor } from '../Editor';
 
 export class Page extends Component {
   el: HTMLElement;
@@ -28,11 +24,17 @@ export class Page extends Component {
 
   eventBus: EventBus;
   moveableData: MoveableData;
-  constructor(option: { zoom; eventBus: EventBus }, params) {
+  historyManager: HistoryManager;
+
+  constructor(
+    option: { zoom; eventBus: EventBus; historyManager: HistoryManager },
+    params
+  ) {
     super();
     this.page = params;
     this.zoom = option.zoom;
     this.eventBus = option.eventBus;
+    this.historyManager = option.historyManager;
   }
 
   public makeId(ids: IObject<any> = this.ids) {
