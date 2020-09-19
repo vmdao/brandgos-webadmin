@@ -13,6 +13,8 @@ import {
 import EventBus from '../utils/EventBus';
 import MoveableData from './MoveableData';
 import HistoryManager from '../utils/HistoryManager';
+import { Viewport } from './Viewport';
+import { angle } from 'makerjs';
 
 export class Page extends Component {
   el: HTMLElement;
@@ -24,9 +26,15 @@ export class Page extends Component {
   eventBus: EventBus;
   moveableData: MoveableData;
   historyManager: HistoryManager;
+  viewport: Viewport;
 
   constructor(
-    option: { zoom; eventBus: EventBus; historyManager: HistoryManager },
+    option: {
+      zoom;
+      eventBus: EventBus;
+      historyManager: HistoryManager;
+      viewport: Viewport;
+    },
     params
   ) {
     super();
@@ -34,6 +42,7 @@ export class Page extends Component {
     this.zoom = option.zoom;
     this.eventBus = option.eventBus;
     this.historyManager = option.historyManager;
+    this.viewport = option.viewport;
   }
 
   public makeId(ids: IObject<any> = this.ids) {
@@ -139,20 +148,12 @@ export class Page extends Component {
       info.index = appendIndex + i;
       const elementsEl = findChildrenEl(this.el, '.elements');
       append(elementsEl, info.el);
+      info.el.setAttribute('DATA_ELEMENT_ID', info.id);
     });
 
     return new Promise((resolve) => {
       const infos = elements.map(function registerElement(info) {
-        // tslint:disable-next-line: no-non-null-assertion
-        const id = info.id!;
-
-        // tslint:disable-next-line: no-non-null-assertion
-        const target = document.querySelector<HTMLElement>(
-          `[${DATA_ELEMENT_ID}="${id}"]`
-        )!;
-
-        info.el = target;
-        return { ...info };
+        return info;
       });
       resolve({
         added: infos,
@@ -160,17 +161,44 @@ export class Page extends Component {
     });
   }
 
-  public registerChildren(elementInfos: ElementInfo[], parentScopeId?: string) {
+  public registerChildren(elementInfos, parentScopeId?: string) {
     return elementInfos.map((info) => {
       const id = info.id || this.makeId();
       const scopeId = parentScopeId || info.scopeId || 'page';
+      if (info && info.type === 'svg') {
+        const material = this.viewport.getFileInMaterialStore(info.materialId);
 
+        const file = material.files.find((f) => f.quanlity === 'ORIGIN');
+        info.style = {
+          url: file.url,
+          originUrl: file.url,
+        };
+      }
+      if (info && info.fontStyle) {
+        info.style = {
+          fontSize: +info.fontSize,
+          html: info['text content'],
+          htmlSvg: info['text content'],
+          textAlign: info.justification,
+          curve: 0,
+          color: '#000',
+          fontFamily: info.fontFamily,
+          letterSpacing: 0,
+          lineHeight: 0,
+          url: 'assets/Roboto-Medium.ttf',
+        };
+        info.html = info['text content'];
+        info.htmlSvg = info['text content'];
+      }
+
+      const angle = typeof info.angle === 'number' ? info.angle : 0;
+      info.transform = `translate(${info.left}px, ${info.top}px) rotate(${angle}deg)`;
       const elementInfo: ElementInfo = {
-        ...info,
         scopeId,
-        frame: info.frame || {},
+        frame: info,
         el: null,
         id,
+        name: '',
       };
       const element = this.createElement(elementInfo.frame);
 
@@ -238,6 +266,9 @@ export class Page extends Component {
   }
 
   factoryCreateElement(dataElement) {
+    if (dataElement.fontStyle) {
+      return new TextSvgElement(dataElement);
+    }
     switch (dataElement.elementType) {
       case 'image':
         return new TextSvgElement(dataElement);

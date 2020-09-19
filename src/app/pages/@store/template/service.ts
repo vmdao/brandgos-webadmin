@@ -2,42 +2,37 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RestService } from '../../../@core/services/rest.service';
 
-import { ItemModel, ITEM_TYPE } from './model';
-import { ItemResultsModel, ItemResultModel } from './results.model';
+import { TemplateModel } from './model';
+import { TemplateResultsModel, TemplateResultModel } from './results.model';
 
-const API_CUSTOMERS_URL = '/materials';
+const API_CUSTOMERS_URL = '/templates';
 
 @Injectable()
-export class ItemService {
+export class TemplateService {
   constructor(private restService: RestService) {}
 
-  getAll(params: {}): Observable<ItemResultsModel> {
+  getAll(params: {}): Observable<TemplateResultsModel> {
     return this.restService.get(API_CUSTOMERS_URL, params);
   }
 
-  get(key): Observable<ItemResultModel> {
+  get(key): Observable<TemplateResultModel> {
     return this.restService.get(`${API_CUSTOMERS_URL}/${key}`);
   }
 
-  create(model: ItemModel): Observable<ItemResultModel> {
+  create(model: TemplateModel): Observable<TemplateResultModel> {
     return this.restService.post(API_CUSTOMERS_URL, model);
   }
 
-  update(model: ItemModel): Observable<ItemResultModel> {
+  update(model: TemplateModel): Observable<TemplateResultModel> {
     const key = model.id;
     return this.restService.patch(`${API_CUSTOMERS_URL}/${key}`, model);
   }
 
-  delete(key): Observable<ItemResultModel> {
+  delete(key): Observable<TemplateResultModel> {
     return this.restService.delete(`${API_CUSTOMERS_URL}/${key}`);
   }
 
-  search(query: {
-    tag?: string;
-    key?: string;
-    collectionCode?: string;
-    type?: ITEM_TYPE;
-  }) {
+  search(query: { tag?: string; key?: string; collectionCode?: string }) {
     return this.restService.get(`${API_CUSTOMERS_URL}/search/all`, query);
   }
 
@@ -45,7 +40,6 @@ export class ItemService {
     tag?: string;
     key?: string;
     collectionCode?: string;
-    type?: ITEM_TYPE;
   }) {
     return this.restService.get(
       `${API_CUSTOMERS_URL}/search/nounproject`,
@@ -55,5 +49,9 @@ export class ItemService {
 
   render(params) {
     return this.restService.download(`/templates/render`, params);
+  }
+
+  getTemplateData(url) {
+    return this.restService.getOut(url);
   }
 }

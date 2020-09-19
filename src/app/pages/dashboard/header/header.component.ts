@@ -14,6 +14,7 @@ import { interval } from 'rxjs';
 import { saveAs } from 'file-saver';
 import { takeUntil } from 'rxjs/operators';
 import { Editor } from '../workspace/Editor';
+import { TemplatesActions } from '@app/pages/@store';
 
 @Component({
   selector: 'app-header',
@@ -54,7 +55,7 @@ export class HeaderComponent implements OnInit {
     this.isVisible = true;
     const work = document.getElementsByClassName('elements')[0];
     this.store$.dispatch(
-      ItemsActions.render({ payload: { html: work.innerHTML } })
+      TemplatesActions.render({ payload: { html: work.outerHTML } })
     );
     const secondsCounter = interval(100);
     this.percent = 0;

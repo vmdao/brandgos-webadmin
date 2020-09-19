@@ -121,25 +121,7 @@ export const getItemIconsSearchFailure = createAction(
   '[ITEM] Get Item Icons Search Faild'
 );
 
-const render = createAction(
-  '[ITEM] Update Item Redner',
-  props<{ payload: { html: string } }>()
-);
-
-const renderSuccess = createAction(
-  '[ITEM] Update Item Redner Success',
-  props<{ payload: { data: any } }>()
-);
-
-export const renderFailure = createAction(
-  '[ITEM] Update Item Redner Faild',
-  props<{ payload: ItemResultModel }>()
-);
-
 export const ItemsActions = {
-  render,
-  renderSuccess,
-  renderFailure,
   openItemView,
   getItemIcons,
   getItemIconsSuccess,

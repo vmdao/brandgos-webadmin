@@ -9,58 +9,61 @@ import {
   concatMap,
   mergeMap,
 } from 'rxjs/operators';
-import { ItemService } from './service';
-import { ItemsActions } from './actions';
+import { TemplateService } from './service';
+import { TemplatesActions } from './actions';
 
 import { Store } from '@ngrx/store';
 import * as fromBussiness from '.';
 const {
-  getItems,
-  getItemsFailure,
-  getItemsSuccess,
-  getItem,
-  getItemFailure,
-  getItemSuccess,
-  createItem,
-  createItemFailure,
-  createItemSuccess,
-  updateItem,
-  updateItemFailure,
-  updateItemSuccess,
-  deleteItem,
-  deleteItemFailure,
-  deleteItemSuccess,
-  getItemIcons,
-  getItemIconsSuccess,
-  getItemIconsFailure,
-  getItemShapes,
-  getItemShapesSuccess,
-  getItemShapesFailure,
-  getItemElements,
-  getItemElementsSuccess,
-  getItemElementsFailure,
-  getItemIconsSearch,
-  getItemIconsSearchSuccess,
-  getItemIconsSearchFailure,
-} = ItemsActions;
+  getTemplates,
+  getTemplatesFailure,
+  getTemplatesSuccess,
+  getTemplate,
+  getTemplateFailure,
+  getTemplateSuccess,
+  createTemplate,
+  createTemplateFailure,
+  createTemplateSuccess,
+  updateTemplate,
+  updateTemplateFailure,
+  updateTemplateSuccess,
+  deleteTemplate,
+  deleteTemplateFailure,
+  deleteTemplateSuccess,
+  getTemplateIcons,
+  getTemplateIconsSuccess,
+  getTemplateIconsFailure,
+  getTemplateShapes,
+  getTemplateShapesSuccess,
+  getTemplateShapesFailure,
+  getTemplateElements,
+  getTemplateElementsSuccess,
+  getTemplateElementsFailure,
+  getTemplateIconsSearch,
+  getTemplateIconsSearchSuccess,
+  getTemplateIconsSearchFailure,
+  render,
+  renderSuccess,
+  renderFailure,
+} = TemplatesActions;
 
 @Injectable()
-export class ItemEffects {
+export class TemplateEffects {
   constructor(
     private actions: Actions,
-    private modelService: ItemService,
-    private store$: Store<fromBussiness.ItemState>
+    private modelService: TemplateService,
+    private store$: Store<fromBussiness.TemplateState>
   ) {}
 
   getList$ = createEffect(() =>
     this.actions.pipe(
-      ofType(getItems),
+      ofType(getTemplates),
       switchMap((pramas) => {
         return this.modelService.getAll(pramas.payload).pipe(
-          map((payload) => getItemsSuccess({ payload })),
+          map((payload) => getTemplatesSuccess({ payload })),
           catchError((err) => {
             console.error(err);
-            return of(getItemsFailure());
+            return of(getTemplatesFailure());
           })
         );
       })
@@ -69,13 +72,13 @@ export class ItemEffects {
 
   getOne$ = createEffect(() =>
     this.actions.pipe(
-      ofType(getItem),
+      ofType(getTemplate),
       switchMap((pramas) => {
         return this.modelService.get(pramas.payload).pipe(
-          map((payload) => getItemSuccess({ payload })),
+          map((payload) => getTemplateSuccess({ payload })),
           catchError((err) => {
             console.error(err);
-            return of(getItemFailure());
+            return of(getTemplateFailure());
           })
         );
       })
@@ -84,13 +87,13 @@ export class ItemEffects {
 
   create$ = createEffect(() =>
     this.actions.pipe(
-      ofType(createItem),
+      ofType(createTemplate),
       switchMap((pramas) => {
         return this.modelService.create(pramas.payload).pipe(
-          map((payload) => createItemSuccess({ payload })),
+          map((payload) => createTemplateSuccess({ payload })),
           catchError((err) => {
             console.error(err);
-            return of(createItemFailure({ payload: err }));
+            return of(createTemplateFailure({ payload: err }));
           })
         );
       })
@@ -99,13 +102,13 @@ export class ItemEffects {
 
   update$ = createEffect(() =>
     this.actions.pipe(
-      ofType(updateItem),
+      ofType(updateTemplate),
       switchMap((pramas) => {
         return this.modelService.update(pramas.payload).pipe(
-          map((payload) => updateItemSuccess({ payload })),
+          map((payload) => updateTemplateSuccess({ payload })),
           catchError((err) => {
             console.error(err);
-            return of(updateItemFailure({ payload: err }));
+            return of(updateTemplateFailure({ payload: err }));
           })
         );
       })
@@ -114,13 +117,13 @@ export class ItemEffects {
 
   delete$ = createEffect(() =>
     this.actions.pipe(
-      ofType(deleteItem),
+      ofType(deleteTemplate),
       switchMap((pramas) => {
         return this.modelService.delete(pramas.payload).pipe(
-          map((payload) => deleteItemSuccess({ payload })),
+          map((payload) => deleteTemplateSuccess({ payload })),
           catchError((err) => {
             console.error(err);
-            return of(deleteItemFailure({ payload: err }));
+            return of(deleteTemplateFailure({ payload: err }));
           })
         );
       })
@@ -129,28 +132,28 @@ export class ItemEffects {
 
   changeSuccess$ = createEffect(() =>
     this.actions.pipe(
-      ofType(deleteItemSuccess, updateItemSuccess, createItemSuccess),
+      ofType(deleteTemplateSuccess, updateTemplateSuccess, createTemplateSuccess),
       concatMap((action) =>
         of(action).pipe(
-          withLatestFrom(this.store$.select(fromBussiness.getItemsParams))
+          withLatestFrom(this.store$.select(fromBussiness.getTemplatesParams))
         )
       ),
       map(([action, params]) => {
         const payload = { ...params };
-        return getItems({ payload });
+        return getTemplates({ payload });
       })
     )
   );
 
   getListIcons$ = createEffect(() =>
     this.actions.pipe(
-      ofType(getItemIcons),
+      ofType(getTemplateIcons),
       mergeMap((pramas) => {
         return this.modelService.getAll(pramas.payload).pipe(
-          map((payload) => getItemIconsSuccess({ payload })),
+          map((payload) => getTemplateIconsSuccess({ payload })),
           catchError((err) => {
             console.error(err);
-            return of(getItemIconsFailure());
+            return of(getTemplateIconsFailure());
           })
         );
       })
@@ -159,13 +162,13 @@ export class ItemEffects {
 
   getListShapes$ = createEffect(() =>
     this.actions.pipe(
-      ofType(getItemShapes),
+      ofType(getTemplateShapes),
       switchMap((pramas) => {
         return this.modelService.getAll(pramas.payload).pipe(
-          map((payload) => getItemShapesSuccess({ payload })),
+          map((payload) => getTemplateShapesSuccess({ payload })),
           catchError((err) => {
             console.error(err);
-            return of(getItemShapesFailure());
+            return of(getTemplateShapesFailure());
           })
         );
       })
@@ -174,13 +177,13 @@ export class ItemEffects {
 
   getListElements$ = createEffect(() =>
     this.actions.pipe(
-      ofType(getItemElements),
+      ofType(getTemplateElements),
       switchMap((pramas) => {
         return this.modelService.getAll(pramas.payload).pipe(
-          map((payload) => getItemElementsSuccess({ payload })),
+          map((payload) => getTemplateElementsSuccess({ payload })),
           catchError((err) => {
             console.error(err);
-            return of(getItemElementsFailure());
+            return of(getTemplateElementsFailure());
           })
         );
       })
@@ -189,13 +192,30 @@ export class ItemEffects {
 
   getSearch$ = createEffect(() =>
     this.actions.pipe(
-      ofType(getItemIconsSearch),
+      ofType(getTemplateIconsSearch),
       switchMap((pramas) => {
         return this.modelService.search(pramas.payload).pipe(
-          map((payload) => getItemIconsSearchSuccess({ payload })),
+          map((payload) => getTemplateIconsSearchSuccess({ payload })),
           catchError((err) => {
             console.error(err);
-            return of(getItemIconsSearchFailure());
+            return of(getTemplateIconsSearchFailure());
+          })
+        );
+      })
+    )
+  );
+
+  render$ = createEffect(() =>
+    this.actions.pipe(
+      ofType(render),
+      switchMap((params) => {
+        return this.modelService.render(params.payload).pipe(
+          map((payload) => {
+            return renderSuccess({ payload });
+          }),
+          catchError((err) => {
+            console.error(err);
+            return of(renderFailure({ payload: err }));
           })
         );
       })

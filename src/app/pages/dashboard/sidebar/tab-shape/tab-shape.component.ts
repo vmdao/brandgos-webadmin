@@ -78,7 +78,7 @@ export class TabShapeComponent implements OnInit, OnDestroy {
       page: this.page - 1,
       size: this.size,
       sort: `${this.sortKey},${this.sortValue}`,
-      join: ['material', 'collections'],
+      join: ['collections'],
       filter: [`type||$eq||svg`, `collections.code||$eq||shape`],
     };
 

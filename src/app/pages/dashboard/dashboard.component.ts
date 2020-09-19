@@ -1,4 +1,5 @@
 import { Component, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ItemService } from '../@store/item';
 import { Editor } from './workspace/Editor';
 import { SavedDocumentData } from './workspace/viewport/DocumentDTO';
 
@@ -9,7 +10,6 @@ import { SavedDocumentData } from './workspace/viewport/DocumentDTO';
 })
 export class DashboardComponent implements OnInit {
   editor: Editor;
-
   zooms = [
     { label: '20%', value: 0.2 },
     { label: '50%', value: 0.5 },
@@ -20,8 +20,14 @@ export class DashboardComponent implements OnInit {
     { label: '300%', value: 3 },
   ];
 
+  materials = [];
+  materialsData = [];
   zoomSelected: { label: string; value: number };
-  constructor(private zone: NgZone, private cd: ChangeDetectorRef) {}
+  constructor(
+    private zone: NgZone,
+    private cd: ChangeDetectorRef,
+    private materialSerivce: ItemService
+  ) {}
 
   ngOnInit() {
     const page: SavedDocumentData = {
@@ -269,7 +275,7 @@ export class DashboardComponent implements OnInit {
     this.zone.runOutsideAngular(() => {
       this.editor = new Editor({ zoom: 1 });
       this.editor.render('#viewport-container');
-      this.editor.loadData(page);
+      // this.editor.loadData(page);
       // this.editor.createElements(localStorages.elements);
     });
 
@@ -277,9 +283,28 @@ export class DashboardComponent implements OnInit {
   }
 
   onClickItem(item) {
-    // if (this.workspace) {
-    //   this.workspace.createElement(item);
-    // }
+    if (this.editor) {
+      console.log('item', item);
+      this.editor.addElement(item);
+    }
+  }
+
+  onClickTemplate(template) {
+    console.log(template);
+    const { materials } = template;
+    const materialNotExist = materials.filter((m) => {
+      return !this.materials.find((ma) => m.id !== ma.id);
+    });
+    this.materials = [...this.materials, ...materialNotExist];
+    this.loadMaterials(materialNotExist).subscribe((res) => {
+      this.materialsData = [...this.materialsData, ...res.data];
+      this.editor.updateMaterialStore(this.materialsData);
+      this.editor.loadData(template);
+    });
+  }
+
+  loadMaterials(materialNotExist) {
+    return this.materialSerivce.getAll({});
   }
 
   onClickZoom(zoom) {

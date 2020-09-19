@@ -1,0 +1,35 @@
+.collection {
+  margin-bottom: 24px;
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    color: #fff;
+    font-weight: 700;
+    margin-left: 8px;
+  }
+
+  &__more a {
+    color: #b9b9b9;
+    font-weight: 700;
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.item {
+  width: 135px;
+  height: auto;
+  .item-box {
+    padding: 0;
+    background: unset;
+  }
+}
+
+:host {
+  display: block;
+}

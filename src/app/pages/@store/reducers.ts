@@ -12,6 +12,7 @@ import * as fromProduct from './product/reducer';
 import * as fromProject from './project/reducer';
 import * as fromItem from './item/reducer';
 import * as fromColletion from './collection/reducer';
+import * as fromTemplate from './template/reducer';
 
 export interface AppState {
   users: formUsers.UserState;
@@ -26,6 +27,7 @@ export interface AppState {
   projects: fromProject.ProjectState;
   items: fromItem.ItemState;
   collections: fromColletion.CollectionState;
+  templates: fromTemplate.TemplateState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
@@ -41,6 +43,7 @@ export const reducers: ActionReducerMap<AppState> = {
   projects: fromProject.reducer,
   items: fromItem.reducer,
   collections: fromColletion.reducer,
+  templates: fromTemplate.reducer,
 };
 
 export const selectContainerState = createFeatureSelector<AppState>('storeApp');

@@ -10,6 +10,7 @@ import { CartEffects } from './cart/effects';
 import { ProjectEffects } from './project/effects';
 import { ItemEffects } from './item/effects';
 import { CollectionEffects } from './collection/effects';
+import { TemplateEffects } from './template/effects';
 
 export const effects: any[] = [
   UserEffects,
@@ -24,4 +25,5 @@ export const effects: any[] = [
   ProjectEffects,
   ItemEffects,
   CollectionEffects,
+  TemplateEffects,
 ];

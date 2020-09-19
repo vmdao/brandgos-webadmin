@@ -21,7 +21,7 @@ import { CollectionModel } from '@app/pages/@store/collection';
 })
 export class TabTemplateComponent implements OnInit, OnDestroy {
   @Output()
-  clickItem: EventEmitter<any> = new EventEmitter();
+  clickTemplate: EventEmitter<any> = new EventEmitter();
 
   private unsubscribe$: Subject<void> = new Subject();
   loading$: Observable<boolean>;
@@ -56,7 +56,8 @@ export class TabTemplateComponent implements OnInit, OnDestroy {
 
   category = 'Cafe';
   style = 'Colorful';
-
+  collectionJoin = [];
+  collectionFilter = [];
   constructor(
     private store$: Store<fromApp.AppState>,
     private cd: ChangeDetectorRef
@@ -72,20 +73,21 @@ export class TabTemplateComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  onClickItem(item) {
-    this.clickItem.emit(item);
+  onClickTemplate(item) {
+    this.clickTemplate.emit(item);
   }
 
   onClickSearch() {
     this.q.tag = null;
     this.fulltext = this.q.fulltext;
+    this.cd.detectChanges();
   }
 
   getCollectionJoinItem(item) {
-    return ['material', 'collections'];
+    return [];
   }
 
   getCollectionFilterItem(item) {
-    return [`type||$eq||svg`, `collections.code||$eq||icon`];
+    return [];
   }
 }

@@ -43,6 +43,7 @@ export class Editor extends Component {
   scrollable = new Scrollable();
   public viewport: Viewport;
   moveablerSelected: CusMoveable;
+  materialStore = [];
 
   constructor(private params) {
     super();
@@ -73,6 +74,7 @@ export class Editor extends Component {
       moveableData: this.moveableData,
       selectoManager: this.selectoManager,
       historyManager: this.historyManager,
+      editor: this,
     });
     this.viewport.render();
     this.setupEvent();
@@ -152,6 +154,10 @@ export class Editor extends Component {
 
   onDestroy() {
     console.log('onDestroy');
+  }
+
+  updateMaterialStore(materialStore) {
+    this.materialStore = materialStore;
   }
 
   setupEvent() {
@@ -242,6 +248,10 @@ export class Editor extends Component {
     return Promise.all([].map((target) => {})).then(() => {
       return [];
     });
+  }
+
+  public addElement(item) {
+    this.viewport.addElement([item]);
   }
 
   render(selector) {

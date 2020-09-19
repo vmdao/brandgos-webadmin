@@ -56,7 +56,6 @@ export class TypeSvgBehavior implements TypeBehavior {
       color: fill,
       curve,
       fontSize,
-      fontFamily,
       letterSpacing,
       url: urlFont,
       htmlSvg,
