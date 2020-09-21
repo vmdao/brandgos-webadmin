@@ -2,7 +2,8 @@
   <nz-tabset nzTabPosition="left" nzType="line">
     <nz-tab nzTitle="Template">
       <ng-template nz-tab>
-        <app-tab-template (clickItem)="onClickItem($event)"> </app-tab-template>
+        <app-tab-template (clickTemplate)="onClickTemplate($event)">
+        </app-tab-template>
       </ng-template>
     </nz-tab>
 

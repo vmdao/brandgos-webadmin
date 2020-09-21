@@ -1,23 +1,23 @@
 <div class="tab-inner">
-  <app-collection-list
+  <app-collection-material-list
     [collectionName]="'Shape'"
     [isQuery]="true"
-    [collectionJoin]="getCollectionJoinShape()"
-    [collectionFilter]="getCollectionFilterShape()"
+    [collectionJoin]="collectionFilter"
+    [collectionFilter]="collectionJoin"
     (clickItem)="onClickItem($event)"
-  ></app-collection-list>
+  ></app-collection-material-list>
 
   <ng-container *ngFor="let item of collections$ | async">
     <nz-skeleton
       *ngIf="(collectionsLoading$ | async) === true"
       [nzActive]="true"
     ></nz-skeleton>
-    <app-collection-list
+    <app-collection-material-list
       [collectionName]="item.title + ' collection'"
       [isQuery]="true"
-      [collectionJoin]="getCollectionJoinItem(item)"
-      [collectionFilter]="getCollectionFilterItem(item)"
+      [collectionJoin]="collectionFilter"
+      [collectionFilter]="collectionJoin"
       (clickItem)="onClickItem($event)"
-    ></app-collection-list>
+    ></app-collection-material-list>
   </ng-container>
 </div>

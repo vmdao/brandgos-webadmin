@@ -11,24 +11,21 @@ import {
   SimpleChanges,
 } from '@angular/core';
 
-import {
-  ItemModel,
-  ItemsActions,
-  ItemService,
-  ITEM_TYPE,
-} from '@app/pages/@store/item';
+import { ItemModel, ItemService, ITEM_TYPE } from '@app/pages/@store/item';
 import { Subject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromApp from '@app/pages/@store';
 import { CollectionModel } from '@app/pages/@store/collection';
+import { FILE_QUANLITY } from '@app/pages/@store/template';
 
 @Component({
-  selector: 'app-collection-list',
+  selector: 'app-collection-material-list',
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ColectionListComponent implements OnInit, OnDestroy, OnChanges {
+export class ColectionMaterialListComponent
+  implements OnInit, OnDestroy, OnChanges {
   @Output()
   clickItem: EventEmitter<any> = new EventEmitter();
 
@@ -59,7 +56,7 @@ export class ColectionListComponent implements OnInit, OnDestroy, OnChanges {
   total = 0;
 
   sortValue: string | null = 'DESC';
-  sortKey: string | null = 'priority';
+  sortKey: string | null = 'id';
 
   q = {
     fulltext: null,
@@ -87,11 +84,11 @@ export class ColectionListComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(change: SimpleChanges) {
-    if (this.collectionSearch) {
-      this.fetchSearch();
-    } else {
-      this.searchData();
-    }
+    // if (this.collectionSearch) {
+    //   this.fetchSearch();
+    // } else {
+    //   this.searchData();
+    // }
   }
 
   ngOnDestroy() {
@@ -160,23 +157,25 @@ export class ColectionListComponent implements OnInit, OnDestroy, OnChanges {
 
   onClickItem(item) {
     const dataShape = this.getShape(item);
+
     if (dataShape) {
       this.clickItem.emit(dataShape);
       return;
     }
-    const itemStyle = item.style;
+    const file = item.files.find((f) => f.quanlity === FILE_QUANLITY.ORIGIN);
+
     const workspaceWidth = 680;
     const workspaceHeight = 360;
 
     const maxWidth = 140;
 
-    const dataWidth = itemStyle.width > maxWidth ? maxWidth : itemStyle.width;
-    const dataHeight = (dataWidth / itemStyle.width) * itemStyle.height;
+    const dataWidth = file.width > maxWidth ? maxWidth : file.width;
+    const dataHeight = (dataWidth / file.width) * file.height;
 
     const dataStyle = {
-      url: item.material.bucket + item.material.pathOrigin,
-      originUrl: item.material.bucket + item.material.pathOrigin,
-      thumbUrl: item.material.bucket + item.material.pathOrigin,
+      url: file.url,
+      originUrl: file.url,
+      thumbUrl: file.url,
       color1: '#000',
     };
 
@@ -273,5 +272,10 @@ export class ColectionListComponent implements OnInit, OnDestroy, OnChanges {
     };
 
     return data;
+  }
+
+  getFileUrl(files) {
+    const file = files.find((f) => f.quanlity === 'THUMBNAIL');
+    return (file && file.url) || '';
   }
 }

@@ -27,12 +27,12 @@
       *ngIf="(loading$ | async) === true"
       [nzActive]="true"
     ></nz-skeleton>
-    <app-collection-list
+    <app-collection-material-list
       [isQuery]="true"
       [collectionName]="'Result ' + fulltext"
       [collectionSearch]="fulltext"
       (clickItem)="onClickItem($event)"
-    ></app-collection-list>
+    ></app-collection-material-list>
   </ng-container>
   <ng-container *ngIf="!fulltext">
     <ng-container *ngFor="let item of most">
@@ -40,13 +40,13 @@
         *ngIf="(loading$ | async) === true"
         [nzActive]="true"
       ></nz-skeleton>
-      <app-collection-list
+      <app-collection-material-list
         [isQuery]="true"
         [collectionName]="item.label"
-        [collectionJoin]="getCollectionJoinItem(item)"
-        [collectionFilter]="getCollectionFilterItem(item)"
+        [collectionJoin]="collectionJoin"
+        [collectionFilter]="collectionFilter"
         (clickItem)="onClickItem($event)"
-      ></app-collection-list>
+      ></app-collection-material-list>
     </ng-container>
 
     <div class="section-heading">Categories</div>
@@ -55,14 +55,13 @@
         *ngIf="(loading$ | async) === true"
         [nzActive]="true"
       ></nz-skeleton>
-      <app-collection-list
+      <app-collection-material-list
         [isQuery]="true"
         [collectionName]="item.label"
-        [collectionSearch]="item.label"
-        [collectionJoin]="getCollectionJoinItem(item)"
-        [collectionFilter]="getCollectionFilterItem(item)"
+        [collectionJoin]="collectionJoin"
+        [collectionFilter]="collectionFilter"
         (clickItem)="onClickItem($event)"
-      ></app-collection-list>
+      ></app-collection-material-list>
     </ng-container>
   </ng-container>
 </div>

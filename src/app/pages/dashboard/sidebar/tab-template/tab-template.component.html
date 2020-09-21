@@ -37,32 +37,34 @@
       </nz-select>
     </div>
   </div>
-
-  <ng-container *ngIf="fulltext">
-    <nz-skeleton
-      *ngIf="(loading$ | async) === true"
-      [nzActive]="true"
-    ></nz-skeleton>
-    <app-collection-list
-      [isQuery]="true"
-      [collectionName]="'Result ' + fulltext"
-      [collectionSearch]="fulltext"
-      (clickItem)="onClickItem($event)"
-    ></app-collection-list>
-  </ng-container>
-  <ng-container *ngIf="!fulltext">
-    <ng-container *ngFor="let item of categories">
+  <div class="cc">
+    <ng-container *ngIf="fulltext">
       <nz-skeleton
         *ngIf="(loading$ | async) === true"
         [nzActive]="true"
       ></nz-skeleton>
-      <app-collection-list
+      <app-collection-template-list
         [isQuery]="true"
-        [collectionName]="item.label"
-        [collectionJoin]="getCollectionJoinItem(item)"
-        [collectionFilter]="getCollectionFilterItem(item)"
-        (clickItem)="onClickItem($event)"
-      ></app-collection-list>
+        [collectionName]="'Result ' + fulltext"
+        [collectionSearch]="fulltext"
+        (clickTemplate)="onClickTemplate($event)"
+      ></app-collection-template-list>
     </ng-container>
-  </ng-container>
+
+    <ng-container *ngIf="!fulltext">
+      <ng-container *ngFor="let item of categories">
+        <nz-skeleton
+          *ngIf="(loading$ | async) === true"
+          [nzActive]="true"
+        ></nz-skeleton>
+        <app-collection-template-list
+          [isQuery]="true"
+          [collectionName]="item.label"
+          [collectionJoin]="collectionJoin"
+          [collectionFilter]="collectionFilter"
+          (clickTemplate)="onClickTemplate($event)"
+        ></app-collection-template-list>
+      </ng-container>
+    </ng-container>
+  </div>
 </div>

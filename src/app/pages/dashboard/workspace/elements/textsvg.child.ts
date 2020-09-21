@@ -17,7 +17,9 @@ export class TextSvgChild extends BaseTextChild {
   htmlSvg = '';
   constructor(options: any, parent) {
     super(options, parent);
-    this.url = options.style.url;
+    if (options.style) {
+      this.url = options.style.url;
+    }
     this.htmlSvg = this.getHtmlTransform();
   }
 

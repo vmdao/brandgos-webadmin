@@ -72,6 +72,28 @@ export class RestService {
     );
   }
 
+  getOut(url: string, paramsIn = {}, showSuccess = false): Observable<any> {
+    let params = new HttpParams();
+    Object.keys(paramsIn).forEach((key) => {
+      if (paramsIn[key] !== undefined) {
+        if (Array.isArray(paramsIn[key])) {
+          paramsIn[key].forEach((e) => {
+            params = params.append(key, e);
+          });
+        } else if (typeof paramsIn[key] === 'object') {
+          params = params.append(key, JSON.stringify(paramsIn[key]));
+        } else {
+          params = params.append(key, paramsIn[key]);
+        }
+      }
+    });
+    const headers = this.getHeader();
+    return this.http.get(url, { params, headers }).pipe(
+      map((res) => this.displaySuccessMessage(res, showSuccess)),
+      catchError((err) => this.handleError(err))
+    );
+  }
+
   put(
     path: string,
     body: any = {},

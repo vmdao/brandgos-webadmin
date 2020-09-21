@@ -50,6 +50,8 @@ export class TabIconComponent implements OnInit, OnDestroy {
   ];
 
   categories = [{ label: 'Accounting', value: 'Computer' }];
+  collectionJoin = [];
+  collectionFilter = [];
   constructor(
     private store$: Store<fromApp.AppState>,
     private cd: ChangeDetectorRef
@@ -86,8 +88,8 @@ export class TabIconComponent implements OnInit, OnDestroy {
       page: this.page - 1,
       size: this.size,
       sort: `${this.sortKey},${this.sortValue}`,
-      join: ['material', 'collections'],
-      filter: [`type||$eq||svg`, `collections.code||$eq||icon`],
+      join: ['collections'],
+      filter: [],
     };
 
     if (this.q.fulltext !== '') {
@@ -97,29 +99,6 @@ export class TabIconComponent implements OnInit, OnDestroy {
     this.store$.dispatch(ItemsActions.getItemIcons({ payload: params }));
   }
 
-  fetchSearch() {
-    const params: {
-      collectionCode?: string;
-      tag?: string;
-      type?: string;
-      key?: string;
-      sort?: string;
-    } = {
-      collectionCode: 'icon',
-      type: 'svg',
-    };
-
-    if (typeof this.q.fulltext === 'string') {
-      params.key = this.q.fulltext;
-    }
-
-    if (typeof this.q.tag === 'string') {
-      params.tag = this.q.tag;
-    }
-
-    this.store$.dispatch(ItemsActions.getItemIconsSearch({ payload: params }));
-  }
-
   onClickItem(item) {
     this.clickItem.emit(item);
   }
@@ -127,13 +106,5 @@ export class TabIconComponent implements OnInit, OnDestroy {
   onClickSearch() {
     this.q.tag = null;
     this.fulltext = this.q.fulltext;
-  }
-
-  getCollectionJoinItem(item) {
-    return ['material', 'collections'];
-  }
-
-  getCollectionFilterItem(item) {
-    return [`type||$eq||svg`, `collections.code||$eq||icon`];
   }
 }

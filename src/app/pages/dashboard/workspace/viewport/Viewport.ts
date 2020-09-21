@@ -39,8 +39,8 @@ export class Viewport extends Component {
   moveablerSelected: CusMoveable;
   selectoManager: Selecto;
   historyManager: HistoryManager;
+  editor: Editor;
   menuFactory: MenuFactory;
-
   constructor(option: {
     zoom;
     eventBus: EventBus;
@@ -48,6 +48,7 @@ export class Viewport extends Component {
     selectoManager: Selecto;
     historyManager: HistoryManager;
     menuFactory: MenuFactory;
+    editor: Editor;
   }) {
     super();
     this.zoom = option.zoom;
@@ -56,6 +57,7 @@ export class Viewport extends Component {
     this.selectoManager = option.selectoManager;
     this.historyManager = option.historyManager;
     this.menuFactory = option.menuFactory;
+    this.editor = option.editor;
   }
 
   render() {
@@ -119,7 +121,6 @@ export class Viewport extends Component {
 
   public getPage(id: string) {
     const info = this.getPageInfo(id);
-
     return info ? info.el : null;
   }
 
@@ -163,6 +164,7 @@ export class Viewport extends Component {
           zoom: this.zoom,
           eventBus: this.eventBus,
           historyManager: this.historyManager,
+          viewport: this,
         },
         info
       );
@@ -237,12 +239,11 @@ export class Viewport extends Component {
       info.render();
 
       append(this.el, info.el);
-
       this.appendElement(info, info.page.elements).then((ok) => {});
     });
 
     return new Promise((resolve) => {
-      const infos = pages.map((info) => {
+      const infos = pages.map((info, index) => {
         // tslint:disable-next-line: no-non-null-assertion
         const id = info.page.id!;
         const selector = `[${DATA_PAGE_ID}="${id}"]`;
@@ -275,7 +276,9 @@ export class Viewport extends Component {
           isDisplaySnapDigit: false,
           dragArea: true,
         });
-
+        if (index === 0) {
+          this.moveableData.currentMoveabler = moveabler;
+        }
         moveabler
           .on('dragStart', this.moveableData.onDragStart)
           .on('drag', this.moveableData.onDrag)
@@ -362,6 +365,14 @@ export class Viewport extends Component {
     });
   }
 
+  public addElement(elementInfos: ElementInfo[]) {
+    const currentMoveabler = this.moveableData.currentMoveabler;
+    const pageEl = currentMoveabler.container;
+    const pageId = pageEl.getAttribute(DATA_PAGE_ID);
+    const pageInfo = this.getPageInfo(pageId);
+    this.appendElement(pageInfo, elementInfos).then((ok) => {});
+  }
+
   public appendElement(
     page: Page,
     elementInfos: ElementInfo[],
@@ -369,7 +380,6 @@ export class Viewport extends Component {
   ): Promise<Array<HTMLElement | SVGElement>> {
     const appendIndex = -1;
     const scopeId = '';
-
     return page
       .appendElement(elementInfos, appendIndex, scopeId)
       .then(({ added }) => {
@@ -388,15 +398,9 @@ export class Viewport extends Component {
     const data = this.moveableData;
     const targets = infos
       .map(function registerFrame(info) {
-        // tslint:disable-next-line: no-non-null-assertion
-        data.createFrame(info.el!, info.frame);
-        // tslint:disable-next-line: no-non-null-assertion
-        data.render(info.el!);
-
-        // tslint:disable-next-line: no-non-null-assertion
-        // info.children!.forEach(registerFrame);
-        // tslint:disable-next-line: no-non-null-assertion
-        return info.el!;
+        data.createFrame(info.el, info.frame);
+        data.render(info.el);
+        return info.el;
       })
       .filter((el) => el);
 
@@ -419,6 +423,10 @@ export class Viewport extends Component {
     });
 
     return targets;
+  }
+
+  getFileInMaterialStore(materialId) {
+    return this.editor.materialStore.find((m) => m.id === materialId);
   }
 }
 

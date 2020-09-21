@@ -7,4 +7,5 @@ export * from './authority/actions';
 export * from './setting/actions';
 export * from './project/actions';
 export * from './item/actions';
+export * from './template/actions';
 export * from './collection/actions';

@@ -11,8 +11,11 @@ export class SvgChild extends BaseSvgChild {
 
   constructor(options: any, parent) {
     super(options, parent);
-    this.originUrl = options.style.originUrl;
-    this.originThumb = options.style.originThumb;
+    if (options.style) {
+      this.originUrl = options.style.originUrl;
+      this.originThumb = options.style.originThumb;
+    }
+
     this.render();
   }
 

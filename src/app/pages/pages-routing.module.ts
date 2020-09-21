@@ -16,7 +16,8 @@ import { TabShapeComponent } from './dashboard/sidebar/tab-shape/tab-shape.compo
 import { TabTextComponent } from './dashboard/sidebar/tab-text/tab-text.component';
 import { TabDesignerComponent } from './dashboard/sidebar/tab-designer/tab-designer.component';
 
-import { ColectionListComponent } from './dashboard/sidebar/@components/collection/collection.component';
+import { ColectionMaterialListComponent } from './dashboard/sidebar/@components/collection-material/collection.component';
+import { ColectionTemplateListComponent } from './dashboard/sidebar/@components/collection-template/collection.component';
 
 export const ENTRIES_COMPONENTS = [];
 
@@ -30,7 +31,8 @@ export const COMPONENTS = [
   TabTextComponent,
   TabDesignerComponent,
   TabTemplateComponent,
-  ColectionListComponent,
+  ColectionMaterialListComponent,
+  ColectionTemplateListComponent,
 ];
 
 const ROUTES: Routes = [];

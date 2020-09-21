@@ -10,6 +10,7 @@ import { CartService } from './cart';
 import { ProjectService } from './project';
 import { ItemService } from './item';
 import { CollectionService } from './collection';
+import { TemplateService } from './template';
 
 export const services = [
   UserService,
@@ -21,4 +22,5 @@ export const services = [
   ProjectService,
   ItemService,
   CollectionService,
+  TemplateService,
 ];

@@ -50,7 +50,8 @@ export class TabElementComponent implements OnInit, OnDestroy {
   ];
 
   collectionSelected: any;
-
+  collectionJoin = [];
+  collectionFilter = [];
   constructor(
     private store$: Store<fromApp.AppState>,
     private cd: ChangeDetectorRef
@@ -94,7 +95,7 @@ export class TabElementComponent implements OnInit, OnDestroy {
   }
 
   getCollectionJoinItem(item) {
-    return ['material', 'collections'];
+    return ['collections'];
   }
 
   getCollectionFilterItem(item) {
@@ -106,7 +107,7 @@ export class TabElementComponent implements OnInit, OnDestroy {
   }
 
   getCollectionJoinShape() {
-    return ['material', 'collections'];
+    return ['collections'];
   }
 
   getCollectionFilterShape() {

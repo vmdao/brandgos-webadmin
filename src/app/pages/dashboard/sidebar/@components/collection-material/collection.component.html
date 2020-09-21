@@ -30,10 +30,7 @@
           (click)="onClickItem(item)"
         >
           <div class="item-box">
-            <img
-              [src]="item.material.bucket + item.material.pathOrigin"
-              [alt]="item.title"
-            />
+            <img [src]="getFileUrl(item.files)" [alt]="item.name" />
           </div>
         </div>
       </div>

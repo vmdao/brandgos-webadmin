@@ -1,50 +1,56 @@
-import { ItemsActions } from './actions';
-import { ItemModel } from './model';
+import { TemplatesActions } from './actions';
+import { TemplateModel } from './model';
 import { createReducer, on } from '@ngrx/store';
 
-export enum ItemModalStatus {
+export enum TemplateModalStatus {
   Init = 0,
   Called = 1,
   Success = 2,
   Failure = 3,
 }
 
-export enum ItemModalType {
+export enum TemplateModalType {
   Create = 0,
   Edit = 1,
   View = 2,
 }
 
 const {
-  getItems,
-  getItemsFailure,
-  getItemsSuccess,
-  createItem,
-  createItemFailure,
-  createItemSuccess,
-  updateItem,
-  updateItemFailure,
-  updateItemSuccess,
-  deleteItem,
-  deleteItemFailure,
-  deleteItemSuccess,
-  openItemView,
-  getItemIcons,
-  getItemIconsSuccess,
-  getItemIconsFailure,
-  getItemShapes,
-  getItemShapesSuccess,
-  getItemShapesFailure,
-  getItemElements,
-  getItemElementsSuccess,
-  getItemElementsFailure,
-  getItemIconsSearch,
-  getItemIconsSearchSuccess,
-  getItemIconsSearchFailure,
-} = ItemsActions;
-export interface ItemState {
-  list: Array<ItemModel>;
-  item: ItemModel;
+  getTemplates,
+  getTemplatesFailure,
+  getTemplatesSuccess,
+  getTemplate,
+  getTemplateFailure,
+  getTemplateSuccess,
+  createTemplate,
+  createTemplateFailure,
+  createTemplateSuccess,
+  updateTemplate,
+  updateTemplateFailure,
+  updateTemplateSuccess,
+  deleteTemplate,
+  deleteTemplateFailure,
+  deleteTemplateSuccess,
+  openTemplateView,
+  getTemplateIcons,
+  getTemplateIconsSuccess,
+  getTemplateIconsFailure,
+  getTemplateShapes,
+  getTemplateShapesSuccess,
+  getTemplateShapesFailure,
+  getTemplateElements,
+  getTemplateElementsSuccess,
+  getTemplateElementsFailure,
+  getTemplateIconsSearch,
+  getTemplateIconsSearchSuccess,
+  getTemplateIconsSearchFailure,
+  render,
+  renderSuccess,
+  renderFailure,
+} = TemplatesActions;
+export interface TemplateState {
+  list: Array<TemplateModel>;
+  template: TemplateModel;
   pagination: {
     pageCount?: number;
     page?: number;
@@ -61,27 +67,27 @@ export interface ItemState {
   };
   loading: boolean;
   modal: {
-    type: ItemModalType;
+    type: TemplateModalType;
     data: any;
     isLoading: boolean;
     errors: Array<any>;
-    status: ItemModalStatus;
+    status: TemplateModalStatus;
   };
 
-  elements: Array<ItemModel>;
+  elements: Array<TemplateModel>;
   elementsLoading: boolean;
-  shapes: Array<ItemModel>;
+  shapes: Array<TemplateModel>;
   shapesLoading: boolean;
-  icons: Array<ItemModel>;
+  icons: Array<TemplateModel>;
   iconsLoading: boolean;
 
   renderData: any;
   renderLoading: boolean;
 }
 
-export const initialState: ItemState = {
+export const initialState: TemplateState = {
   list: [],
-  item: null,
+  template: null,
   pagination: {
     pageCount: 10,
     page: 0,
@@ -98,11 +104,11 @@ export const initialState: ItemState = {
   },
   loading: false,
   modal: {
-    type: ItemModalType.View,
+    type: TemplateModalType.View,
     data: null,
     isLoading: false,
     errors: [],
-    status: ItemModalStatus.Init,
+    status: TemplateModalStatus.Init,
   },
 
   elements: [],
@@ -118,10 +124,10 @@ export const initialState: ItemState = {
 
 export const reducer = createReducer(
   initialState,
-  on(getItems, (state, { payload }) => {
+  on(getTemplates, (state, { payload }) => {
     return { ...state, loading: true, params: { ...payload } };
   }),
-  on(getItemsSuccess, (state, { payload }) => {
+  on(getTemplatesSuccess, (state, { payload }) => {
     const pagination = {
       pageCount: payload.count,
       page: payload.page,
@@ -135,18 +141,18 @@ export const reducer = createReducer(
       loading: false,
     };
   }),
-  on(getItemsFailure, (state) => {
+  on(getTemplatesFailure, (state) => {
     return {
       ...state,
       loading: false,
     };
   }),
-  on(updateItem, (state) => {
+  on(updateTemplate, (state) => {
     const modal = {
       ...state.modal,
       isLoading: true,
-      status: ItemModalStatus.Called,
-      type: ItemModalType.Edit,
+      status: TemplateModalStatus.Called,
+      type: TemplateModalType.Edit,
       errors: [],
     };
     return {
@@ -154,23 +160,23 @@ export const reducer = createReducer(
       modal,
     };
   }),
-  on(updateItemSuccess, (state) => {
+  on(updateTemplateSuccess, (state) => {
     const modal = {
       ...state.modal,
       isLoading: false,
-      status: ItemModalStatus.Success,
+      status: TemplateModalStatus.Success,
     };
     return {
       ...state,
       modal,
     };
   }),
-  on(updateItemFailure, (state, { payload }) => {
+  on(updateTemplateFailure, (state, { payload }) => {
     const { validationErrors = [] } = payload;
     const modal = {
       ...state.modal,
       isLoading: false,
-      status: ItemModalStatus.Failure,
+      status: TemplateModalStatus.Failure,
       errors: [...validationErrors],
     };
     return {
@@ -178,12 +184,12 @@ export const reducer = createReducer(
       modal,
     };
   }),
-  on(createItem, (state, { payload }) => {
+  on(createTemplate, (state, { payload }) => {
     const modal = {
       ...state.modal,
       isLoading: true,
-      status: ItemModalStatus.Init,
-      type: ItemModalType.Create,
+      status: TemplateModalStatus.Init,
+      type: TemplateModalType.Create,
       errors: [],
     };
     return {
@@ -191,23 +197,23 @@ export const reducer = createReducer(
       modal,
     };
   }),
-  on(createItemSuccess, (state) => {
+  on(createTemplateSuccess, (state) => {
     const modal = {
       ...state.modal,
       isLoading: false,
-      status: ItemModalStatus.Success,
+      status: TemplateModalStatus.Success,
     };
     return {
       ...state,
       modal,
     };
   }),
-  on(createItemFailure, (state, { payload }) => {
+  on(createTemplateFailure, (state, { payload }) => {
     const { validationErrors = [] } = payload;
     const modal = {
       ...state.modal,
       isLoading: false,
-      status: ItemModalStatus.Failure,
+      status: TemplateModalStatus.Failure,
       errors: [...validationErrors],
     };
     return {
@@ -215,19 +221,19 @@ export const reducer = createReducer(
       modal,
     };
   }),
-  on(deleteItem, (state) => {
+  on(deleteTemplate, (state) => {
     return { ...state, loading: true };
   }),
-  on(deleteItemSuccess, (state) => {
+  on(deleteTemplateSuccess, (state) => {
     return { ...state, loading: false };
   }),
-  on(deleteItemFailure, (state) => {
+  on(deleteTemplateFailure, (state) => {
     return { ...state, loading: false };
   }),
-  on(openItemView, (state) => {
+  on(openTemplateView, (state) => {
     const modal = {
       ...state.modal,
-      status: ItemModalStatus.Init,
+      status: TemplateModalStatus.Init,
       errors: [],
     };
     return {
@@ -235,68 +241,85 @@ export const reducer = createReducer(
       modal,
     };
   }),
-  on(getItemIcons, (state) => {
+  on(getTemplateIcons, (state) => {
     return { ...state, iconsLoading: true };
   }),
-  on(getItemIconsSuccess, (state, { payload }) => {
+  on(getTemplateIconsSuccess, (state, { payload }) => {
     return {
       ...state,
       icons: [...payload.data],
       iconsLoading: false,
     };
   }),
-  on(getItemIconsFailure, (state) => {
+  on(getTemplateIconsFailure, (state) => {
     return {
       ...state,
       iconsLoading: false,
     };
   }),
-  on(getItemIconsSearch, (state) => {
+  on(getTemplateIconsSearch, (state) => {
     return { ...state, iconsLoading: true };
   }),
-  on(getItemIconsSearchSuccess, (state, { payload }) => {
+  on(getTemplateIconsSearchSuccess, (state, { payload }) => {
     return {
       ...state,
       icons: [...payload.data],
       iconsLoading: false,
     };
   }),
-  on(getItemIconsSearchFailure, (state) => {
+  on(getTemplateIconsSearchFailure, (state) => {
     return {
       ...state,
       iconsLoading: false,
     };
   }),
-  on(getItemShapes, (state) => {
+  on(getTemplateShapes, (state) => {
     return { ...state, shapesLoading: true };
   }),
-  on(getItemShapesSuccess, (state, { payload }) => {
+  on(getTemplateShapesSuccess, (state, { payload }) => {
     return {
       ...state,
       shapes: [...payload.data],
       shapesLoading: false,
     };
   }),
-  on(getItemShapesFailure, (state) => {
+  on(getTemplateShapesFailure, (state) => {
     return {
       ...state,
       shapesLoading: false,
     };
   }),
-  on(getItemElements, (state) => {
+  on(getTemplateElements, (state) => {
     return { ...state, elementsLoading: true };
   }),
-  on(getItemElementsSuccess, (state, { payload }) => {
+  on(getTemplateElementsSuccess, (state, { payload }) => {
     return {
       ...state,
       elements: [...payload.data],
       elementsLoading: false,
     };
   }),
-  on(getItemElementsFailure, (state) => {
+  on(getTemplateElementsFailure, (state) => {
     return {
       ...state,
       elementsLoading: false,
+    };
+  }),
+
+  on(render, (state) => {
+    return { ...state, renderLoading: true };
+  }),
+  on(renderSuccess, (state, { payload }) => {
+    return {
+      ...state,
+      renderData: payload,
+      renderLoading: false,
+    };
+  }),
+  on(renderFailure, (state) => {
+    return {
+      ...state,
+      renderLoading: false,
     };
   })
 );

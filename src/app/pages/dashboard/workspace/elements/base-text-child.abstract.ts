@@ -17,11 +17,11 @@ export interface BaseTextChildData {
 
 export abstract class BaseTextChild {
   $dom: any;
-  curve: number;
-  letterSpacing: number;
-  lineHeight: number;
-  textAlign: string;
-  fontFamily: string;
+  curve: number = 0;
+  letterSpacing: number = 0;
+  lineHeight: number = 1.4;
+  textAlign: string = 'left';
+  fontFamily: string = 'Roboto';
   transform: string;
   fontSize: number;
   color: string;
@@ -31,15 +31,17 @@ export abstract class BaseTextChild {
 
   constructor(options: any, parent) {
     this.parent = parent;
-    this.curve = options.style.curve;
-    this.fontFamily = options.style.fontFamily;
-    this.letterSpacing = options.style.letterSpacing;
-    this.lineHeight = options.style.lineHeight;
-    this.fontSize = options.style.fontSize;
-    this.textAlign = options.style.textAlign;
-    this.transform = options.transform || 'none';
-    this.color = options.style.color;
-    this.html = options.html;
+    if (options.style) {
+      this.curve = options.style.curve;
+      this.fontFamily = options.style.fontFamily;
+      this.letterSpacing = options.style.letterSpacing;
+      this.lineHeight = options.style.lineHeight;
+      this.fontSize = options.style.fontSize;
+      this.textAlign = options.style.textAlign;
+      this.transform = options.transform || 'none';
+      this.color = options.style.color;
+      this.html = options.html;
+    }
 
     this.$dom = jQuery(`<div class="element-inner"></div>`);
     this.setTypeBehavior(new TypeNothingBehavior(this.parent));
