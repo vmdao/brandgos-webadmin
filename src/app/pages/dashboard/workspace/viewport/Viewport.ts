@@ -19,6 +19,7 @@ import Selecto from 'selecto';
 import HistoryManager from '../utils/HistoryManager';
 import { Editor } from '../Editor';
 import { diff } from '@egjs/list-differ';
+import { MenuFactory } from '../utils/MenuFactory';
 
 export class Viewport extends Component {
   public viewport: SavedDocumentData = {
@@ -38,12 +39,15 @@ export class Viewport extends Component {
   moveablerSelected: CusMoveable;
   selectoManager: Selecto;
   historyManager: HistoryManager;
+  menuFactory: MenuFactory;
+
   constructor(option: {
     zoom;
     eventBus: EventBus;
     moveableData: MoveableData;
     selectoManager: Selecto;
     historyManager: HistoryManager;
+    menuFactory: MenuFactory;
   }) {
     super();
     this.zoom = option.zoom;
@@ -51,6 +55,7 @@ export class Viewport extends Component {
     this.eventBus = option.eventBus;
     this.selectoManager = option.selectoManager;
     this.historyManager = option.historyManager;
+    this.menuFactory = option.menuFactory;
   }
 
   render() {
@@ -176,7 +181,7 @@ export class Viewport extends Component {
       }
     }
     if (this.moveableData.currentMoveabler) {
-      this.moveableData.currentMoveabler!.updateRect();
+      this.moveableData.currentMoveabler.updateRect();
     }
   }
 
@@ -241,11 +246,9 @@ export class Viewport extends Component {
         // tslint:disable-next-line: no-non-null-assertion
         const id = info.page.id!;
         const selector = `[${DATA_PAGE_ID}="${id}"]`;
-        // tslint:disable-next-line: no-non-null-assertion
-        const target = getEl(selector)!;
-        info.el = target;
-        // const pageBody = findChildrenEl(target, '.page-body')
-        const moveabler = new CusMoveable(info.el, {
+        const pageEl = getEl(selector);
+        info.el = pageEl;
+        const moveabler = new CusMoveable(pageEl, {
           zoom: 1,
           edge: false,
           keepRatio: true,
@@ -294,6 +297,7 @@ export class Viewport extends Component {
         moveabler
           .on('click', ({ target }) => {
             // console.log('renderStart');
+            this.menuFactory.createMenu(target);
           })
           .on('clickGroup', ({ inputEvent, inputTarget }) => {
             this.selectoManager.clickTarget(inputEvent, inputTarget);
@@ -317,7 +321,7 @@ export class Viewport extends Component {
               prev: datas.prevData,
               next: this.moveableData.getFrame(target).get(),
               currentPage: info,
-              moveabler: moveabler,
+              moveabler,
             });
           })
           .on('renderGroupStart', ({ datas, targets }) => {
@@ -335,7 +339,7 @@ export class Viewport extends Component {
               return;
             }
             const prevDatas = datas.prevDatas;
-            const infos = targets.map((target, i) => {
+            const infosTargets = targets.map((target, i) => {
               return {
                 id: target,
                 prev: prevDatas[i],
@@ -343,9 +347,9 @@ export class Viewport extends Component {
               };
             });
             this.historyManager.addAction('renders', {
-              infos,
+              infos: infosTargets,
               currentPage: info,
-              moveabler: moveabler,
+              moveabler,
             });
           });
 

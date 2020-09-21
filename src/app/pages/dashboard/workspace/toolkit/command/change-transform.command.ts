@@ -1,19 +1,19 @@
 import { Command } from './base.interface';
 import { BaseElement } from '../../elements/base.abstract';
-import { Workspace } from '../../workspace';
+import { Editor } from '../../Editor';
 export class TransformCommand implements Command {
   element: BaseElement;
-  workspace: Workspace;
-  constructor(element: BaseElement, workspace: Workspace) {
+  editor: Editor;
+  constructor(element: BaseElement, editor: Editor) {
     this.element = element;
-    this.workspace = workspace;
+    this.editor = editor;
   }
 
   execute(value: boolean) {
     const v = value ? 'uppercase' : 'none';
 
     const callbackUpdateRect = () => {
-      this.workspace.managerMoveabler.updateRect();
+      this.editor.moveablerSelected.updateRect();
     };
 
     this.element.text.perforTextTransform({

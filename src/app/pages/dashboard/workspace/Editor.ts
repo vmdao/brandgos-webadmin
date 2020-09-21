@@ -6,7 +6,6 @@ import KeyManager from './utils/KeyManager';
 import ClipboardManager from './utils/ClipboardManager';
 import MoveableData from './viewport/MoveableData';
 
-import { ToolbarMenu } from './toolkit/toolbar/menu';
 import {
   getViewEl,
   append,
@@ -24,6 +23,7 @@ import Selecto from 'selecto';
 import { CusMoveable } from './utils/utils';
 import { Scrollable } from './viewport/Scroll';
 import { isMacintosh } from './utils/consts';
+import { MenuFactory } from './utils/MenuFactory';
 
 export class Editor extends Component {
   el: HTMLElement;
@@ -43,6 +43,7 @@ export class Editor extends Component {
   scrollable = new Scrollable();
   public viewport: Viewport;
   moveablerSelected: CusMoveable;
+  menuFactory = new MenuFactory(this);
 
   constructor(private params) {
     super();
@@ -73,6 +74,7 @@ export class Editor extends Component {
       moveableData: this.moveableData,
       selectoManager: this.selectoManager,
       historyManager: this.historyManager,
+      menuFactory: this.menuFactory,
     });
     this.viewport.render();
     this.setupEvent();

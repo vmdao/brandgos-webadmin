@@ -41,9 +41,8 @@ export class Scrollable {
     if (pageSelectedExist) {
       pageSelected = pageSelectedExist;
     }
-
-    if (pagesView.lenght > 3) {
-      const num = Math.round(pagesView.length / 2);
+    if (pagesView.length > 2) {
+      const num = Math.floor(pagesView.length / 2);
       pageSelected = pagesView[num];
     } else {
       pageSelected = this.isDown
