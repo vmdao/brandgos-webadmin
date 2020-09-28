@@ -9,7 +9,6 @@ export class TextSvgChild extends BaseTextChild {
   constructor(parent) {
     super(parent);
     this.htmlSvg = this.getHtmlTransform();
-    this.render();
   }
 
   render() {
