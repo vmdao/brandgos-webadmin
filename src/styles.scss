@@ -10,8 +10,6 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-@import 'pro.scss';
-
 .ant-tabs {
   height: 100%;
 
@@ -280,3 +278,5 @@ nz-content {
 .cdk-global-scrollblock {
   overflow-y: hidden;
 }
+
+@import 'pro.scss';

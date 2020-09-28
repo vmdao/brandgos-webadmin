@@ -6,13 +6,6 @@ import KeyManager from './utils/KeyManager';
 import ClipboardManager from './utils/ClipboardManager';
 import MoveableData from './viewport/MoveableData';
 
-import {
-  getViewEl,
-  append,
-  getPageOfElement,
-  addPageSelected,
-  filterElementsByPage,
-} from './utils/HtmlHelper';
 import { Component } from './lifecycle/component.astract';
 import { SavedDocumentData } from './viewport/DocumentDTO';
 import { Viewport } from './viewport/Viewport';
@@ -24,6 +17,14 @@ import { CusMoveable } from './utils/utils';
 import { Scrollable } from './viewport/Scroll';
 import { isMacintosh } from './utils/consts';
 import { MenuFactory } from './utils/MenuFactory';
+
+import {
+  getViewEl,
+  append,
+  getPageOfElement,
+  addPageSelected,
+  filterElementsByPage,
+} from './utils/HtmlHelper';
 
 export class Editor extends Component {
   el: HTMLElement;
@@ -47,16 +48,39 @@ export class Editor extends Component {
   materialStore = [];
 
   constructor(private params) {
-    super();
+    super(params);
+  }
+
+  onInit(params) {
     this.zoom = params.zoom || 1;
   }
 
-  onInit() {}
-
   onViewed() {
-    this.eventBus.on('changeZoom', (message: { zoom: number }) => {
-      this.zoom = message.zoom;
+    this.setupViewport();
+    this.setupEvent();
+    this.setupHotkey();
+  }
+
+  onDestroy() {
+    console.log('onDestroy');
+  }
+
+  updateMaterialStore(materialStore) {
+    this.materialStore = materialStore;
+  }
+
+  private setupViewport() {
+    this.viewport = new Viewport({
+      zoom: this.zoom,
+      eventBus: this.eventBus,
+      moveableData: this.moveableData,
+      selectoManager: this.selectoManager,
+      historyManager: this.historyManager,
+      menuFactory: this.menuFactory,
+      editor: this,
     });
+
+    this.viewport.render();
 
     this.selectoManager = new Selecto({
       container: this.el,
@@ -69,28 +93,20 @@ export class Editor extends Component {
       preventDefault: true,
     });
 
-    this.viewport = new Viewport({
-      zoom: this.zoom,
-      eventBus: this.eventBus,
-      moveableData: this.moveableData,
-      selectoManager: this.selectoManager,
-      historyManager: this.historyManager,
-      menuFactory: this.menuFactory,
-      editor: this,
-    });
-    this.viewport.render();
-    this.setupEvent();
-    this.setupHotkey();
-
     this.selectoManager
-      .on('dragStart', (e) => {
-        const target = e.inputEvent.target;
+      .on('dragStart', ({ inputEvent, stop, isTrusted }) => {
+        const target = inputEvent.target;
+        this.checkBlur();
+
+        if (!this.moveableData.currentMoveabler) {
+          return stop();
+        }
         if (
-          (this.moveableData.currentMoveabler &&
-            this.moveableData.currentMoveabler.isMoveableElement(target)) ||
+          (inputEvent.type === 'touchstart' && isTrusted) ||
+          this.moveableData.currentMoveabler.isMoveableElement(target) ||
           this.targetsSelected.some((t) => t === target || t.contains(target))
         ) {
-          e.stop();
+          stop();
         }
       })
       .on('select', ({ selected }) => {
@@ -122,14 +138,19 @@ export class Editor extends Component {
         this.moveableData.currentMoveabler.keepRatio = true;
         this.moveableData.currentMoveabler.rotatable = true;
 
-        this.moveableData.currentMoveabler.target = this.targetsSelected;
-
         if (isDragStart) {
           inputEvent.preventDefault();
-          setTimeout(() => {
-            this.moveableData.currentMoveabler.dragStart(inputEvent);
-          });
         }
+        if (!isDragStart) {
+          return;
+        }
+
+        this.targetsSelected = selected;
+
+        setTimeout(() => {
+          this.moveableData.currentMoveabler.target = this.targetsSelected;
+          this.moveableData.currentMoveabler.dragStart(inputEvent);
+        });
         // if (targetsSelected.length === 1) {
         //   this.selectedElement(jQuery(targetsSelected[0]));
         // } else {
@@ -154,15 +175,11 @@ export class Editor extends Component {
       });
   }
 
-  onDestroy() {
-    console.log('onDestroy');
-  }
+  private setupEvent() {
+    this.eventBus.on('changeZoom', (message: { zoom: number }) => {
+      this.zoom = message.zoom;
+    });
 
-  updateMaterialStore(materialStore) {
-    this.materialStore = materialStore;
-  }
-
-  setupEvent() {
     this.eventBus.on('select', ({ elements }) => {
       const firtElement = elements[0];
       const currentPage = getPageOfElement(firtElement);
@@ -195,7 +212,7 @@ export class Editor extends Component {
     });
   }
 
-  setupHotkey() {
+  private setupHotkey() {
     this.keyManager.keydown(
       [isMacintosh ? 'meta' : 'ctrl', 'v'],
       () => {},
@@ -217,12 +234,26 @@ export class Editor extends Component {
     );
   }
 
+  private checkBlur() {
+    const activeElement = document.activeElement;
+    if (activeElement) {
+      (activeElement as HTMLElement).blur();
+    }
+    // tslint:disable-next-line: no-non-null-assertion
+    const selection = document.getSelection()!;
+
+    if (selection) {
+      selection.removeAllRanges();
+    }
+    this.eventBus.trigger('blur');
+  }
+
   loadData(documentData: SavedDocumentData) {
     this.documentData = documentData;
     this.appendJSXs(this.documentData.pages);
   }
 
-  public appendJSXs(
+  appendJSXs(
     jsxs: PageInfo[],
     isRestore?: boolean
   ): Promise<Array<HTMLElement | SVGElement>> {
@@ -245,14 +276,14 @@ export class Editor extends Component {
       });
   }
 
-  public appendComplete(infos: Page[], isRestore?: boolean) {
+  appendComplete(infos: Page[], isRestore?: boolean) {
     const data = this.moveableData;
     return Promise.all([].map((target) => {})).then(() => {
       return [];
     });
   }
 
-  public addElement(item) {
+  addElement(item) {
     this.viewport.addElement([item]);
   }
 

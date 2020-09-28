@@ -14,7 +14,6 @@ import EventBus from '../utils/EventBus';
 import MoveableData from './MoveableData';
 import HistoryManager from '../utils/HistoryManager';
 import { Viewport } from './Viewport';
-import { angle } from 'makerjs';
 
 export class Page extends Component {
   el: HTMLElement;
@@ -37,7 +36,7 @@ export class Page extends Component {
     },
     params
   ) {
-    super();
+    super(option);
     this.page = params;
     this.zoom = option.zoom;
     this.eventBus = option.eventBus;
@@ -66,15 +65,15 @@ export class Page extends Component {
 
   public getLastChildInfo(id: string) {
     const info = this.getInfo(id);
-    const children = info.children!;
+    const children = info.children;
 
     return children[children.length - 1];
   }
 
   public getNextInfo(id: string) {
     const info = this.getInfo(id);
-    const parentInfo = this.getInfo(info.scopeId!)!;
-    const parentChildren = parentInfo.children!;
+    const parentInfo = this.getInfo(info.scopeId);
+    const parentChildren = parentInfo.children;
     const index = parentChildren.indexOf(info);
 
     return parentChildren[index + 1];
@@ -82,14 +81,15 @@ export class Page extends Component {
 
   public getPrevInfo(id: string) {
     const info = this.getInfo(id);
-    const parentInfo = this.getInfo(info.scopeId!)!;
-    const parentChildren = parentInfo.children!;
+    const parentInfo = this.getInfo(info.scopeId);
+    const parentChildren = parentInfo.children;
     const index = parentChildren.indexOf(info);
 
     return parentChildren[index - 1];
   }
 
   public getInfoByElement(el: HTMLElement | SVGElement) {
+    console.log(this.ids, el, getId(el));
     return this.ids[getId(el)];
   }
 
@@ -148,7 +148,7 @@ export class Page extends Component {
       info.index = appendIndex + i;
       const elementsEl = findChildrenEl(this.el, '.elements');
       append(elementsEl, info.el);
-      info.el.setAttribute('DATA_ELEMENT_ID', info.id);
+      info.el.setAttribute(DATA_ELEMENT_ID, info.id);
     });
 
     return new Promise((resolve) => {

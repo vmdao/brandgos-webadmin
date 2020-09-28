@@ -747,6 +747,7 @@ menu.menu.toolbar {
   &-body {
     transform-origin: 0 0;
     pointer-events: none;
+    position: relative;
   }
   &-footer {
     margin-bottom: 20px;

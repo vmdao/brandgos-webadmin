@@ -1,7 +1,7 @@
 export abstract class Component {
-  constructor() {
+  constructor(params) {
     if (typeof this.onInit === 'function') {
-      this.onInit();
+      this.onInit(params);
     }
   }
   render(selector?: any): void {
@@ -16,7 +16,7 @@ export abstract class Component {
     }
   }
 
-  abstract onInit(): void;
+  abstract onInit(params?: any): void;
   abstract onViewed(): void;
   abstract onDestroy(): void;
 }

@@ -41,7 +41,7 @@ export class Viewport extends Component {
   historyManager: HistoryManager;
   editor: Editor;
   menuFactory: MenuFactory;
-  constructor(option: {
+  constructor(params: {
     zoom;
     eventBus: EventBus;
     moveableData: MoveableData;
@@ -50,14 +50,14 @@ export class Viewport extends Component {
     menuFactory: MenuFactory;
     editor: Editor;
   }) {
-    super();
-    this.zoom = option.zoom;
-    this.moveableData = option.moveableData;
-    this.eventBus = option.eventBus;
-    this.selectoManager = option.selectoManager;
-    this.historyManager = option.historyManager;
-    this.menuFactory = option.menuFactory;
-    this.editor = option.editor;
+    super(params);
+    this.zoom = params.zoom;
+    this.moveableData = params.moveableData;
+    this.eventBus = params.eventBus;
+    this.selectoManager = params.selectoManager;
+    this.historyManager = params.historyManager;
+    this.menuFactory = params.menuFactory;
+    this.editor = params.editor;
   }
 
   render() {
@@ -116,7 +116,7 @@ export class Viewport extends Component {
   }
 
   public getInfoByElement(el: HTMLElement | SVGElement) {
-    return this.ids[getId(el)];
+    return this.ids[getPageId(el)];
   }
 
   public getPage(id: string) {
@@ -169,7 +169,6 @@ export class Viewport extends Component {
         info
       );
       this.setPageInfo(id, page);
-
       return page;
     });
   }
@@ -274,8 +273,10 @@ export class Viewport extends Component {
           checkInput: true,
           className: 'uplevo',
           isDisplaySnapDigit: false,
-          dragArea: true,
+          // dragArea: true, click
+          // passDragArea: true,
         });
+
         if (index === 0) {
           this.moveableData.currentMoveabler = moveabler;
         }
@@ -299,8 +300,10 @@ export class Viewport extends Component {
 
         moveabler
           .on('click', ({ target }) => {
-            // console.log('renderStart');
-            this.menuFactory.createMenu(target);
+            const pageCurrent = this.moveableData.currentMoveabler.container;
+            const page = this.getInfoByElement(pageCurrent);
+            const elementInfo = page.getInfoByElement(target);
+            this.menuFactory.createMenu(elementInfo.frame);
           })
           .on('clickGroup', ({ inputEvent, inputTarget }) => {
             this.selectoManager.clickTarget(inputEvent, inputTarget);

@@ -24,6 +24,7 @@ export class MenuFactory {
   constructor(private editor: Editor) {}
 
   createMenu(dataElement) {
+    console.log(dataElement, 1234 );
     const inputCommand = new InputCommand(dataElement, this.editor);
     const curveCommand = new CurveCommand(dataElement, this.editor);
     const strokeColorCommand = new StrokeColorCommand(dataElement);
@@ -43,13 +44,6 @@ export class MenuFactory {
 
     const flipHorizontalCommand = new FlipHorizontalCommand(dataElement);
     const flipVerticalCommand = new FlipVerticalCommand(dataElement);
-
-    const fonts = [
-      '/assets/UV-Akashi.ttf',
-      '/assets/cantata-one-regular.otf',
-      '/assets/Roboto-Thin.ttf',
-      '/assets/UV-Agin.ttf',
-    ];
 
     let items = [];
 
