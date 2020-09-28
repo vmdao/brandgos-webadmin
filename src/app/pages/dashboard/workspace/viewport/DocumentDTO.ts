@@ -1,4 +1,3 @@
-import { IObject } from '@daybrush/utils';
 import { PageInfo } from './PageDTO';
 import { LayoutDTO } from './LayoutDTO';
 

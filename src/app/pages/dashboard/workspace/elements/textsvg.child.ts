@@ -1,4 +1,4 @@
-import { BaseTextChild } from './base-text-child.abstract';
+import { BaseTextChild } from './abstracts/base-text-child.abstract';
 export interface TextSvgChildData {
   curve: number;
   letterSpacing: number;

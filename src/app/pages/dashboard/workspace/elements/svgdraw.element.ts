@@ -1,11 +1,11 @@
-import { BaseElement } from './base.abstract';
+import { BaseElement } from './abstracts/base.abstract';
 import { SvgDrawChild } from './svgdraw.child';
 export class SvgDrawElement extends BaseElement {
-  background: false;
+  background = 0;
   constructor(options: any) {
     super(options);
 
-    this.background = options.background || false;
+    this.background = options.background || 0;
 
     this.borderRadius = options.style.borderRadius || 0;
     this.strokeWidth = options.style.strokeWidth || 0;
@@ -20,15 +20,20 @@ export class SvgDrawElement extends BaseElement {
   getData() {
     const style = this.svg.getData();
     return {
+      elementId: this.elementId,
       elementType: this.elementType,
-      elementIndex: this.order,
-      transparent: this.transparent,
-      rotation: this.angle,
-      width: this.width,
-      height: this.height,
+
       top: this.top,
       left: this.left,
+
+      width: this.width,
+      height: this.height,
+
+      angle: this.angle,
+      transparent: this.transparent,
+
       scale: this.scale,
+      order: this.order,
       style,
     };
   }

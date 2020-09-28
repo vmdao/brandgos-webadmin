@@ -41,11 +41,11 @@ export class Viewport extends Component {
   historyManager: HistoryManager;
   editor: Editor;
   menuFactory: MenuFactory;
+
   constructor(params: {
     zoom;
     eventBus: EventBus;
     moveableData: MoveableData;
-    selectoManager: Selecto;
     historyManager: HistoryManager;
     menuFactory: MenuFactory;
     editor: Editor;
@@ -54,7 +54,6 @@ export class Viewport extends Component {
     this.zoom = params.zoom;
     this.moveableData = params.moveableData;
     this.eventBus = params.eventBus;
-    this.selectoManager = params.selectoManager;
     this.historyManager = params.historyManager;
     this.menuFactory = params.menuFactory;
     this.editor = params.editor;
@@ -67,6 +66,10 @@ export class Viewport extends Component {
 
   onInit() {
     console.log('onInit');
+  }
+
+  setSelectorManager(selectoManager) {
+    this.selectoManager = selectoManager;
   }
 
   onViewed() {
@@ -273,8 +276,8 @@ export class Viewport extends Component {
           checkInput: true,
           className: 'uplevo',
           isDisplaySnapDigit: false,
-          // dragArea: true, click
-          // passDragArea: true,
+          // dragArea: true, // click
+          passDragArea: true,
         });
 
         if (index === 0) {
@@ -306,6 +309,7 @@ export class Viewport extends Component {
             this.menuFactory.createMenu(elementInfo.frame);
           })
           .on('clickGroup', ({ inputEvent, inputTarget }) => {
+            console.log(this.selectoManager);
             this.selectoManager.clickTarget(inputEvent, inputTarget);
           })
 

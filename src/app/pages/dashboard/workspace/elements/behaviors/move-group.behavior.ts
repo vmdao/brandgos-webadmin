@@ -1,4 +1,4 @@
-import { BaseElement } from '../base.abstract';
+import { BaseElement } from '../abstracts/base.abstract';
 import { MoveBehavior } from '../interfaces/move.interface';
 
 export class MoveGroupBehavior implements MoveBehavior {

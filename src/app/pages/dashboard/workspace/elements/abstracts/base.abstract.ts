@@ -1,16 +1,17 @@
 import * as jQuery from 'jquery';
 
-import { MoveBehavior } from './interfaces/move.interface';
-import { RotateBehavior } from './interfaces/rotate.interface';
+import { MoveBehavior } from '../interfaces/move.interface';
+import { RotateBehavior } from '../interfaces/rotate.interface';
 
 import { BaseTextChild } from './base-text-child.abstract';
 import { BaseSvgChild } from './base-svg-child.abstract';
+import { ELEMENT_TYPE } from '../const';
 
 export abstract class BaseElement {
   $dom: any;
-  elementId: number;
-  elementCode: string;
-  elementType: string;
+
+  elementId: string;
+  elementType: ELEMENT_TYPE;
 
   top: number;
   left: number;
@@ -19,42 +20,48 @@ export abstract class BaseElement {
   height: number;
 
   angle: number;
-
   transparent: number;
+
   flipHorizontal: boolean;
   flipVertical: boolean;
-  order: number;
+
   scale = 1;
-  background = false;
+  order: number;
+
+  locked = 0;
 
   borderRadius?: number;
   strokeWidth?: number;
 
-  selected = false;
-
   text: BaseTextChild;
   svg: BaseSvgChild;
+
+  selected = false;
+  background = 0;
 
   moveBehavior: MoveBehavior;
   rotateBehavior: RotateBehavior;
 
   constructor(options: any) {
     this.elementId = options.elementId;
-    this.elementCode = options.elementId;
     this.elementType = options.elementType;
 
     this.top = options.top || 0;
     this.left = options.left || 0;
+
     this.width = options.width || 0;
     this.height = options.height || 0;
+
     this.angle = options.angle || 0;
+    this.transparent = options.transparent || 100;
+
     this.scale = options.scale || 1;
-    this.order = options.order;
+    this.order = options.order || 1;
+
+    this.locked = options.locked || 0;
 
     this.flipHorizontal = options.flipHorizontal || false;
     this.flipVertical = options.flipVertical || false;
-
-    this.transparent = options.transparent || 1;
 
     this.$dom = jQuery(`<div class="element"></div>`);
     this.$dom.addClass(this.elementType);
@@ -63,15 +70,15 @@ export abstract class BaseElement {
     this.updateStyle();
   }
 
-  elementAppendTo(parent) {
+  appendTo(parent) {
     this.$dom.appendTo(parent);
   }
 
-  elementRemove() {
+  remove() {
     this.$dom.remove();
   }
 
-  elementEmpty() {
+  empty() {
     this.$dom.empty();
   }
 
@@ -265,15 +272,20 @@ export abstract class BaseElement {
 
   getData() {
     return {
+      elementId: this.elementId,
       elementType: this.elementType,
-      elementIndex: this.order,
-      transparent: this.transparent,
-      rotation: this.angle,
-      width: this.width,
-      height: this.height,
+
       top: this.top,
       left: this.left,
+
+      width: this.width,
+      height: this.height,
+
+      angle: this.angle,
+      transparent: this.transparent,
+
       scale: this.scale,
+      order: this.order,
     };
   }
 

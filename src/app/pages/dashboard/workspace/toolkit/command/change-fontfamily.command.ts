@@ -1,5 +1,5 @@
 import { Command } from './base.interface';
-import { BaseElement } from '../../elements/base.abstract';
+import { BaseElement } from '../../elements/abstracts/base.abstract';
 import { Editor } from '../../Editor';
 
 export class FontFamilyCommand implements Command {

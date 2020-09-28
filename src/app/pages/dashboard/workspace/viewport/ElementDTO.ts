@@ -1,4 +1,4 @@
-import { BaseElement } from '../elements/base.abstract';
+import { BaseElement } from '../elements/abstracts/base.abstract';
 
 export interface ElementInfo {
   name: string;

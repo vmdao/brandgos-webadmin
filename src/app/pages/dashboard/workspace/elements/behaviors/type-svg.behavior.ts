@@ -1,8 +1,8 @@
 import { TypeBehavior } from '../interfaces/type.interface';
-import { BaseElement } from '../base.abstract';
+import { BaseElement } from '../abstracts/base.abstract';
 
 import { Text2Svg } from '../../utils/text2svg.js';
-import { BaseTextChild } from '../base-text-child.abstract';
+import { BaseTextChild } from '../abstracts/base-text-child.abstract';
 
 import { paths, exporter, models, layout, measure } from 'makerjs';
 import { RenderOptions } from 'opentype.js';

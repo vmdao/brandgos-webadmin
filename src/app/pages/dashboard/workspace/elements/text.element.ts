@@ -1,4 +1,4 @@
-import { BaseElement } from './base.abstract';
+import { BaseElement } from './abstracts/base.abstract';
 import { TextChild } from './text.child';
 import { TypeTextBehavior } from './behaviors/type-text.behavior';
 export class TextElement extends BaseElement {

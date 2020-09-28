@@ -1,5 +1,5 @@
 import { TypeBehavior } from '../interfaces/type.interface';
-import { BaseElement } from '../base.abstract';
+import { BaseElement } from '../abstracts/base.abstract';
 export class TypeTextBehavior implements TypeBehavior {
   element: BaseElement;
   constructor(element: BaseElement) {

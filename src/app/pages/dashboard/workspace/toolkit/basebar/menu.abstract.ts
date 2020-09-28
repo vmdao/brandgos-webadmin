@@ -1,5 +1,5 @@
 import * as jQuery from 'jquery';
-import { BaseElement } from '../../elements/base.abstract';
+import { BaseElement } from '../../elements/abstracts/base.abstract';
 import { BaseMenuItemUI } from './ui.asbtract';
 
 export abstract class BaseMenu {

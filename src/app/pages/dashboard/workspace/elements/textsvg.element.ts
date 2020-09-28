@@ -1,4 +1,4 @@
-import { BaseElement } from './base.abstract';
+import { BaseElement } from './abstracts/base.abstract';
 import { TextSvgChild } from './textsvg.child';
 import { TypeSvgBehavior } from './behaviors/type-svg.behavior';
 
@@ -16,15 +16,20 @@ export class TextSvgElement extends BaseElement {
   getData() {
     const style = this.text.getData();
     return {
+      elementId: this.elementId,
       elementType: this.elementType,
-      elementIndex: this.order,
-      transparent: this.transparent,
-      rotation: this.angle,
-      width: this.width,
-      height: this.height,
+
       top: this.top,
       left: this.left,
+
+      width: this.width,
+      height: this.height,
+
+      angle: this.angle,
+      transparent: this.transparent,
+
       scale: this.scale,
+      order: this.order,
       html: this.html,
       style,
     };

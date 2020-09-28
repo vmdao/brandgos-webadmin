@@ -1,5 +1,5 @@
 import { Editor } from '../Editor';
-import { BaseElement } from '../elements/base.abstract';
+import { BaseElement } from '../elements/abstracts/base.abstract';
 import {
   ColorCommand,
   SvgColorCommand,
@@ -18,13 +18,12 @@ import {
   FlipVerticalCommand,
 } from '../toolkit/command';
 import { ToolbarMenu } from '../toolkit/toolbar/menu';
-import { findChildrenEl } from './HtmlHelper';
 import * as jQuery from 'jquery';
 export class MenuFactory {
   constructor(private editor: Editor) {}
 
   createMenu(dataElement) {
-    console.log(dataElement, 1234 );
+    console.log(dataElement, 1234);
     const inputCommand = new InputCommand(dataElement, this.editor);
     const curveCommand = new CurveCommand(dataElement, this.editor);
     const strokeColorCommand = new StrokeColorCommand(dataElement);

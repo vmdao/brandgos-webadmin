@@ -7,8 +7,8 @@ import { SvgChild } from './svg.child';
 
 export abstract class BaseElement {
   $dom: any;
+
   elementId: number;
-  elementCode: string;
   elementType: string;
 
   top: number;
@@ -18,13 +18,10 @@ export abstract class BaseElement {
   height: number;
 
   angle: number;
-
   opactiy: number;
-  order: number;
-  scale = 1;
-  background = false;
 
-  selected = false;
+  order: number;
+  background = false;
 
   text: TextChild;
   svg: SvgChild;
@@ -32,29 +29,34 @@ export abstract class BaseElement {
   moveBehavior: MoveBehavior;
   rotateBehavior: RotateBehavior;
 
+  scale = 1;
+  selected = 0;
+
   constructor(options: any) {
     this.elementId = options.elementId;
-    this.elementCode = options.elementId;
+
     this.top = options.top;
     this.left = options.left;
+
     this.width = options.width;
     this.height = options.height;
-    this.angle = options.rotate;
-    this.opactiy = options.opactiy;
+
+    this.opactiy = options.opactiy || 100;
+    this.angle = options.angle || 0;
 
     this.$dom = jQuery(`<div></div>`);
-    this.$dom.addClass('element');
+    this.$dom.addClass('element group');
   }
 
-  elementAppendTo(parent) {
+  appendTo(parent) {
     this.$dom.appendTo(parent);
   }
 
-  elementRemove() {
+  remove() {
     this.$dom.remove();
   }
 
-  elementEmpty() {
+  empty() {
     this.$dom.empty();
   }
 

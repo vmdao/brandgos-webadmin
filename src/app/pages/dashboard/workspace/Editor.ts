@@ -74,7 +74,6 @@ export class Editor extends Component {
       zoom: this.zoom,
       eventBus: this.eventBus,
       moveableData: this.moveableData,
-      selectoManager: this.selectoManager,
       historyManager: this.historyManager,
       menuFactory: this.menuFactory,
       editor: this,
@@ -118,12 +117,12 @@ export class Editor extends Component {
             moveabler.target = [];
           }
         }
-
         if (!selected.length) {
-          this.targetsSelected = selected;
+          this.targetsSelected = [];
         } else {
           this.eventBus.trigger('select', { elements: selected });
           const renderDirections = [];
+
           this.moveableData.currentMoveabler.rotatable = false;
           this.moveableData.currentMoveabler.renderDirections = renderDirections;
           this.moveableData.currentMoveabler.target = this.targetsSelected;
@@ -141,11 +140,13 @@ export class Editor extends Component {
         if (isDragStart) {
           inputEvent.preventDefault();
         }
+
         if (!isDragStart) {
           return;
         }
 
         this.targetsSelected = selected;
+        this.onMenuElements(selected);
 
         setTimeout(() => {
           this.moveableData.currentMoveabler.target = this.targetsSelected;
@@ -173,8 +174,18 @@ export class Editor extends Component {
         //   });
         // }
       });
+
+    this.viewport.setSelectorManager(this.selectoManager);
   }
 
+  onMenuElements(target) {
+    if (target.length === 1) {
+      const pageCurrent = this.moveableData.currentMoveabler.container;
+      const page = this.viewport.getInfoByElement(pageCurrent);
+      const elementInfo = page.getInfoByElement(target[0]);
+      this.menuFactory.createMenu(elementInfo.frame);
+    }
+  }
   private setupEvent() {
     this.eventBus.on('changeZoom', (message: { zoom: number }) => {
       this.zoom = message.zoom;

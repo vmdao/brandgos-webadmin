@@ -1,5 +1,5 @@
 import { FlipBehavior } from '../interfaces/flip.interface';
-import { BaseElement } from '../base.abstract';
+import { BaseElement } from '../abstracts/base.abstract';
 
 export class FlipSingleBehavior implements FlipBehavior {
   element: BaseElement;

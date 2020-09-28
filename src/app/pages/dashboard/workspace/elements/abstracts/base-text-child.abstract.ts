@@ -1,6 +1,6 @@
 import * as jQuery from 'jquery';
-import { TypeBehavior } from './interfaces/type.interface';
-import { TypeNothingBehavior } from './behaviors/type-nothing.behavior';
+import { TypeBehavior } from '../interfaces/type.interface';
+import { TypeNothingBehavior } from '../behaviors/type-nothing.behavior';
 import { BaseElement } from './base.abstract';
 
 export interface BaseTextChildData {
@@ -17,11 +17,11 @@ export interface BaseTextChildData {
 
 export abstract class BaseTextChild {
   $dom: any;
-  curve: number = 0;
-  letterSpacing: number = 0;
-  lineHeight: number = 1.4;
-  textAlign: string = 'left';
-  fontFamily: string = 'Roboto';
+  curve = 0;
+  letterSpacing = 0;
+  lineHeight = 1.4;
+  textAlign = 'left';
+  fontFamily: string;
   transform: string;
   fontSize: number;
   color: string;

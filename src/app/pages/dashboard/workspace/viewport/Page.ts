@@ -89,7 +89,6 @@ export class Page extends Component {
   }
 
   public getInfoByElement(el: HTMLElement | SVGElement) {
-    console.log(this.ids, el, getId(el));
     return this.ids[getId(el)];
   }
 
