@@ -2,6 +2,7 @@ import { BaseElement } from '../abstracts/base.abstract';
 import { TextChild } from './text.child';
 import { TypeTextBehavior } from '../behaviors/type-text.behavior';
 import { Text } from '../interfaces/has-text.interface';
+import { TextDTO } from './TextDTO';
 export class TextElement extends BaseElement implements Text {
   color: string;
   curve: number;
@@ -15,8 +16,8 @@ export class TextElement extends BaseElement implements Text {
   typeBehavior: TypeTextBehavior;
   text: TextChild;
 
-  constructor(options: any) {
-    super(options);
+  constructor(params: TextDTO) {
+    super(params);
     this.setText(new TextChild(this));
     this.text.setTypeBehavior(new TypeTextBehavior(this));
   }

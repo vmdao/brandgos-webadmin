@@ -1,39 +1,47 @@
 import { BaseSvgChild } from '../abstracts/base-svg-child.abstract';
 import { BaseElement } from '../abstracts/base.abstract';
 import { Color } from '../abstracts/color';
-import { Svg } from '../interfaces/has-svg.interface';
-import { SvgDrawChild } from './svgdraw.child';
-import { SvgDrawDTO } from './SvgDrawDTO';
-export class SvgDrawElement extends BaseElement implements Svg {
+import { Frame } from '../interfaces/has-frame.interface';
+import { FrameChild } from './frame.child';
+import { FrameDTO } from './FrameDTO';
+
+export class FrameElement extends BaseElement implements Frame {
   isBackground = 0;
 
   colors: Array<Color> = [];
   strokeWidth: number;
   strokeColor: string;
+
+  mediaUrl: string;
   borderRadius: number;
 
-  svg: BaseSvgChild;
-  shape: string;
+  frame: BaseSvgChild;
 
-  constructor(params: SvgDrawDTO) {
+  constructor(params: FrameDTO) {
     super(params);
+    this.mediaUrl = params.mediaUrl;
     this.isBackground = params.isBackground || 0;
-    this.shape = params.shape;
+    this.setFrame(new FrameChild(this));
+    this.render();
+  }
 
-    this.setSvg(new SvgDrawChild(this));
-    this.$el.css('border-radius', this.borderRadius);
+  render() {
+    this.frame.updateSvg().then((data) => {
+      this.renderElement(data.child);
+    });
   }
 
   renderElement(child) {
     this.$el.append(child.$el);
+    console.log('frame renderElement');
   }
 
-  setSvg(svg: BaseSvgChild) {
-    this.svg = svg;
+  setFrame(frame: BaseSvgChild) {
+    this.frame = frame;
   }
 
   updateSvg() {
-    this.svg.updateSvg();
+    this.frame.updateSvg();
   }
 
   getData() {
@@ -44,11 +52,6 @@ export class SvgDrawElement extends BaseElement implements Svg {
       strokeWidth: this.strokeWidth,
       strokeColor: this.strokeColor,
       borderRadius: this.borderRadius,
-      shape: this.shape,
     };
-  }
-
-  setBorderRadius(borderRadius) {
-    this.borderRadius = borderRadius;
   }
 }

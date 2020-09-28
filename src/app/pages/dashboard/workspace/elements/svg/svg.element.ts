@@ -3,9 +3,10 @@ import { BaseElement } from '../abstracts/base.abstract';
 import { Color } from '../abstracts/color';
 import { Svg } from '../interfaces/has-svg.interface';
 import { SvgChild } from './svg.child';
+import { SvgDTO } from './SvgDTO';
 
 export class SvgElement extends BaseElement implements Svg {
-  background = 0;
+  isBackground = 0;
 
   colors: Array<Color> = [];
   strokeWidth: number;
@@ -13,12 +14,13 @@ export class SvgElement extends BaseElement implements Svg {
 
   mediaUrl: string;
   borderRadius: number;
+
   svg: BaseSvgChild;
 
-  constructor(options: any) {
-    super(options);
-    this.mediaUrl = options.style.originUrl;
-    this.background = options.background || 0;
+  constructor(params: SvgDTO) {
+    super(params);
+    this.mediaUrl = params.mediaUrl;
+    this.isBackground = params.isBackground || 0;
     this.setSvg(new SvgChild(this));
     this.render();
   }

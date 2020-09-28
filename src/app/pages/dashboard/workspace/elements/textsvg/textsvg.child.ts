@@ -15,35 +15,39 @@ export class TextSvgChild extends BaseTextChild {
     this.parent.renderElement(this);
   }
 
+  getHtmlSvg() {
+    return this.typeBehavior.render();
+  }
+
   performCurve(value: any) {
-    this.parent.typeBehavior.changeCurve(value);
+    this.typeBehavior.changeCurve(value);
   }
 
   performLetterSpacing(value: any) {
-    this.parent.typeBehavior.changeLetterSpacing(value);
+    this.typeBehavior.changeLetterSpacing(value);
   }
 
   perforTextTransform(value: any) {
     this.htmlSvg = this.getHtmlTransform();
     this.parent.transform = value.value;
-    this.parent.typeBehavior.changeTextTransform(value);
+    this.typeBehavior.changeTextTransform(value);
   }
 
   performContent(value: any) {
     this.htmlSvg = this.getHtmlTransform();
-    this.parent.typeBehavior.changeTextTransform(value);
+    this.typeBehavior.changeTextTransform(value);
   }
 
   performFontFamily(value: any) {
-    this.parent.typeBehavior.changeFontfamily(value);
+    this.typeBehavior.changeFontfamily(value);
   }
 
   performFontsize(value: any) {
-    this.parent.typeBehavior.changeFontfamily(value);
+    this.typeBehavior.changeFontfamily(value);
   }
 
   performColor(value: string) {
-    this.parent.typeBehavior.changeColor(value);
+    this.typeBehavior.changeColor(value);
   }
 
   getHtmlTransform() {

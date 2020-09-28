@@ -1,7 +1,7 @@
 import * as jQuery from 'jquery';
 
-import { BaseTextChild } from './base-text-child.abstract';
 import { ELEMENT_TYPE } from '../const';
+import { ElementDTO } from './ElementDTO';
 
 export abstract class BaseElement {
   $el: any;
@@ -26,29 +26,27 @@ export abstract class BaseElement {
 
   locked = 0;
 
-  background = 0;
   selected = 0;
 
-  constructor(options: any) {
-    this.elementId = options.elementId;
-    this.elementType = options.elementType;
+  constructor(params: ElementDTO) {
+    this.elementId = params.elementId;
+    this.elementType = params.elementType;
 
-    this.top = options.top || 0;
-    this.left = options.left || 0;
+    this.top = params.top || 0;
+    this.left = params.left || 0;
 
-    this.width = options.width || 0;
-    this.height = options.height || 0;
+    this.width = params.width || 0;
+    this.height = params.height || 0;
 
-    this.angle = options.angle || 0;
-    this.transparent = options.transparent || 100;
+    this.angle = params.angle || 0;
+    this.transparent = params.transparent || 100;
 
-    this.scale = options.scale || 1;
-    this.order = options.order || 1;
+    this.order = params.order || 1;
 
-    this.locked = options.locked || 0;
+    this.locked = params.locked || 0;
 
-    this.flipHorizontal = options.flipHorizontal || 0;
-    this.flipVertical = options.flipVertical || 0;
+    this.flipHorizontal = params.flipHorizontal || 0;
+    this.flipVertical = params.flipVertical || 0;
 
     this.$el = jQuery(`<div class="element"></div>`);
 

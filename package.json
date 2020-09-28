@@ -39,6 +39,7 @@
     "@simonwep/pickr": "^1.7.4",
     "@svgdotjs/svg.js": "^3.0.16",
     "angulartics2": "^8.3.0",
+    "blueimp-load-image": "^5.14.0",
     "file-saver": "^2.0.2",
     "jquery": "^3.5.1",
     "keycon": "^1.1.0",

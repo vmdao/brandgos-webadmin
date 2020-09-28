@@ -18,6 +18,7 @@ export interface BaseTextChildData {
 export abstract class BaseTextChild {
   $el: any;
   parent: Text;
+  typeBehavior: TypeBehavior;
 
   constructor(parent: Text) {
     this.parent = parent;
@@ -38,44 +39,44 @@ export abstract class BaseTextChild {
   }
 
   setTypeBehavior(typeBehavior: TypeBehavior) {
-    this.parent.typeBehavior = typeBehavior;
+    this.typeBehavior = typeBehavior;
   }
 
   performFontsize(value: any) {
     this.parent.fontSize = value;
-    this.parent.typeBehavior.changeFontSize(value);
+    this.typeBehavior.changeFontSize(value);
   }
 
   performLineHeight(value: any) {
-    this.parent.typeBehavior.changeLineHeight(value);
+    this.typeBehavior.changeLineHeight(value);
   }
 
   performTextAlign(value: any) {
-    this.parent.typeBehavior.changeTextAlign(value);
+    this.typeBehavior.changeTextAlign(value);
   }
 
   performColor(value: any) {
-    this.parent.typeBehavior.changeColor(value);
+    this.typeBehavior.changeColor(value);
   }
 
   performLetterSpacing(value: any) {
-    this.parent.typeBehavior.changeLetterSpacing(value);
+    this.typeBehavior.changeLetterSpacing(value);
   }
 
   performFontFamily(value: any) {
-    this.parent.typeBehavior.changeFontfamily(value);
+    this.typeBehavior.changeFontfamily(value);
   }
 
   performCurve(value: any) {
-    this.parent.typeBehavior.changeCurve(value);
+    this.typeBehavior.changeCurve(value);
   }
 
   perforTextTransform(value: any) {
     this.parent.transform = value;
-    this.parent.typeBehavior.changeTextTransform(value);
+    this.typeBehavior.changeTextTransform(value);
   }
 
   performContent(value: any) {
-    this.parent.typeBehavior.changeContent(value);
+    this.typeBehavior.changeContent(value);
   }
 }
