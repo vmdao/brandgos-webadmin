@@ -1,6 +1,6 @@
-import { BaseElement } from './abstracts/base.abstract';
+import { BaseElement } from '../abstracts/base.abstract';
 import { TextChild } from './text.child';
-import { TypeTextBehavior } from './behaviors/type-text.behavior';
+import { TypeTextBehavior } from '../behaviors/type-text.behavior';
 export class TextElement extends BaseElement {
   constructor(options: any) {
     super(options);

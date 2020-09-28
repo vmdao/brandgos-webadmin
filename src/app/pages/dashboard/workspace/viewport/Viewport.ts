@@ -6,13 +6,13 @@ import {
   checkImageLoaded,
   CusMoveable,
 } from '../utils/utils';
-import { PageInfo } from './PageDTO';
-import { SavedDocumentData } from './DocumentDTO';
+import { PageInfo } from './dto/PageDTO';
+import { SavedDocumentData } from './dto/DocumentDTO';
 import { append } from '../utils/HtmlHelper';
 import { Page } from './Page';
 import { DATA_PAGE_ID } from '../utils/consts';
 import { Component } from '../lifecycle/component.astract';
-import { ElementInfo } from './ElementDTO';
+import { ElementInfo } from './dto/ElementDTO';
 import MoveableData from './MoveableData';
 import EventBus from '../utils/EventBus';
 import Selecto from 'selecto';

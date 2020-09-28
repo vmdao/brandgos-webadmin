@@ -1,15 +1,13 @@
 import * as jQuery from 'jquery';
 
-import { MoveBehavior } from './interfaces/move.interface';
-import { RotateBehavior } from './interfaces/rotate.interface';
-import { TextChild } from './text.child';
-import { SvgChild } from './svg.child';
+import { BaseElement } from '../abstracts/base.abstract';
+import { ELEMENT_TYPE } from '../const';
 
-export abstract class BaseElement {
+export class GroupElement {
   $dom: any;
 
-  elementId: number;
-  elementType: string;
+  elementId: string;
+  elementType = ELEMENT_TYPE.GROUP_TEXT;
 
   top: number;
   left: number;
@@ -18,18 +16,16 @@ export abstract class BaseElement {
   height: number;
 
   angle: number;
-  opactiy: number;
-
-  order: number;
-  background = false;
-
-  text: TextChild;
-  svg: SvgChild;
-
-  moveBehavior: MoveBehavior;
-  rotateBehavior: RotateBehavior;
+  transparent: number;
 
   scale = 1;
+  order: number;
+
+  locked = 0;
+
+  elements: Array<BaseElement> = [];
+
+  background = 0;
   selected = 0;
 
   constructor(options: any) {
@@ -41,15 +37,15 @@ export abstract class BaseElement {
     this.width = options.width;
     this.height = options.height;
 
-    this.opactiy = options.opactiy || 100;
+    this.transparent = options.transparent || 100;
     this.angle = options.angle || 0;
 
-    this.$dom = jQuery(`<div></div>`);
-    this.$dom.addClass('element group');
+    this.$dom = jQuery(`<div class="element"></div>`);
+    this.$dom.addClass(this.elementType);
   }
 
-  appendTo(parent) {
-    this.$dom.appendTo(parent);
+  appendTo(el) {
+    this.$dom.appendTo(el);
   }
 
   remove() {
@@ -123,27 +119,13 @@ export abstract class BaseElement {
     };
   }
 
-  setText(text: TextChild) {
-    this.text = text;
+  addElements(elements) {
+    this.elements = this.elements.concat(elements);
   }
 
-  setSvg(svg: SvgChild) {
-    this.svg = svg;
-  }
-
-  performRotate(angle: number) {
-    this.rotateBehavior.changeChangeAngle(angle);
-  }
-
-  performMove(position: { top: number; left: number }) {
-    this.moveBehavior.changePosition(position);
-  }
-
-  setMoveBehavior(moveBehavior: MoveBehavior) {
-    this.moveBehavior = moveBehavior;
-  }
-
-  setRotateBehavior(rotateBehavior: RotateBehavior) {
-    this.rotateBehavior = rotateBehavior;
+  removeElements(ids: Array<string>) {
+    this.elements = this.elements.filter((e) => {
+      return !ids.includes(e.elementId);
+    });
   }
 }

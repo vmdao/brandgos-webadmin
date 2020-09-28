@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ItemService } from '../@store/item';
 import { Editor } from './workspace/Editor';
-import { SavedDocumentData } from './workspace/viewport/DocumentDTO';
+import { SavedDocumentData } from './workspace/viewport/dto/DocumentDTO';
 
 @Component({
   selector: 'app-dashboard',

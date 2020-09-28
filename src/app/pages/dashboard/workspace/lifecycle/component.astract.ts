@@ -4,6 +4,7 @@ export abstract class Component {
       this.onInit(params);
     }
   }
+
   render(selector?: any): void {
     if (typeof this.onViewed === 'function') {
       this.onViewed();

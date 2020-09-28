@@ -1,7 +1,9 @@
-import { BaseElement } from './abstracts/base.abstract';
-import { SvgChild } from './svg.child';
-export class SvgElement extends BaseElement {
+import { BaseElement } from '../abstracts/base.abstract';
+import { SvgChild } from '../svg/svg.child';
+
+export class GridElement extends BaseElement {
   background = 0;
+
   constructor(options: any) {
     super(options);
     this.background = options.background || 0;

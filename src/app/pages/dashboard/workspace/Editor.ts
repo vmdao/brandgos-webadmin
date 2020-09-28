@@ -7,9 +7,9 @@ import ClipboardManager from './utils/ClipboardManager';
 import MoveableData from './viewport/MoveableData';
 
 import { Component } from './lifecycle/component.astract';
-import { SavedDocumentData } from './viewport/DocumentDTO';
+import { SavedDocumentData } from './viewport/dto/DocumentDTO';
 import { Viewport } from './viewport/Viewport';
-import { PageInfo } from './viewport/PageDTO';
+import { PageInfo } from './viewport/dto/PageDTO';
 import { Page } from './viewport/Page';
 import Selecto from 'selecto';
 

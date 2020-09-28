@@ -1,8 +1,8 @@
-import { BaseElement } from './abstracts/base.abstract';
+import { BaseElement } from '../abstracts/base.abstract';
 import { TextSvgChild } from './textsvg.child';
-import { TypeSvgBehavior } from './behaviors/type-svg.behavior';
+import { TypeSvgBehavior } from '../behaviors/type-svg.behavior';
 
-import { MoveSingleBehavior } from './behaviors/move-single.behavior';
+import { MoveSingleBehavior } from '../behaviors/move-single.behavior';
 export class TextSvgElement extends BaseElement {
   html: string;
   constructor(options: any) {

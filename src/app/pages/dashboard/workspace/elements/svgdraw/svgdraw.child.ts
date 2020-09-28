@@ -1,5 +1,5 @@
 import { models, exporter } from 'makerjs';
-import { BaseSvgChild } from './/abstracts/base-svg-child.abstract';
+import { BaseSvgChild } from '../abstracts/base-svg-child.abstract';
 import { SVG } from '@svgdotjs/svg.js';
 export class SvgDrawChild extends BaseSvgChild {
   shape: string;

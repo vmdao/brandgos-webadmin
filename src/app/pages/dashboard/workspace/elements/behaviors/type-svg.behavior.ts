@@ -6,13 +6,14 @@ import { BaseTextChild } from '../abstracts/base-text-child.abstract';
 
 import { paths, exporter, models, layout, measure } from 'makerjs';
 import { RenderOptions } from 'opentype.js';
-import { TextSvgChildData } from '../textsvg.child';
+import { TextSvgChildData } from '../';
+
 const { Arc } = paths;
 
 export class TypeSvgBehavior implements TypeBehavior {
+  $dom;
   element: BaseElement;
   text: BaseTextChild;
-  $dom;
 
   constructor(element: BaseElement) {
     this.element = element;

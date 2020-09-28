@@ -1,6 +1,6 @@
 import * as loadsvg from 'load-svg';
-import { BaseElement } from './abstracts/base.abstract';
-import { BaseSvgChild } from './abstracts/base-svg-child.abstract';
+import { BaseElement } from '../abstracts/base.abstract';
+import { BaseSvgChild } from '../abstracts/base-svg-child.abstract';
 export class SvgChild extends BaseSvgChild {
   mediaId: string;
   mediaCode: string;

@@ -22,8 +22,8 @@ export abstract class BaseElement {
   angle: number;
   transparent: number;
 
-  flipHorizontal: boolean;
-  flipVertical: boolean;
+  flipHorizontal: number;
+  flipVertical: number;
 
   scale = 1;
   order: number;
@@ -33,11 +33,11 @@ export abstract class BaseElement {
   borderRadius?: number;
   strokeWidth?: number;
 
+  background = 0;
+  selected = 0;
+
   text: BaseTextChild;
   svg: BaseSvgChild;
-
-  selected = false;
-  background = 0;
 
   moveBehavior: MoveBehavior;
   rotateBehavior: RotateBehavior;
@@ -60,13 +60,10 @@ export abstract class BaseElement {
 
     this.locked = options.locked || 0;
 
-    this.flipHorizontal = options.flipHorizontal || false;
-    this.flipVertical = options.flipVertical || false;
+    this.flipHorizontal = options.flipHorizontal || 0;
+    this.flipVertical = options.flipVertical || 0;
 
     this.$dom = jQuery(`<div class="element"></div>`);
-    this.$dom.addClass(this.elementType);
-    this.$dom.data('dataElement', this);
-
     this.updateStyle();
   }
 
@@ -155,7 +152,7 @@ export abstract class BaseElement {
   }
 
   setSelected(value: boolean) {
-    this.selected = value;
+    this.selected = value ? 1 : 0;
   }
 
   getSelected() {
@@ -168,7 +165,7 @@ export abstract class BaseElement {
   }
 
   performFlipHorizontal(value: boolean) {
-    this.flipHorizontal = value;
+    this.flipHorizontal = value ? 1 : 0;
     this.$dom
       .find('.element-inner')
       .css(
@@ -180,7 +177,7 @@ export abstract class BaseElement {
   }
 
   performFlipVertical(value: boolean) {
-    this.flipVertical = value;
+    this.flipVertical = value ? 1 : 0;
     this.$dom
       .find('.element-inner')
       .css(

@@ -1,4 +1,9 @@
-export * from './text.element';
-export * from './textsvg.element';
-export * from './svg.element';
-export * from './svgdraw.element';
+export * from './text/text.element';
+export * from './textsvg/textsvg.element';
+export * from './textsvg/textsvg.child';
+
+export * from './svg/svg.element';
+export * from './svgdraw/svgdraw.element';
+
+export * from './group/group.element';
+export * from './grid/grid.element';

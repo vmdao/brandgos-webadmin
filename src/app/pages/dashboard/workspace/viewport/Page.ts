@@ -1,19 +1,21 @@
 import { Component } from '../lifecycle/component.astract';
-import { PageInfo } from './PageDTO';
+import { PageInfo } from './dto/PageDTO';
 import { getViewEl, append, findChildrenEl } from '../utils/HtmlHelper';
-import { ElementInfo } from './ElementDTO';
+import { ElementInfo } from './dto/ElementDTO';
 import { IObject, isString } from '@daybrush/utils';
 import { getId, DATA_ELEMENT_ID, DATA_PAGE_ID } from '../utils/utils';
+
+import EventBus from '../utils/EventBus';
+import MoveableData from './MoveableData';
+import HistoryManager from '../utils/HistoryManager';
+import { Viewport } from './Viewport';
+
 import {
   TextSvgElement,
   TextElement,
   SvgDrawElement,
   SvgElement,
 } from '../elements';
-import EventBus from '../utils/EventBus';
-import MoveableData from './MoveableData';
-import HistoryManager from '../utils/HistoryManager';
-import { Viewport } from './Viewport';
 
 export class Page extends Component {
   el: HTMLElement;

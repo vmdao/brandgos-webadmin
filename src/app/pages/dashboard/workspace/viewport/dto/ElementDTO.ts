@@ -1,5 +1,3 @@
-import { BaseElement } from '../elements/abstracts/base.abstract';
-
 export interface ElementInfo {
   name: string;
   frame?: any;
