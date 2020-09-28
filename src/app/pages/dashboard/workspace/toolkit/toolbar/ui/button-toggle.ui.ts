@@ -16,7 +16,7 @@ export class ButtonToggleUI extends BaseMenuItemUI {
   }
 
   setCommand(action) {
-    this.$dom.on(action.event, (event) => {
+    this.$el.on(action.event, (event) => {
       this.context.isActive = !!!this.context.isActive;
       this.update();
       action.command.execute(this.context.isActive);
@@ -25,7 +25,7 @@ export class ButtonToggleUI extends BaseMenuItemUI {
 
   update() {
     this.context.isActive
-      ? this.$domWrapper.addClass('toolbar__item--active')
-      : this.$domWrapper.removeClass('toolbar__item--active');
+      ? this.$elWrapper.addClass('toolbar__item--active')
+      : this.$elWrapper.removeClass('toolbar__item--active');
   }
 }

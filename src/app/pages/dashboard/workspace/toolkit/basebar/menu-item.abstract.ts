@@ -1,7 +1,7 @@
 import * as jQuery from 'jquery';
 import { BaseMenuItemUI } from './ui.asbtract';
 export abstract class BaseMenuItem {
-  $dom: any;
+  $el: any;
   where: string;
   type: string;
   enabled = true;
@@ -10,7 +10,7 @@ export abstract class BaseMenuItem {
   htmlWrapper = '';
   constructor(option: { menuItemUi: BaseMenuItemUI }) {
     this.menuItemUi = option.menuItemUi;
-    this.$dom = jQuery(this.htmlWrapper);
+    this.$el = jQuery(this.htmlWrapper);
   }
 
   setEnable() {

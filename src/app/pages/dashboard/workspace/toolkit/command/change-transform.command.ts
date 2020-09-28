@@ -1,10 +1,11 @@
 import { Command } from './base.interface';
-import { BaseElement } from '../../elements/abstracts/base.abstract';
+import { Text } from '../../elements/interfaces/has-text.interface';
+
 import { Editor } from '../../Editor';
 export class TransformCommand implements Command {
-  element: BaseElement;
+  element: Text;
   editor: Editor;
-  constructor(element: BaseElement, editor: Editor) {
+  constructor(element: Text, editor: Editor) {
     this.element = element;
     this.editor = editor;
   }

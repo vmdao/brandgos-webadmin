@@ -9,6 +9,6 @@ export class MoveGroupBehavior implements MoveBehavior {
   changePosition(value: { top: number; left: number }) {
     this.element.setLeft(value.left);
     this.element.setTop(value.top);
-    this.element.$dom.css(value);
+    this.element.$el.css(value);
   }
 }

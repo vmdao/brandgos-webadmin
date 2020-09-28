@@ -1,19 +1,23 @@
 import { Command } from './base.interface';
-import { BaseElement } from '../../elements/abstracts/base.abstract';
+import { Svg } from '../../elements/interfaces/has-svg.interface';
+import { Color } from '../../elements/abstracts/color';
 
 export class SvgColorCommand implements Command {
-  element: BaseElement;
-  constructor(element: BaseElement) {
+  element: Svg;
+  constructor(element: Svg) {
     this.element = element;
   }
 
   execute(value: any) {
+    let message: Color;
     if (value.code === 'color1') {
-      this.element.svg.performColor1(value.color);
+      message = { order: 1, color: value.color };
     } else if (value.code === 'color2') {
-      this.element.svg.performColor2(value.color);
+      message = { order: 2, color: value.color };
     } else {
-      this.element.svg.performColor3(value.color);
+      message = { order: 3, color: value.color };
     }
+
+    this.element.svg.performColor(message);
   }
 }

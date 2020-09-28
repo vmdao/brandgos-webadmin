@@ -1,4 +1,4 @@
-export default {
+export const ok = {
   storeItem: [
     {
       name: 'Image',
@@ -205,4 +205,244 @@ export default {
       height: 315,
     },
   },
+};
+
+export const layout = {
+  id: '',
+  name: 'abc',
+  layout: {
+    id: 'string',
+    name: 'string',
+    type: 'string',
+    width: 1000,
+    height: 1000,
+  },
+  pages: [
+    {
+      elements: [
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 115,
+            height: 115,
+            top: 60,
+            left: 60,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+      ],
+      index: 1,
+      scopeId: 'viewport',
+      width: 630,
+      height: 300,
+    },
+    {
+      elements: [
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+      ],
+      index: 2,
+      scopeId: 'viewport',
+      width: 630,
+      height: 300,
+    },
+    {
+      elements: [],
+      index: 2,
+      scopeId: 'viewport',
+      width: 630,
+      height: 300,
+    },
+    {
+      elements: [
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 200,
+            height: 200,
+            top: 100,
+            left: 200,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+        {
+          name: 'hello',
+          scopeId: 'viewport',
+          frame: {
+            elementType: 'svg',
+            width: 115,
+            height: 115,
+            top: 60,
+            left: 60,
+            style: {
+              color1: '#000',
+              originUrl: 'http://brandgos-api.dizen.vn/upload/icon-03.svg',
+            },
+          },
+        },
+      ],
+      index: 1,
+      scopeId: 'viewport',
+      width: 630,
+      height: 300,
+    },
+  ],
 };

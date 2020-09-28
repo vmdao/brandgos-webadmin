@@ -28,21 +28,21 @@ export class SliderOneUI extends BaseMenuItemUI {
   }
 
   render() {
-    this.$dom = jQuery(this.html);
-    this.$domWrapper = jQuery(this.htmlWrapper);
-    this.$domWrapper.append(this.$dom);
+    this.$el = jQuery(this.html);
+    this.$elWrapper = jQuery(this.htmlWrapper);
+    this.$elWrapper.append(this.$el);
     this.setEvent();
     return this;
   }
 
   update() {
     // this.context.isActive
-    //   ? this.$domWrapper.addClass('toolbar__item--active')
-    //   : this.$domWrapper.removeClass('toolbar__item--active');
+    //   ? this.$elWrapper.addClass('toolbar__item--active')
+    //   : this.$elWrapper.removeClass('toolbar__item--active');
   }
 
   setEvent() {
-    this.$dom
+    this.$el
       .find('.aant-slider-handle')
       .on('mousedown', this.handleMouseDown.bind(this));
   }
@@ -55,16 +55,16 @@ export class SliderOneUI extends BaseMenuItemUI {
   }
 
   updateSliderHandle(data) {
-    this.$dom.find('.aant-slider-handle').css('left', data.percent * 100 + '%');
+    this.$el.find('.aant-slider-handle').css('left', data.percent * 100 + '%');
   }
 
   updateInput(data: { value: number; percent: number }) {
-    this.$dom.find('.toolbar__sliderValue').val(data.value.toFixed(0));
+    this.$el.find('.toolbar__sliderValue').val(data.value.toFixed(0));
   }
 
   handleMouseDown(e) {
     const handleChange = (event) => {
-      const container = this.$dom.find('.aant-slider-rail')[0];
+      const container = this.$el.find('.aant-slider-rail')[0];
       const data = container
         ? this.calculateChange(event, true, container)
         : null;

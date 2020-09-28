@@ -1,11 +1,11 @@
 import { Command } from './base.interface';
-import { BaseElement } from '../../elements/abstracts/base.abstract';
 import { Editor } from '../../Editor';
+import { Text } from '../../elements/interfaces/has-text.interface';
 
 export class LetterSpacingCommand implements Command {
-  element: BaseElement;
+  element: Text;
   editor: Editor;
-  constructor(element: BaseElement, editor: Editor) {
+  constructor(element: Text, editor: Editor) {
     this.element = element;
     this.editor = editor;
   }
@@ -14,6 +14,7 @@ export class LetterSpacingCommand implements Command {
     const callbackUpdateRect = () => {
       this.editor.moveablerSelected.updateRect();
     };
+
     this.element.text.performLetterSpacing({
       content: value,
       callback: callbackUpdateRect,

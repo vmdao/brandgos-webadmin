@@ -9,9 +9,9 @@ export class ButtonColorUI extends BaseMenuItemUI implements OnViewed {
   }
 
   render() {
-    this.$dom = jQuery(this.html);
-    this.$domWrapper = jQuery(this.htmlWrapper);
-    this.$domWrapper.append(this.$dom);
+    this.$el = jQuery(this.html);
+    this.$elWrapper = jQuery(this.htmlWrapper);
+    this.$elWrapper.append(this.$el);
     this.setCommands();
     return this;
   }
@@ -22,7 +22,7 @@ export class ButtonColorUI extends BaseMenuItemUI implements OnViewed {
     });
 
     const pickr = Pickr.create({
-      el: this.$dom.find('span').get(0),
+      el: this.$el.find('span').get(0),
       defaultRepresentation: 'HEXA',
       default: this.context.color || '#000000',
       lockOpacity: true,

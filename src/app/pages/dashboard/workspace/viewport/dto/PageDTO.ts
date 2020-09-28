@@ -1,12 +1,14 @@
 import { ElementInfo } from './ElementDTO';
 
 export interface PageInfo {
-  name?: string;
-  scopeId?: string;
-  el?: HTMLElement | null;
+  el?: HTMLElement;
   id?: string;
+
+  scopeId?: string;
   index?: number;
-  elements: Array<ElementInfo>;
+
+  name?: string;
   width: number;
   height: number;
+  elements: Array<ElementInfo>;
 }

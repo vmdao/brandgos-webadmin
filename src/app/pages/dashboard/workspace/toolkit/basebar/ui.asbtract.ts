@@ -26,8 +26,8 @@ export abstract class BaseMenuItemUI implements OnViewed {
   actions: Array<MenuItemActionDto>;
   options: MenuItemDto;
   position: string;
-  $dom;
-  $domWrapper;
+  $el;
+  $elWrapper;
 
   html = '';
   htmlWrapper = '';
@@ -62,9 +62,9 @@ export abstract class BaseMenuItemUI implements OnViewed {
   }
 
   render() {
-    this.$dom = jQuery(this.html);
-    this.$domWrapper = jQuery(this.htmlWrapper);
-    this.$domWrapper.append(this.$dom);
+    this.$el = jQuery(this.html);
+    this.$elWrapper = jQuery(this.htmlWrapper);
+    this.$elWrapper.append(this.$el);
     this.setCommands();
     return this;
   }
@@ -84,7 +84,7 @@ export abstract class BaseMenuItemUI implements OnViewed {
   }
 
   appendTo(selector) {
-    this.$domWrapper.appendTo(selector);
+    this.$elWrapper.appendTo(selector);
     this.onViewed();
     return this;
   }

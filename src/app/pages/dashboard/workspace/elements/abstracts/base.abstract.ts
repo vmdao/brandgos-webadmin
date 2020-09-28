@@ -1,17 +1,13 @@
 import * as jQuery from 'jquery';
 
-import { MoveBehavior } from '../interfaces/move.interface';
-import { RotateBehavior } from '../interfaces/rotate.interface';
-
 import { BaseTextChild } from './base-text-child.abstract';
-import { BaseSvgChild } from './base-svg-child.abstract';
 import { ELEMENT_TYPE } from '../const';
 
 export abstract class BaseElement {
-  $dom: any;
+  $el: any;
 
   elementId: string;
-  elementType: ELEMENT_TYPE;
+  elementType: ELEMENT_TYPE | string;
 
   top: number;
   left: number;
@@ -30,17 +26,8 @@ export abstract class BaseElement {
 
   locked = 0;
 
-  borderRadius?: number;
-  strokeWidth?: number;
-
   background = 0;
   selected = 0;
-
-  text: BaseTextChild;
-  svg: BaseSvgChild;
-
-  moveBehavior: MoveBehavior;
-  rotateBehavior: RotateBehavior;
 
   constructor(options: any) {
     this.elementId = options.elementId;
@@ -63,20 +50,21 @@ export abstract class BaseElement {
     this.flipHorizontal = options.flipHorizontal || 0;
     this.flipVertical = options.flipVertical || 0;
 
-    this.$dom = jQuery(`<div class="element"></div>`);
+    this.$el = jQuery(`<div class="element"></div>`);
+
     this.updateStyle();
   }
 
   appendTo(parent) {
-    this.$dom.appendTo(parent);
+    this.$el.appendTo(parent);
   }
 
   remove() {
-    this.$dom.remove();
+    this.$el.remove();
   }
 
   empty() {
-    this.$dom.empty();
+    this.$el.empty();
   }
 
   setRotate(value: number) {
@@ -143,14 +131,6 @@ export abstract class BaseElement {
     };
   }
 
-  setText(text: BaseTextChild) {
-    this.text = text;
-  }
-
-  setSvg(svg: BaseSvgChild) {
-    this.svg = svg;
-  }
-
   setSelected(value: boolean) {
     this.selected = value ? 1 : 0;
   }
@@ -161,12 +141,12 @@ export abstract class BaseElement {
 
   updateSelected(value: boolean) {
     this.setSelected(value);
-    value ? this.$dom.addClass('selected') : this.$dom.removeClass('selected');
+    value ? this.$el.addClass('selected') : this.$el.removeClass('selected');
   }
 
   performFlipHorizontal(value: boolean) {
     this.flipHorizontal = value ? 1 : 0;
-    this.$dom
+    this.$el
       .find('.element-inner')
       .css(
         'transform',
@@ -178,7 +158,7 @@ export abstract class BaseElement {
 
   performFlipVertical(value: boolean) {
     this.flipVertical = value ? 1 : 0;
-    this.$dom
+    this.$el
       .find('.element-inner')
       .css(
         'transform',
@@ -186,22 +166,6 @@ export abstract class BaseElement {
           this.flipVertical ? '-1' : '1'
         })`
       );
-  }
-
-  performRotate(angle: number) {
-    this.rotateBehavior.changeChangeAngle(angle);
-  }
-
-  performMove(position: { top: number; left: number }) {
-    this.moveBehavior.changePosition(position);
-  }
-
-  setMoveBehavior(moveBehavior: MoveBehavior) {
-    this.moveBehavior = moveBehavior;
-  }
-
-  setRotateBehavior(rotateBehavior: RotateBehavior) {
-    this.rotateBehavior = rotateBehavior;
   }
 
   setTransparent(value: number) {
@@ -218,7 +182,7 @@ export abstract class BaseElement {
     const styles = {
       opacity: this.transparent,
     };
-    this.$dom.css(styles);
+    this.$el.css(styles);
   }
 
   setScale(value: number) {
@@ -235,7 +199,7 @@ export abstract class BaseElement {
     const styles = {
       scale: this.scale,
     };
-    this.$dom.css(styles);
+    this.$el.css(styles);
   }
 
   setAngle(value: number) {
@@ -253,7 +217,7 @@ export abstract class BaseElement {
       translate: `translate(${this.top}px, ${this.left}px) rotate(${this.angle}deg)`,
     };
 
-    this.$dom.css(styles);
+    this.$el.css(styles);
   }
 
   updateStyle() {
@@ -264,7 +228,7 @@ export abstract class BaseElement {
       transform: `translate(${this.left}px, ${this.top}px) rotate(${this.angle}deg)`,
       scale: this.scale,
     };
-    this.$dom.css(styles);
+    this.$el.css(styles);
   }
 
   getData() {
@@ -289,6 +253,6 @@ export abstract class BaseElement {
   updateSizeByFontsize(size: { width: number; height: number }) {
     this.setWidth(size.width);
     this.setHeight(size.height);
-    this.$dom.css(size);
+    this.$el.css(size);
   }
 }

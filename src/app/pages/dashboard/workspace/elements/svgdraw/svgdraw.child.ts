@@ -1,30 +1,23 @@
 import { models, exporter } from 'makerjs';
 import { BaseSvgChild } from '../abstracts/base-svg-child.abstract';
 import { SVG } from '@svgdotjs/svg.js';
-export class SvgDrawChild extends BaseSvgChild {
-  shape: string;
-  stroke: string;
-  strokeWidth: number;
-  borderRadius: number;
+import { SvgDrawElement } from './svgdraw.element';
 
-  constructor(options: any, parent) {
-    super(options, parent);
-    this.shape = options.style.shape;
-    this.stroke = options.style.stroke;
-    this.strokeWidth = options.style.strokeWidth;
-    this.borderRadius = options.style.borderRadius;
-    this.render();
+export class SvgDrawChild extends BaseSvgChild {
+  constructor(parent: SvgDrawElement) {
+    super(parent);
   }
 
   render() {
     this.updateSvg();
-    this.elementAppendTo(this.parent.$dom);
+    this.parent.renderElement(this);
   }
 
   updateSvg2() {
     let shapeModel;
-    const { width, height, borderRadius } = this.parent;
-    const strokeWidth = this.strokeWidth || 0;
+    const { width, height, borderRadius, strokeWidth, shape } = this
+      .parent as SvgDrawElement;
+
     const draw = SVG().size(width, height);
     const group = draw.group();
 
@@ -33,7 +26,7 @@ export class SvgDrawChild extends BaseSvgChild {
       width: strokeWidth,
     });
 
-    switch (this.shape) {
+    switch (shape) {
       case 'rect':
         shapeModel = draw.rect(width - strokeWidth, height - strokeWidth);
         break;
@@ -54,7 +47,7 @@ export class SvgDrawChild extends BaseSvgChild {
     let widthViewbox = width;
     let heightViewbox = height;
 
-    if (this.shape === 'circle' && width !== height) {
+    if (shape === 'circle' && width !== height) {
       const viewBoxData = getViewBoxData(svgHtml);
       if (viewBoxData) {
         widthViewbox = viewBoxData.width;
@@ -66,15 +59,18 @@ export class SvgDrawChild extends BaseSvgChild {
       svgHtml,
       widthViewbox,
       heightViewbox,
-      this.strokeWidth
+      strokeWidth
     );
-    this.$dom.html(svgHtmlWithViewBox);
+
+    this.$el.html(svgHtmlWithViewBox);
     this.setColorName();
   }
 
   updateSvg() {
+    const { shape } = this.parent as SvgDrawElement;
     let svgHtml = '';
-    switch (this.shape) {
+
+    switch (shape) {
       case 'triangle':
         svgHtml = this.genarateSvgByMakerJs();
         break;
@@ -88,17 +84,17 @@ export class SvgDrawChild extends BaseSvgChild {
         svgHtml = this.genarateSvgByHtml();
         break;
     }
-    this.$dom.html(svgHtml);
+    this.$el.html(svgHtml);
     this.setColorName();
   }
 
   genarateSvgByMakerJs() {
     let shapeModel;
 
-    const { width, height, borderRadius } = this.parent;
-    const strokeWidth = this.strokeWidth || 0;
+    const { width, height, strokeWidth, shape, strokeColor } = this
+      .parent as SvgDrawElement;
 
-    switch (this.shape) {
+    switch (shape) {
       case 'triangle':
         const haftWidth = width / 2;
         const haftHeight = height / 2;
@@ -109,11 +105,6 @@ export class SvgDrawChild extends BaseSvgChild {
         ]);
         break;
     }
-
-    const fill =
-      typeof this.color1 === 'string' && this.color1 !== ''
-        ? this.color1
-        : null;
 
     const options: {
       svgAttrs?: any;
@@ -133,24 +124,20 @@ export class SvgDrawChild extends BaseSvgChild {
       },
       fontSize: '14px',
       useSvgPathOnly: true,
-      stroke: this.stroke,
-      strokeWidth: `${this.strokeWidth}px`,
+      stroke: strokeColor,
+      strokeWidth: `${strokeWidth}px`,
       accuracy: 0.0001,
       annotate: false,
       viewBox: true,
       scalingStroke: true,
     };
 
-    if (fill) {
-      options.fill = fill;
-    }
-
     const svgHtml = exporter.toSVG(shapeModel, { ...options, units: 'px' });
 
     let widthViewbox = width;
     let heightViewbox = height;
 
-    if (this.shape === 'circle' && width !== height) {
+    if (shape === 'circle' && width !== height) {
       const viewBoxData = getViewBoxData(svgHtml);
       if (viewBoxData) {
         widthViewbox = viewBoxData.width;
@@ -162,7 +149,7 @@ export class SvgDrawChild extends BaseSvgChild {
       svgHtml,
       widthViewbox,
       heightViewbox,
-      this.strokeWidth
+      strokeWidth
     );
 
     return svgHtmlWithViewBox;
@@ -170,14 +157,14 @@ export class SvgDrawChild extends BaseSvgChild {
 
   genarateSvgBySvgJs() {
     let shapeModel;
-    const { width, height, borderRadius } = this.parent;
-    const strokeWidth = this.strokeWidth || 0;
+    const { width, height, borderRadius, strokeWidth, shape } = this
+      .parent as SvgDrawElement;
     const draw = SVG()
       .viewbox(-strokeWidth / 2, -strokeWidth / 2, width, height)
       .size('100%', '100%');
     const group = draw.group();
 
-    switch (this.shape) {
+    switch (shape) {
       case 'rect':
         shapeModel = draw.rect(width - strokeWidth, height - strokeWidth);
         shapeModel.radius(borderRadius, borderRadius);
@@ -200,8 +187,15 @@ export class SvgDrawChild extends BaseSvgChild {
   }
 
   genarateSvgByHtml() {
-    const { width, height, borderRadius } = this.parent;
-    const { strokeWidth = 0, strokeColor } = this;
+    const {
+      width,
+      height,
+      borderRadius,
+      strokeColor,
+      strokeWidth,
+      shape,
+      colors,
+    } = this.parent as SvgDrawElement;
     const draw = document.createElement('div');
 
     draw.style.width = `${width}px`;
@@ -209,7 +203,7 @@ export class SvgDrawChild extends BaseSvgChild {
     draw.style.boxSizing = 'border-box';
     draw.className = 'color-1';
 
-    switch (this.shape) {
+    switch (shape) {
       case 'rect':
         draw.style.borderRadius = `${borderRadius}px`;
 
@@ -223,25 +217,12 @@ export class SvgDrawChild extends BaseSvgChild {
     draw.style.borderColor = strokeColor;
     draw.style.borderStyle = `solid`;
 
-    const color =
-      typeof this.color1 === 'string' && this.color1 !== ''
-        ? this.color1
-        : null;
+    const color1 = colors[0] || { color: '#000' };
 
-    draw.style.backgroundColor = color;
+    draw.style.backgroundColor = color1.color;
 
     const svgHtml = draw.outerHTML;
     return svgHtml;
-  }
-
-  getData() {
-    return {
-      color1: this.color1,
-      color2: this.color2,
-      color3: this.color3,
-      strokeWidth: this.strokeWidth,
-      strokeColor: this.strokeColor,
-    };
   }
 }
 

@@ -1,14 +1,15 @@
 import { Component } from '../lifecycle/component.astract';
-import { PageInfo } from './dto/PageDTO';
-import { getViewEl, append, findChildrenEl } from '../utils/HtmlHelper';
-import { ElementInfo } from './dto/ElementDTO';
 import { IObject, isString } from '@daybrush/utils';
-import { getId, DATA_ELEMENT_ID, DATA_PAGE_ID } from '../utils/utils';
-
 import EventBus from '../utils/EventBus';
 import MoveableData from './MoveableData';
 import HistoryManager from '../utils/HistoryManager';
 import { Viewport } from './Viewport';
+
+import { getViewEl, append, findChildrenEl } from '../utils/HtmlHelper';
+import { getId, DATA_ELEMENT_ID, DATA_PAGE_ID } from '../utils/utils';
+
+import { PageInfo } from './dto/PageDTO';
+import { ElementInfo } from './dto/ElementDTO';
 
 import {
   TextSvgElement,
@@ -65,31 +66,6 @@ export class Page extends Component {
     return this.ids[id];
   }
 
-  public getLastChildInfo(id: string) {
-    const info = this.getInfo(id);
-    const children = info.children;
-
-    return children[children.length - 1];
-  }
-
-  public getNextInfo(id: string) {
-    const info = this.getInfo(id);
-    const parentInfo = this.getInfo(info.scopeId);
-    const parentChildren = parentInfo.children;
-    const index = parentChildren.indexOf(info);
-
-    return parentChildren[index + 1];
-  }
-
-  public getPrevInfo(id: string) {
-    const info = this.getInfo(id);
-    const parentInfo = this.getInfo(info.scopeId);
-    const parentChildren = parentInfo.children;
-    const index = parentChildren.indexOf(info);
-
-    return parentChildren[index - 1];
-  }
-
   public getInfoByElement(el: HTMLElement | SVGElement) {
     return this.ids[getId(el)];
   }
@@ -129,11 +105,7 @@ export class Page extends Component {
     // tslint:disable-next-line: no-non-null-assertion
     const parentInfo = this.getInfo(info.scopeId)!;
 
-    return [
-      ...this.getIndexes(info.scopeId),
-      // tslint:disable-next-line: no-non-null-assertion
-      parentInfo.children!.indexOf(info),
-    ];
+    return [...this.getIndexes(info.scopeId)];
   }
 
   public appendElement(
@@ -203,7 +175,7 @@ export class Page extends Component {
       };
       const element = this.createElement(elementInfo.frame);
 
-      elementInfo.el = element.$dom.get(0);
+      elementInfo.el = element.$el.get(0);
       this.setInfo(id, elementInfo);
       return elementInfo;
     });

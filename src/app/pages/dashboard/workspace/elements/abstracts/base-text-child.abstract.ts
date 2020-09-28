@@ -1,7 +1,7 @@
 import * as jQuery from 'jquery';
 import { TypeBehavior } from '../interfaces/type.interface';
 import { TypeNothingBehavior } from '../behaviors/type-nothing.behavior';
-import { BaseElement } from './base.abstract';
+import { Text } from '../interfaces/has-text.interface';
 
 export interface BaseTextChildData {
   curve: number;
@@ -16,108 +16,66 @@ export interface BaseTextChildData {
 }
 
 export abstract class BaseTextChild {
-  $dom: any;
-  curve = 0;
-  letterSpacing = 0;
-  lineHeight = 1.4;
-  textAlign = 'left';
-  fontFamily: string;
-  transform: string;
-  fontSize: number;
-  color: string;
-  html: string;
-  parent: BaseElement;
-  typeBehavior: TypeBehavior;
+  $el: any;
+  parent: Text;
 
-  constructor(options: any, parent) {
+  constructor(parent: Text) {
     this.parent = parent;
-    if (options.style) {
-      this.curve = options.style.curve;
-      this.fontFamily = options.style.fontFamily;
-      this.letterSpacing = options.style.letterSpacing;
-      this.lineHeight = options.style.lineHeight;
-      this.fontSize = options.style.fontSize;
-      this.textAlign = options.style.textAlign;
-      this.transform = options.transform || 'none';
-      this.color = options.style.color;
-      this.html = options.html;
-    }
-
-    this.$dom = jQuery(`<div class="element-inner"></div>`);
+    this.$el = jQuery(`<div class="element-inner"></div>`);
     this.setTypeBehavior(new TypeNothingBehavior(this.parent));
-    this.render();
   }
 
-  render() {
-    this.$dom.html(this.html);
-    this.elementAppendTo(this.parent.$dom);
-  }
-
-  elementAppendTo(parent) {
-    this.$dom.appendTo(parent);
+  appendTo(parent) {
+    this.$el.appendTo(parent);
   }
 
   elementRemove() {
-    this.$dom.remove();
+    this.$el.remove();
   }
 
   elementEmpty() {
-    this.$dom.empty();
+    this.$el.empty();
   }
 
   setTypeBehavior(typeBehavior: TypeBehavior) {
-    this.typeBehavior = typeBehavior;
+    this.parent.typeBehavior = typeBehavior;
   }
 
   performFontsize(value: any) {
-    this.fontSize = value;
-    this.typeBehavior.changeFontSize(value);
+    this.parent.fontSize = value;
+    this.parent.typeBehavior.changeFontSize(value);
   }
 
   performLineHeight(value: any) {
-    this.typeBehavior.changeLineHeight(value);
+    this.parent.typeBehavior.changeLineHeight(value);
   }
 
   performTextAlign(value: any) {
-    this.typeBehavior.changeTextAlign(value);
+    this.parent.typeBehavior.changeTextAlign(value);
   }
 
   performColor(value: any) {
-    this.typeBehavior.changeColor(value);
+    this.parent.typeBehavior.changeColor(value);
   }
 
   performLetterSpacing(value: any) {
-    this.typeBehavior.changeLetterSpacing(value);
+    this.parent.typeBehavior.changeLetterSpacing(value);
   }
 
   performFontFamily(value: any) {
-    this.typeBehavior.changeFontfamily(value);
+    this.parent.typeBehavior.changeFontfamily(value);
   }
 
   performCurve(value: any) {
-    this.typeBehavior.changeCurve(value);
+    this.parent.typeBehavior.changeCurve(value);
   }
 
   perforTextTransform(value: any) {
-    this.transform = value;
-    this.typeBehavior.changeTextTransform(value);
+    this.parent.transform = value;
+    this.parent.typeBehavior.changeTextTransform(value);
   }
 
   performContent(value: any) {
-    this.typeBehavior.changeContent(value);
-  }
-
-  getData(): BaseTextChildData {
-    return {
-      curve: this.curve,
-      fontSize: this.fontSize,
-      lineHeight: this.lineHeight,
-      letterSpacing: this.letterSpacing,
-      fontFamily: this.fontFamily,
-      textAlign: this.textAlign,
-      color: this.color,
-      transform: this.transform,
-      html: this.html,
-    };
+    this.parent.typeBehavior.changeContent(value);
   }
 }

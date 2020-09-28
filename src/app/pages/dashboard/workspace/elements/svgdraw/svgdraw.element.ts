@@ -1,16 +1,32 @@
+import { BaseSvgChild } from '../abstracts/base-svg-child.abstract';
 import { BaseElement } from '../abstracts/base.abstract';
+import { Color } from '../abstracts/color';
+import { Svg } from '../interfaces/has-svg.interface';
 import { SvgDrawChild } from './svgdraw.child';
-export class SvgDrawElement extends BaseElement {
+export class SvgDrawElement extends BaseElement implements Svg {
   background = 0;
+
+  colors: Array<Color> = [];
+  strokeWidth: number;
+  strokeColor: string;
+  borderRadius: number;
+
+  svg: BaseSvgChild;
+  shape: string;
+
   constructor(options: any) {
     super(options);
-
     this.background = options.background || 0;
+    this.setSvg(new SvgDrawChild(this));
+    this.$el.css('border-radius', this.borderRadius);
+  }
 
-    this.borderRadius = options.style.borderRadius || 0;
-    this.strokeWidth = options.style.strokeWidth || 0;
-    this.setSvg(new SvgDrawChild(options, this));
-    this.$dom.css('border-radius', this.borderRadius);
+  renderElement(child) {
+    this.$el.append(child.$el);
+  }
+
+  setSvg(svg: BaseSvgChild) {
+    this.svg = svg;
   }
 
   updateSvg() {
@@ -18,23 +34,14 @@ export class SvgDrawElement extends BaseElement {
   }
 
   getData() {
-    const style = this.svg.getData();
+    const baseData = super.getData();
     return {
-      elementId: this.elementId,
-      elementType: this.elementType,
-
-      top: this.top,
-      left: this.left,
-
-      width: this.width,
-      height: this.height,
-
-      angle: this.angle,
-      transparent: this.transparent,
-
-      scale: this.scale,
-      order: this.order,
-      style,
+      ...baseData,
+      colors: this.colors,
+      strokeWidth: this.strokeWidth,
+      strokeColor: this.strokeColor,
+      borderRadius: this.borderRadius,
+      shape: this.shape,
     };
   }
 

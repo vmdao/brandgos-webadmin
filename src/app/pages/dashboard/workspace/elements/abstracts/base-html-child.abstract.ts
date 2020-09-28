@@ -1,19 +1,17 @@
 import * as jQuery from 'jquery';
-import { Svg } from '../interfaces/has-svg.interface';
+import { Html } from '../interfaces/has-html.interface';
 import { Color } from './color';
 
-export abstract class BaseSvgChild {
+export abstract class BaseHtmlChild {
   $el: any;
-  parent: Svg;
+  parent: Html;
 
-  constructor(parent: Svg) {
+  constructor(parent: Html) {
     this.parent = parent;
     this.$el = jQuery(`<div class="element-inner"></div>`);
   }
 
   render() {}
-
-  updateSvg(): any {}
 
   appendTo(parent) {
     this.$el.appendTo(parent);

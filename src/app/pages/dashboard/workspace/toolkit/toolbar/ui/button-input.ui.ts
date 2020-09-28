@@ -26,7 +26,7 @@ export class ButtonInputUI extends BaseMenuItemUI {
   setCommand(action) {
     const { stepCurrent, maxCurrent, minCurrent } = this;
     const clickIncreaset = fromEvent(
-      this.$dom.find('button:first-child').get(0),
+      this.$el.find('button:first-child').get(0),
       action.event
     );
 
@@ -42,7 +42,7 @@ export class ButtonInputUI extends BaseMenuItemUI {
     });
 
     const clickDecrease = fromEvent(
-      this.$dom.find('button:last-child').get(0),
+      this.$el.find('button:last-child').get(0),
       action.event
     );
     const resultDecrease = clickDecrease.pipe(debounce(() => interval(50)));
@@ -57,6 +57,6 @@ export class ButtonInputUI extends BaseMenuItemUI {
   }
 
   update() {
-    this.$dom.find('input').val(this.valueCurrent);
+    this.$el.find('input').val(this.valueCurrent);
   }
 }

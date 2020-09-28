@@ -1,45 +1,28 @@
 import * as loadsvg from 'load-svg';
-import { BaseElement } from '../abstracts/base.abstract';
 import { BaseSvgChild } from '../abstracts/base-svg-child.abstract';
+import { SvgElement } from './svg.element';
 export class SvgChild extends BaseSvgChild {
-  mediaId: string;
-  mediaCode: string;
+  parent: SvgElement;
 
-  originUrl: string;
-  originThumb: string;
-  parent: BaseElement;
-
-  constructor(options: any, parent) {
-    super(options, parent);
-    if (options.style) {
-      this.originUrl = options.style.originUrl;
-      this.originThumb = options.style.originThumb;
-    }
-
-    this.render();
+  constructor(parent: SvgElement) {
+    super(parent);
   }
 
   render() {
-    this.updateSvg();
+    return this.updateSvg();
   }
 
   updateSvg() {
-    loadsvg(this.originUrl, (err, svgPath) => {
-      this.$dom.html(svgPath);
-      this.elementAppendTo(this.parent.$dom);
-      this.setColorName();
-    });
-  }
+    return new Promise((resolve, reject) => {
+      loadsvg(this.parent.mediaUrl, (err, svgPath) => {
+        if (err) {
+          return reject(err);
+        }
 
-  getData() {
-    return {
-      color1: this.color1,
-      color2: this.color2,
-      color3: this.color3,
-      strokeColor: this.strokeColor,
-      strokeWidth: this.strokeWidth,
-      originUrl: this.originUrl,
-      originThumb: this.originThumb,
-    };
+        this.$el.html(svgPath);
+        this.setColorName();
+        return resolve({ status: 200, child: this });
+      });
+    });
   }
 }

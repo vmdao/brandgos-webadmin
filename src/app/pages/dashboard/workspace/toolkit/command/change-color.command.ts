@@ -1,9 +1,9 @@
 import { Command } from './base.interface';
-import { BaseElement } from '../../elements/abstracts/base.abstract';
+import { Text } from '../../elements/interfaces/has-text.interface';
 
 export class ColorCommand implements Command {
-  element: BaseElement;
-  constructor(element: BaseElement) {
+  element: Text;
+  constructor(element: Text) {
     this.element = element;
   }
 

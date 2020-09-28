@@ -5,8 +5,8 @@ export class DropdownUI extends BaseMenuItemUI {
   htmlList = '';
   htmlListItems = '';
   items: Array<any> = [];
-  $domList;
-  $domCover;
+  $elList;
+  $elCover;
   constructor(options) {
     super(options);
     this.htmlWrapper = `<li class="toolbar__item toolbar__item--submenu ${
@@ -23,50 +23,50 @@ export class DropdownUI extends BaseMenuItemUI {
   }
 
   render() {
-    this.$dom = jQuery(this.html);
-    this.$domList = this.buildDomList();
-    this.$domWrapper = jQuery(this.htmlWrapper);
-    this.$domCover = jQuery('<div class="submenu-cover"></div>');
-    this.$domWrapper.append(this.$dom);
-    this.$domWrapper.append(this.$domCover);
-    this.$domWrapper.append(this.$domList);
+    this.$el = jQuery(this.html);
+    this.$elList = this.buildDomList();
+    this.$elWrapper = jQuery(this.htmlWrapper);
+    this.$elCover = jQuery('<div class="submenu-cover"></div>');
+    this.$elWrapper.append(this.$el);
+    this.$elWrapper.append(this.$elCover);
+    this.$elWrapper.append(this.$elList);
     this.setCommands();
     this.setEvent();
     return this;
   }
 
   setCommand(action) {
-    this.$domList.on(action.event, 'li', (event) => {
+    this.$elList.on(action.event, 'li', (event) => {
       this.updateActive();
       const item = jQuery(event.currentTarget);
       item.addClass('active');
       const data = item.data('data');
-      const value = omit(data, ['$dom']);
+      const value = omit(data, ['$el']);
       action.command.execute(value);
     });
   }
 
   updateActive() {
-    this.$domList.find('li').each((i, e) => {
+    this.$elList.find('li').each((i, e) => {
       jQuery(e).removeClass('active');
     });
   }
 
   setEvent() {
-    this.$domWrapper.find('> .toolbar__button').on('click', (event) => {
-      this.$domWrapper.addClass('toolbar__item--submenuExpanded');
+    this.$elWrapper.find('> .toolbar__button').on('click', (event) => {
+      this.$elWrapper.addClass('toolbar__item--submenuExpanded');
     });
-    this.$domCover.on('click', eventClickOff.bind(this));
+    this.$elCover.on('click', eventClickOff.bind(this));
 
     function eventClickOff(event) {
-      this.$domWrapper.removeClass('toolbar__item--submenuExpanded');
+      this.$elWrapper.removeClass('toolbar__item--submenuExpanded');
     }
   }
 
   update() {
     this.context.isActive
-      ? this.$domWrapper.addClass('toolbar__item--submenuExpanded')
-      : this.$domWrapper.removeClass('toolbar__item--submenuExpanded');
+      ? this.$elWrapper.addClass('toolbar__item--submenuExpanded')
+      : this.$elWrapper.removeClass('toolbar__item--submenuExpanded');
   }
 
   addBatchItems(wrapper, items) {
@@ -76,7 +76,7 @@ export class DropdownUI extends BaseMenuItemUI {
   }
 
   addItem(wrapper, item) {
-    item.$dom = jQuery(`<li class="selectable">
+    item.$el = jQuery(`<li class="selectable">
     <button class="toolbar__button toolbar__button--font" data-text="${
       item.label
     }">
@@ -86,9 +86,9 @@ export class DropdownUI extends BaseMenuItemUI {
             : item.label
         }</button>
     </button>`);
-    item.$dom.data('data', item);
+    item.$el.data('data', item);
     this.items.push(item);
-    wrapper.append(item.$dom);
+    wrapper.append(item.$el);
   }
 
   buildDomList() {

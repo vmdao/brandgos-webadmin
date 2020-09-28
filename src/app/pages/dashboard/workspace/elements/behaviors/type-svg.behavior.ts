@@ -1,57 +1,60 @@
 import { TypeBehavior } from '../interfaces/type.interface';
-import { BaseElement } from '../abstracts/base.abstract';
-
 import { Text2Svg } from '../../utils/text2svg.js';
 import { BaseTextChild } from '../abstracts/base-text-child.abstract';
 
 import { paths, exporter, models, layout, measure } from 'makerjs';
 import { RenderOptions } from 'opentype.js';
-import { TextSvgChildData } from '../';
+import { TextSvgElement } from '../textsvg/textsvg.element';
 
 const { Arc } = paths;
 
 export class TypeSvgBehavior implements TypeBehavior {
-  $dom;
-  element: BaseElement;
+  $el;
+  element: TextSvgElement;
   text: BaseTextChild;
 
-  constructor(element: BaseElement) {
+  constructor(element: TextSvgElement) {
     this.element = element;
     this.text = element.text;
-    this.$dom = this.text.$dom;
-    this.render();
+    this.$el = this.text.$el;
   }
 
-  changeFontSize(value: any) {
-    this.getHtmlSvg(value);
-  }
-  changeLineHeight(value: number) {}
-  changeTextAlign(value: string) {}
-  changeColor(value: string) {
-    this.$dom.find('[fill]').css('fill', value);
-  }
-  changeLetterSpacing(value: any) {
-    this.getHtmlSvg(value);
-  }
-  changeFontfamily(value: any) {
+  public changeFontSize(value: any) {
     this.getHtmlSvg(value);
   }
 
-  changeCurve(value: any) {
+  public changeLineHeight(value: number) {}
+
+  public changeTextAlign(value: string) {}
+
+  public changeColor(value: string) {
+    this.$el.find('[fill]').css('fill', value);
+  }
+
+  public changeLetterSpacing(value: any) {
     this.getHtmlSvg(value);
   }
 
-  changeContent(value: any) {}
-  changeTextTransform(value: any) {
+  public changeFontfamily(value: any) {
     this.getHtmlSvg(value);
   }
 
-  render() {
+  public changeCurve(value: any) {
+    this.getHtmlSvg(value);
+  }
+
+  public changeContent(value: any) {}
+
+  public changeTextTransform(value: any) {
+    this.getHtmlSvg(value);
+  }
+
+  public render() {
     this.getHtmlSvg();
   }
 
-  getHtmlSvg(value?: any) {
-    const data = this.text.getData() as TextSvgChildData;
+  private getHtmlSvg(value?: any) {
+    const data = this.element.getData();
 
     const {
       color: fill,
@@ -59,7 +62,7 @@ export class TypeSvgBehavior implements TypeBehavior {
       fontSize,
       letterSpacing,
       url: urlFont,
-      htmlSvg,
+      content,
     } = data;
 
     const optionsText = {
@@ -69,13 +72,14 @@ export class TypeSvgBehavior implements TypeBehavior {
     Text2Svg.load(urlFont, (text2svg) => {
       const textModel = new models.Text(
         text2svg.font,
-        htmlSvg,
+        content,
         fontSize,
         false,
         true,
         0,
         optionsText
       );
+      const htmlSvg = content;
       let size = measure.modelExtents(textModel);
 
       if (curve > 0 && htmlSvg.length > 1) {
@@ -120,20 +124,23 @@ export class TypeSvgBehavior implements TypeBehavior {
       }
 
       const svgHtml = exporter.toSVG(textModel, optionsExport);
+
       this.renderSvgDom(svgHtml);
+
       this.element.updateSizeByFontsize({
         width: size.width,
         height: size.height,
       });
+
       if (value && typeof value.callback === 'function') {
         value.callback();
       }
     });
   }
 
-  renderSvgDom(svgHtml) {
-    this.$dom.empty();
-    this.$dom.append(svgHtml);
-    this.$dom.css({ width: '100%', height: '100%' });
+  private renderSvgDom(svgHtml) {
+    this.$el.empty();
+    this.$el.append(svgHtml);
+    this.$el.css({ width: '100%', height: '100%' });
   }
 }

@@ -1,13 +1,13 @@
 import { Command } from './base.interface';
-import { BaseElement } from '../../elements/abstracts/base.abstract';
+import { Svg } from '../../elements/interfaces/has-svg.interface';
 
 export class StrokeColorCommand implements Command {
-  element: BaseElement;
-  constructor(element: BaseElement) {
-    this.element = element;
+  parent: Svg;
+  constructor(parent: Svg) {
+    this.parent = parent;
   }
 
   execute(value: any) {
-    this.element.svg.performStrokeColor(value.color);
+    this.parent.svg.performStrokeColor(value.color);
   }
 }

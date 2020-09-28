@@ -4,8 +4,8 @@ export class DropPadUI extends BaseMenuItemUI {
   htmlList = '';
   htmlListItems = '';
   items: Array<any> = [];
-  $domList;
-  $domCover;
+  $elList;
+  $elCover;
   constructor(options) {
     super(options);
     this.htmlWrapper = `<li class="toolbar__item toolbar__item--submenu ${
@@ -21,38 +21,38 @@ export class DropPadUI extends BaseMenuItemUI {
   }
 
   render() {
-    this.$dom = jQuery(this.html);
-    this.$domWrapper = jQuery(this.htmlWrapper);
-    this.$domList = this.buildDomList();
-    this.$domCover = jQuery('<div class="submenu-cover"></div>');
-    this.$domWrapper.append(this.$dom);
-    this.$domWrapper.append(this.$domCover);
-    this.$domWrapper.append(this.$domList);
+    this.$el = jQuery(this.html);
+    this.$elWrapper = jQuery(this.htmlWrapper);
+    this.$elList = this.buildDomList();
+    this.$elCover = jQuery('<div class="submenu-cover"></div>');
+    this.$elWrapper.append(this.$el);
+    this.$elWrapper.append(this.$elCover);
+    this.$elWrapper.append(this.$elList);
     this.setEvent();
     this.renderItems();
     return this;
   }
 
   updateActive() {
-    this.$domList.find('li').each((i, e) => {
+    this.$elList.find('li').each((i, e) => {
       jQuery(e).removeClass('active');
     });
   }
 
   setEvent() {
-    this.$domWrapper.find('> .toolbar__button').on('click', (event) => {
-      this.$domWrapper.addClass('toolbar__item--submenuExpanded');
+    this.$elWrapper.find('> .toolbar__button').on('click', (event) => {
+      this.$elWrapper.addClass('toolbar__item--submenuExpanded');
     });
-    this.$domCover.on('click', eventClickOff.bind(this));
+    this.$elCover.on('click', eventClickOff.bind(this));
     function eventClickOff(event) {
-      this.$domWrapper.removeClass('toolbar__item--submenuExpanded');
+      this.$elWrapper.removeClass('toolbar__item--submenuExpanded');
     }
   }
 
   update() {
     this.context.isActive
-      ? this.$domWrapper.addClass('toolbar__item--submenuExpanded')
-      : this.$domWrapper.removeClass('toolbar__item--submenuExpanded');
+      ? this.$elWrapper.addClass('toolbar__item--submenuExpanded')
+      : this.$elWrapper.removeClass('toolbar__item--submenuExpanded');
   }
 
   renderItems() {
@@ -62,7 +62,7 @@ export class DropPadUI extends BaseMenuItemUI {
   }
 
   addItem(item) {
-    item.appendTo(this.$domList);
+    item.appendTo(this.$elList);
   }
 
   buildDomList() {

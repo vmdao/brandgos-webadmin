@@ -1,13 +1,13 @@
 import { Command } from './base.interface';
-import { BaseElement } from '../../elements/abstracts/base.abstract';
+import { Svg } from '../../elements/interfaces/has-svg.interface';
 
 export class StrokeWidthCommand implements Command {
-  element: BaseElement;
-  constructor(element: BaseElement) {
-    this.element = element;
+  parent: Svg;
+  constructor(parent: Svg) {
+    this.parent = parent;
   }
 
   execute(value: number) {
-    this.element.svg.performStrokeWidth(value);
+    this.parent.svg.performStrokeWidth(value);
   }
 }

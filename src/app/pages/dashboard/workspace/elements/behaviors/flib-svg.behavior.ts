@@ -3,21 +3,21 @@ import { BaseElement } from '../abstracts/base.abstract';
 
 export class FlipSingleBehavior implements FlipBehavior {
   element: BaseElement;
-  $dom;
+  $el;
 
   constructor(element: BaseElement) {
     this.element = element;
-    this.$dom = element.$dom;
+    this.$el = element.$el;
   }
 
   changeHorizontal(value: boolean) {
-    this.$dom
+    this.$el
       .find('.element-inner')
       .css(`transform: scaleX(${value ? '-1' : '1'})`);
   }
 
   changeVertical(value: boolean) {
-    this.$dom
+    this.$el
       .find('.element-inner')
       .css(`transform: scaleY(${value ? '-1' : '1'})`);
   }

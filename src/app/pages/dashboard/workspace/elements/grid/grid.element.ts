@@ -1,37 +1,34 @@
 import { BaseElement } from '../abstracts/base.abstract';
-import { SvgChild } from '../svg/svg.child';
+import { Color } from '../abstracts/color';
+import { Html } from '../interfaces/has-html.interface';
+import { GridChild } from '../grid/grid.child';
 
-export class GridElement extends BaseElement {
+export class GridElement extends BaseElement implements Html {
   background = 0;
+  html;
+  colors: Array<Color>;
+  strokeWidth: number;
+  strokeColor: string;
+  borderRadius: number;
 
   constructor(options: any) {
     super(options);
     this.background = options.background || 0;
-    this.setSvg(new SvgChild(options, this));
+    this.setHtml(new GridChild(this));
   }
 
   updateSvg() {
-    this.svg.updateSvg();
+    this.html.updateSvg();
   }
+  renderElement(element) {}
 
+  setHtml(child) {
+    this.html = child;
+  }
   getData() {
-    const style = this.svg.getData();
+    const baseData = super.getData();
     return {
-      elementId: this.elementId,
-      elementType: this.elementType,
-
-      top: this.top,
-      left: this.left,
-
-      width: this.width,
-      height: this.height,
-
-      angle: this.angle,
-      transparent: this.transparent,
-
-      scale: this.scale,
-      order: this.order,
-      style,
+      ...baseData,
     };
   }
 }
